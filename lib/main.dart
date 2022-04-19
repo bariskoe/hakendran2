@@ -45,8 +45,8 @@ class BarisToDoListApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: Themes.greenTheme(),
-        home: LifeCycleManager(child: const MainPage()),
-        localizationsDelegates: [
+        home: const LifeCycleManager(child: MainPage()),
+        localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

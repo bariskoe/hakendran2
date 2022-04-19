@@ -1,18 +1,16 @@
-import '../assets.dart';
-import '../drawers/main_page_drawer.dart';
-import '../ui/standard_widgets/error_box_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:loading_animations/loading_animations.dart';
 
+import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dialogs/add_list_dialog.dart';
 import '../dialogs/edit_todolist_dialog.dart';
+import '../drawers/main_page_drawer.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
+import '../ui/standard_widgets/error_box_widget.dart';
 import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';

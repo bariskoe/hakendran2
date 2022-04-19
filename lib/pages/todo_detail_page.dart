@@ -36,8 +36,8 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
 
   @override
   void initState() {
-    BlocProvider.of<SelectedTodolistBloc>(context)
-        .add(SelectedTodolistEventLoadSelectedTodolist());
+    //  BlocProvider.of<SelectedTodolistBloc>(context)
+    //      .add(SelectedTodolistEventLoadSelectedTodolist());
 
     super.initState();
   }
@@ -75,7 +75,7 @@ _buildLoading(BuildContext context) {
 
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
   return AnimatedSwitcher(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       child: StandardPageWidget(
         onPop: () {
           BlocProvider.of<SelectedTodolistBloc>(context)
