@@ -1,0 +1,45 @@
+{
+
+  "appTitle": "BarisTodoListApp",
+  "@appTitle": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "mainPageAppbarTitle":"My Todo Lists",
+  "mainPageBuildListEmptyLazinessIsOver":"Laziness is over",
+  "mainPageBuildListEmptyPressToAddTodoList":"Press to create your first Todo List",
+
+  "addListDialogTitle":"New Todo List",
+  "addListDialogTextfieldLabel":"Name",
+  "addTodoDialogTitle":"New Todo",
+  "addTodoDialogTextfieldLabel":"Name",
+  "editTodoListDialogTitle":"Edit Todo List",
+  "editTodoListDialogTextfieldLabel":"Edit Name",
+  "addItemTextFieldWidgetErrorMessage":"A name is neccessary",
+
+  "categoryNameNone":"none",
+  "categoryNameWorkout":"workout",
+  "categoryNameEducation":"education",
+  "categoryNameNutrition":"nutrition",
+  "categoryNameWork":"work",
+  "categoryNameShopping":"shopping",
+  "categoryNameMedication":"medication",
+  "categoryNameAnimals":"animals",
+  "categoryNameRelaxation":"relaxation",
+  "categoryNameCleanup":"cleanup",
+  "categoryNamePaperwork":"paperwork",
+  "categoryNameFriends":"friends",
+
+  "repetitionPeriodNone":"none",
+  "repetitionPeriodDaily":"daily",
+  "repetitionPeriodWeekly":"weekly",
+  "repetitionPeriodMonthly":"monthly",
+  "repetitionPeriodMinutely":"minutely",
+  
+  "somethingWentWrong":"Something went wrong",
+  "swipeToDelete":"Swipe to delete",
+  "cancel":"Cancel",
+  "ok":"Ok",
+
+    
+    "thatsIt":"ThatsIt"
+}

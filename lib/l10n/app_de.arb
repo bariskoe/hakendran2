@@ -1,0 +1,45 @@
+
+{
+   
+    "appTitle": "BarisTodoListApp",
+    "mainPageAppbarTitle":"Meine Todo Listen",
+    "mainPageBuildListEmptyLazinessIsOver":"Die faulen Zeiten sind vorbei",
+    "mainPageBuildListEmptyPressToAddTodoList":"Hier drücken, um die erste Todo Liste zu erstellen",
+
+    "addListDialogTitle":"Neue Todo Liste",
+    "addListDialogTextfieldLabel":"Name",
+    "addTodoDialogTitle":"Neues Todo",
+    "addTodoDialogTextfieldLabel":"Name",
+    "editTodoListDialogTitle":"Todo Liste bearbeiten",
+    "editTodoListDialogTextfieldLabel":"Name",
+    "addItemTextFieldWidgetErrorMessage":"Ein Name ist nötig",
+
+    "categoryNameNone":"keine",
+    "categoryNameWorkout":"Sport",
+    "categoryNameEducation":"Bildung",
+    "categoryNameNutrition":"Ernährung",
+    "categoryNameWork":"Arbeit",
+    "categoryNameShopping":"Einkaufen",
+    "categoryNameMedication":"Medizin",
+    "categoryNameAnimals":"Tiere",
+    "categoryNameRelaxation":"Entspannung",
+    "categoryNameCleanup":"Aufräumen",
+    "categoryNamePaperwork":"Papierkram",
+    "categoryNameFriends":"Freunde",
+
+    "repetitionPeriodNone":"keine Wiederholung",
+    "repetitionPeriodDaily":"täglich",
+    "repetitionPeriodWeekly":"wöchentlich",
+    "repetitionPeriodMonthly":"monatlich",
+    "repetitionPeriodMinutely":"minütlich",
+
+    "somethingWentWrong":"Etwas ist schief gelaufen",
+    "swipeToDelete":"Swipen, um zu löschen",
+    "cancel":"Abbrechen",
+    "ok":"Ok",
+
+
+    "thatsIt":"ThatsIt"
+}
+
+

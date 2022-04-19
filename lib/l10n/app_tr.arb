@@ -1,0 +1,41 @@
+{
+
+    "appTitle": "BarisTodoListApp",
+    "mainPageAppbarTitle":"Yapılacaklar Listelerim",
+    "mainPageBuildListEmptyLazinessIsOver":"Tembelliğe son",
+    "mainPageBuildListEmptyPressToAddTodoList":"İlk yapılacaklar listesini oluşturmak için dokunun",
+    
+    "addListDialogTitle":"Yeni Yapılacaklar Listesi",
+    "addListDialogTextfieldLabel":"Liste ismi",
+    "addTodoDialogTitle":"Yeni Yapılacak",
+    "addTodoDialogTextfieldLabel":"Yapilacağı ismi",
+    "editTodoListDialogTitle":"Bu Listeyi düzelt",
+    "editTodoListDialogTextfieldLabel":"İsim",
+    "addItemTextFieldWidgetErrorMessage":"İsim şart",
+
+    "categoryNameNone":"diğer",
+    "categoryNameWorkout":"spor",
+    "categoryNameEducation":"eğitim",
+    "categoryNameNutrition":"yemek",
+    "categoryNameWork":"iş",
+    "categoryNameShopping":"alış veriş",
+    "categoryNameMedication":"ilaç",
+    "categoryNameAnimals":"hayvan",
+    "categoryNameRelaxation":"dinlenme",
+    "categoryNameCleanup":"temizlik",
+    "categoryNamePaperwork":"evrak işi",
+    "categoryNameFriends":"arkadaşlar",
+
+    "repetitionPeriodNone":"tekrarsız",
+    "repetitionPeriodDaily":"her gün",
+    "repetitionPeriodWeekly":"her hafta",
+    "repetitionPeriodMonthly":"her ay",
+    "repetitionPeriodMinutely":"her dakika",
+
+    "somethingWentWrong":"Bir sorun çıktı",
+    "swipeToDelete":"Silmek için kaydırın",
+    "cancel":"İptal",
+    "ok":"Tamam",
+
+    "thatsIt":"ThatsIt"
+}
