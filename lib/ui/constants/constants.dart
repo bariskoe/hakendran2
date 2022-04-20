@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class UiSize {
-  const UiSize._();
+class UiConstantsSize {
+  const UiConstantsSize._();
 
   static const double tiny = 24.0;
   static const double mini = 36.0;
@@ -13,8 +13,8 @@ class UiSize {
   static const double xxxlarge = 240;
 }
 
-class UiPadding {
-  const UiPadding._();
+class UiConstantsPadding {
+  const UiConstantsPadding._();
 
   static const double mini = 2.0;
   static const double smaller = 4.0;
@@ -26,8 +26,8 @@ class UiPadding {
   static const double xxlarge = 32.0;
 }
 
-class UiRadius {
-  const UiRadius._();
+class UiConstantsRadius {
+  const UiConstantsRadius._();
 
   static const double mini = 2.0;
   static const double small = 4.0;
@@ -36,7 +36,7 @@ class UiRadius {
   static const double xlarge = 16.0;
 }
 
-class UiFontSize {
+class UiConstantsFontSize {
   static const double mini = 10;
   static const double regular = 14;
   static const double large = 16;
@@ -44,7 +44,7 @@ class UiFontSize {
   static const double huge = 28;
 }
 
-class UiColors {
+class UiConstantsColors {
   static List<Color> allAccomplishedGradientColors = [
     Colors.black.withOpacity(0.5),
     Colors.black.withOpacity(0.2)

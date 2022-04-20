@@ -11,7 +11,8 @@ Drawer mainPageDrawer() {
           AboutListTile(
             icon: const Icon(Icons.info),
             applicationIcon: SizedBox(
-                height: UiSize.large, child: Image.asset(ImageAssets.appLogo)),
+                height: UiConstantsSize.large,
+                child: Image.asset(ImageAssets.appLogo)),
             applicationName: 'Baris TodoList App',
             applicationVersion: '1.0.0',
             applicationLegalese: '\u{a9} Baris Cagdas Kösebas 2022',

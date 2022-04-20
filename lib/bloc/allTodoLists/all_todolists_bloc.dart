@@ -41,11 +41,11 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
         //   emit(AllTodoListsStateLoading());
+
         int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
           TodoListModel(
             id: null,
-            numberOfAccomplishedTodos: 0,
-            numberOfTodos: 0,
+            todoModels: const [],
             listName: event.listName,
             todoListCategory: event.todoListCategory,
           ),

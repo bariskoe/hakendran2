@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         Builder(builder: (context) {
           return GestureDetector(
             child: const Padding(
-              padding: EdgeInsets.only(right: UiPadding.xlarge),
+              padding: EdgeInsets.only(right: UiConstantsPadding.xlarge),
               child: Icon(Icons.settings),
             ),
             onTap: () => Scaffold.of(context).openEndDrawer(),
@@ -124,12 +124,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             addListDialog(context);
           },
           child: Container(
-              padding: const EdgeInsets.all(UiPadding.xlarge),
+              padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
               width: 270,
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(UiRadius.large))),
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(UiConstantsRadius.large))),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -143,7 +143,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                   ),
                   const SizedBox(
-                    height: UiPadding.large,
+                    height: UiConstantsPadding.large,
                   ),
                   Text(
                     AppLocalizations.of(context)
@@ -222,7 +222,8 @@ class DismissibleListElement extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(
-            horizontal: UiPadding.xlarge, vertical: UiPadding.large),
+            horizontal: UiConstantsPadding.xlarge,
+            vertical: UiConstantsPadding.large),
         child: GestureDetector(
           child: MainPageListItemWidget(
             todoListModel: model,
@@ -233,6 +234,9 @@ class DismissibleListElement extends StatelessWidget {
                   id: reversedList[index].id!),
             );
 
+            BlocProvider.of<SelectedTodolistBloc>(context).add(
+                SelectedTodolistEventLoadSelectedTodolist(
+                    id: reversedList[index].id!));
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -257,7 +261,7 @@ class MainPageListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: UiPadding.xlarge),
+      padding: const EdgeInsets.only(left: UiConstantsPadding.xlarge),
       decoration: StandardUiWidgets.standardBoxDecoration(
           context,
           todoListModel.allAccomplished
@@ -269,7 +273,7 @@ class MainPageListItemWidget extends StatelessWidget {
             child: BigListElementText(text: todoListModel.listName),
           ),
           Padding(
-            padding: const EdgeInsets.all(UiPadding.small),
+            padding: const EdgeInsets.all(UiConstantsPadding.small),
             child: ShaderMask(
               blendMode: BlendMode.srcATop,
               shaderCallback: (bounds) {
@@ -290,7 +294,7 @@ class MainPageListItemWidget extends StatelessWidget {
                 ).createShader(bounds);
               },
               child: Icon(todoListModel.todoListCategory.getIcon(),
-                  color: Colors.white, size: UiSize.xlarge),
+                  color: Colors.white, size: UiConstantsSize.xlarge),
             ),
           ),
         ],
@@ -313,7 +317,7 @@ class FABrow extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.all(UiPadding.xlarge),
+          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
           child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
@@ -326,7 +330,7 @@ class FABrow extends StatelessWidget {
                   })),
         ),
         Padding(
-          padding: const EdgeInsets.all(UiPadding.xlarge),
+          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
           child: Align(
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
@@ -341,7 +345,7 @@ class FABrow extends StatelessWidget {
         ),
         if (state != AllTodoListsStateError()) ...[
           Padding(
-            padding: const EdgeInsets.all(UiPadding.xlarge),
+            padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
             child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(

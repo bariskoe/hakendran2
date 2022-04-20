@@ -34,7 +34,7 @@ Future<void> addTodoDialog({
             //           'null'),
             // ),
             const SizedBox(
-              height: UiPadding.xxlarge,
+              height: UiConstantsPadding.xxlarge,
             ),
             Flexible(
               child: SingleChildScrollView(
@@ -104,8 +104,8 @@ class _RepeatPeriodListWidgetState extends State<RepeatPeriodListWidget> {
     }
 
     return Wrap(
-      spacing: UiPadding.large,
-      runSpacing: UiPadding.large,
+      spacing: UiConstantsPadding.large,
+      runSpacing: UiConstantsPadding.large,
       alignment: WrapAlignment.start,
       children: list,
     );
@@ -125,9 +125,9 @@ class RepeatPeriodListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(UiPadding.regular),
+      padding: const EdgeInsets.all(UiConstantsPadding.regular),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(UiRadius.regular),
+        borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
         border: Border.all(
             width: selected ? 4 : 1,
             color: selected

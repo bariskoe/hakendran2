@@ -17,7 +17,7 @@ class StandardUiWidgets {
                   Theme.of(context).colorScheme.primary,
                 ]),
         color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(UiRadius.regular),
+        borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
         boxShadow: shadowOn ? standardBoxShadow() : []);
   }
 
@@ -45,7 +45,7 @@ class StandardTextfieldDecoration {
   }) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(
-        left: UiPadding.large,
+        left: UiConstantsPadding.large,
       ),
       //suffixIconConstraints: const BoxConstraints.tightFor(
       //  width: UiSize.mini,
@@ -55,14 +55,14 @@ class StandardTextfieldDecoration {
           ? Center(
               child: Material(
                 clipBehavior: Clip.antiAlias,
-                borderRadius: BorderRadius.circular(UiSize.mini),
+                borderRadius: BorderRadius.circular(UiConstantsSize.mini),
                 color: Theme.of(context).colorScheme.primary,
                 child: InkWell(
                   onTap: textEditingController?.clear,
                   child: Center(
                     child: Icon(
                       Icons.backspace,
-                      size: UiSize.tiny,
+                      size: UiConstantsSize.tiny,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
@@ -78,7 +78,7 @@ class StandardTextfieldDecoration {
       ),
       border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(UiRadius.regular),
+          Radius.circular(UiConstantsRadius.regular),
         ),
       ),
       hintText: hintText,

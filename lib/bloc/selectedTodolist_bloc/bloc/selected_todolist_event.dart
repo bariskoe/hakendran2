@@ -17,7 +17,12 @@ class SelectedTodoListEventSelectSpecificTodoList
 
 class SelectedTodolistEventUnselect extends SelectedTodolistEvent {}
 
-class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {}
+class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {
+  final int id;
+  const SelectedTodolistEventLoadSelectedTodolist({
+    required this.id,
+  });
+}
 
 class SelectedTodolistEventAddNewTodo extends SelectedTodolistEvent {
   final TodoModel todoModel;

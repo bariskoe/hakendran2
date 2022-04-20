@@ -10,25 +10,14 @@ abstract class SelectedTodolistState extends Equatable {
 class SelectedTodolistInitial extends SelectedTodolistState {}
 
 class SelectedTodolistStateLoaded extends SelectedTodolistState {
-  final int id;
-  final String listName;
-  final TodoListCategory todoListCategory;
-  final List<TodoModel> todos;
+  final TodoListModel todoListModel;
 
   const SelectedTodolistStateLoaded({
-    required this.id,
-    required this.listName,
-    required this.todoListCategory,
-    required this.todos,
+    required this.todoListModel,
   });
 
   @override
-  List<Object> get props => [
-        id,
-        listName,
-        todoListCategory,
-        todos,
-      ];
+  List<Object> get props => [todoListModel];
 }
 
 class SelectedTodoListStateLoading extends SelectedTodolistState {}

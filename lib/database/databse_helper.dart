@@ -36,6 +36,7 @@ class DatabaseHelper {
   ///Other TodolistModel variables ---------------------------------------------
   static const String numberOfTodos = 'numberOfTodos';
   static const String numberOfAccomplishedTodos = 'numberOfAccomplishedTodos';
+  static const String todos = 'todos';
 
   Future onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
@@ -82,32 +83,31 @@ class DatabaseHelper {
       Logger().d('list is empty');
     }
     List<Map> finalListOfTodoLists = [];
+    List<TodoListModel> listOfTodoListModels = [];
 
     for (Map todoListMap in listOfTodoLists) {
-      List<TodoModel> todosOfCurrentList =
-          await getTodosOfSpecificList(listId: todoListMap['id']);
-
-      int numberOfTodosInThisList = todosOfCurrentList.length;
-      int numberOfAccomplishedTodosInThisList =
-          todosOfCurrentList.where((element) => element.accomplished).length;
+      //List<TodoModel> todosOfCurrentList =
+      //    await getTodosOfSpecificList(listId: todoListMap['id']);
 
       //The data that comes from the database is read-only data. Therefor we have to use
       //Map.of to make a copy of the data and then edit it
-      final newMap = Map.of(todoListMap);
-      newMap[numberOfTodos] = numberOfTodosInThisList;
-      newMap[numberOfAccomplishedTodos] = numberOfAccomplishedTodosInThisList;
-      finalListOfTodoLists.add(newMap);
+      //final newMap = Map.of(todoListMap);
+
+      //finalListOfTodoLists.add(newMap);
+      TodoListModel todoListModel =
+          await getSpecificTodoList(id: todoListMap[todosTableFieldId]);
+      listOfTodoListModels.add(todoListModel);
     }
 
-    List<TodoListModel> listOfTodoListModels =
-        finalListOfTodoLists.map((e) => TodoListModel.fromMap(e)).toList();
-
+    // finalListOfTodoLists.map((e) => TodoListModel.fromMap(e)).toList();
+    print('listOfTodoListModels $listOfTodoListModels');
     return listOfTodoListModels;
   }
 
   static Future<int> createNewTodoList(TodoListModel todoListModel) async {
     Database db = await instance.database;
-    return await db.insert(todoListsTableName, todoListModel.toMap());
+    return await db.insert(
+        todoListsTableName, todoListModel.toMapForInsertNewListIntoDatabase());
   }
 
   static deleteAllTodoLists() async {
@@ -167,7 +167,10 @@ class DatabaseHelper {
         ['$listId']);
     int categoryInt =
         int.parse(categoryQuery.first[todoListsTableFieldCategory].toString());
-    return TodoListCategoryExtension.deserialize(categoryInt);
+    TodoListCategory category =
+        TodoListCategoryExtension.deserialize(categoryInt);
+
+    return category;
   }
 
   static setAccomplishmentStatusOfTodo(
@@ -228,5 +231,18 @@ class DatabaseHelper {
         setAccomplishmentStatusOfTodo(id: model.id!, accomplished: false);
       }
     }
+  }
+
+  static Future<TodoListModel> getSpecificTodoList({required int id}) async {
+    String listName = await getNameOfTodoListById(listId: id);
+    List<TodoModel> todoModelList = await getTodosOfSpecificList(listId: id);
+    TodoListCategory category = await getCategoryOfTodoListById(listId: id);
+
+    return TodoListModel(
+      id: id,
+      listName: listName,
+      todoModels: todoModelList,
+      todoListCategory: category,
+    );
   }
 }

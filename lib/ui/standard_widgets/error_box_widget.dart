@@ -34,8 +34,8 @@ class _ErrorBoxWidgetState extends State<ErrorBoxWidget> {
         alignment: Alignment.center,
         decoration: StandardUiWidgets.standardBoxDecoration(context,
             [Colors.white, Colors.white], true, ImageAssets.zerosAndOnes),
-        height: UiSize.xxxlarge,
-        width: UiSize.xxxlarge,
+        height: UiConstantsSize.xxxlarge,
+        width: UiConstantsSize.xxxlarge,
         child: Stack(
           children: [
             Center(
@@ -73,8 +73,8 @@ class BugImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: UiSize.xlarge,
-        width: UiSize.xlarge,
+        height: UiConstantsSize.xlarge,
+        width: UiConstantsSize.xlarge,
         child: Opacity(
           opacity: 0.3,
           child: ColorFiltered(

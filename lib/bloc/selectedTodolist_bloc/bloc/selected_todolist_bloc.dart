@@ -15,9 +15,6 @@ class SelectedTodolistBloc
   SelectedTodolistBloc() : super(SelectedTodolistInitial()) {
     int? selectedTodoList;
 
-    String nameOfSelectedTodoList = '';
-    TodoListCategory? categoryOfSelectedList;
-
     /*
     on<>((event, emit) async {
     
@@ -26,35 +23,25 @@ class SelectedTodolistBloc
     on<SelectedTodolistEvent>((event, emit) async {});
 
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
-      List<TodoModel> list = await DatabaseHelper.getTodosOfSpecificList(
-          listId: selectedTodoList!);
-      emit(SelectedTodolistStateLoaded(
-          id: selectedTodoList!,
-          listName: nameOfSelectedTodoList,
-          todoListCategory: categoryOfSelectedList ?? TodoListCategory.none,
-          todos: list));
+      TodoListModel model =
+          await DatabaseHelper.getSpecificTodoList(id: event.id);
+      emit(SelectedTodolistStateLoaded(todoListModel: model));
     });
+
     on<SelectedTodolistEventAddNewTodo>((event, emit) async {
       event.todoModel.parentTodoListId = selectedTodoList;
 
       TodoListDetailPage.justAddedTodo = true;
       await DatabaseHelper.addTodoToSpecificList(event.todoModel);
-      add(SelectedTodolistEventLoadSelectedTodolist());
+      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
     });
 
     on<SelectedTodolistEventUnselect>((event, emit) async {
       selectedTodoList = null;
-      nameOfSelectedTodoList = '';
-      categoryOfSelectedList = null;
     });
 
     on<SelectedTodoListEventSelectSpecificTodoList>((event, emit) async {
       selectedTodoList = event.id;
-
-      nameOfSelectedTodoList =
-          await DatabaseHelper.getNameOfTodoListById(listId: event.id);
-      categoryOfSelectedList =
-          await DatabaseHelper.getCategoryOfTodoListById(listId: event.id);
     });
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(
@@ -62,7 +49,7 @@ class SelectedTodolistBloc
         await DatabaseHelper.setAccomplishmentStatusOfTodo(
             id: event.id, accomplished: event.accomplished);
 
-        add(SelectedTodolistEventLoadSelectedTodolist());
+        add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
       },
     );
 
@@ -70,17 +57,17 @@ class SelectedTodolistBloc
       emit(SelectedTodoListStateLoading());
 
       await DatabaseHelper.updateSpecificTodo(model: event.todoModel);
-      add(SelectedTodolistEventLoadSelectedTodolist());
+      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
       await DatabaseHelper.deleteSpecificTodo(id: event.id);
-      add(SelectedTodolistEventLoadSelectedTodolist());
+      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
     });
 
     on<SelectedTodoListEventResetAll>((event, emit) async {
       DatabaseHelper.resetAllTodosOfSpecificList(id: selectedTodoList!);
-      add(SelectedTodolistEventLoadSelectedTodolist());
+      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
     });
   }
 }

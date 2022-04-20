@@ -28,7 +28,7 @@ class BigListElementText extends StatelessWidget {
           color: Theme.of(context).colorScheme.onPrimaryContainer,
           fontFamily: 'Handlee',
           fontWeight: FontWeight.w600,
-          fontSize: UiFontSize.huge,
+          fontSize: UiConstantsFontSize.huge,
           letterSpacing: 1.5,
           overflow: TextOverflow.ellipsis),
     );
@@ -53,14 +53,14 @@ class RegularDialogListElementText extends StatelessWidget {
           fontWeight: FontWeight.w600,
           letterSpacing: 1.5,
           color: color ?? Theme.of(context).colorScheme.onPrimaryContainer,
-          fontSize: UiFontSize.regular),
+          fontSize: UiConstantsFontSize.regular),
     );
   }
 }
 
 class WarningTextWidget extends StatelessWidget {
   const WarningTextWidget(
-      {Key? key, required this.text, this.fontsize = UiFontSize.huge})
+      {Key? key, required this.text, this.fontsize = UiConstantsFontSize.huge})
       : super(key: key);
   final String text;
   final double fontsize;
@@ -81,7 +81,7 @@ class BigHeaderTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(fontSize: UiFontSize.xlarge),
+      style: const TextStyle(fontSize: UiConstantsFontSize.xlarge),
     );
   }
 }

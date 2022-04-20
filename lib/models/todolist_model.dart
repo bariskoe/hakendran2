@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/models/todo_model.dart';
+
 import '../assets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../database/databse_helper.dart';
@@ -6,39 +8,45 @@ import 'package:flutter/material.dart';
 
 class TodoListModel extends Equatable {
   final int? id;
-  final int numberOfAccomplishedTodos;
-  final int numberOfTodos;
+
   final String listName;
+  final List<TodoModel> todoModels;
   final TodoListCategory todoListCategory;
 
   const TodoListModel({
     required this.id,
-    required this.numberOfAccomplishedTodos,
-    required this.numberOfTodos,
     required this.listName,
+    required this.todoModels,
     this.todoListCategory = TodoListCategory.none,
   });
 
   @override
   List<Object?> get props => [
         id,
-        numberOfAccomplishedTodos,
-        numberOfTodos,
         listName,
+        todoModels,
         todoListCategory,
       ];
 
   factory TodoListModel.fromMap(Map<dynamic, dynamic> map) => TodoListModel(
         id: map[DatabaseHelper.todoListsTableFieldId],
-        numberOfAccomplishedTodos:
-            map[DatabaseHelper.numberOfAccomplishedTodos],
-        numberOfTodos: map[DatabaseHelper.numberOfTodos],
         listName: map[DatabaseHelper.todoListsTableFieldListName],
+        todoModels:
+            map[DatabaseHelper.todos].map((e) => TodoModel.fromMap(e)).toList(),
         todoListCategory: TodoListCategoryExtension.deserialize(
             map[DatabaseHelper.todoListsTableFieldCategory]),
       );
 
   Map<String, dynamic> toMap() {
+    return {
+      DatabaseHelper.todoListsTableFieldId: id,
+      DatabaseHelper.todoListsTableFieldListName: listName,
+      DatabaseHelper.todos: todoModels.map((e) => e.toMap()).toList(),
+      DatabaseHelper.todoListsTableFieldCategory: todoListCategory.serialize(),
+    };
+  }
+
+  Map<String, dynamic> toMapForInsertNewListIntoDatabase() {
     return {
       DatabaseHelper.todoListsTableFieldId: id,
       DatabaseHelper.todoListsTableFieldListName: listName,
@@ -52,8 +60,15 @@ class TodoListModel extends Equatable {
   double get percentageOfAccomplishedTodos =>
       numberOfAccomplishedTodos / numberOfTodos;
 
+  int get numberOfTodos => todoModels.length;
+
+  int get numberOfAccomplishedTodos =>
+      todoModels.where((element) => element.accomplished).length;
+
   bool get allAccomplished =>
-      (numberOfTodos > 0 && numberOfAccomplishedTodos == numberOfTodos);
+      (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
+  bool get atLeastOneAccomplished =>
+      (todoModels.isNotEmpty && numberOfAccomplishedTodos > 0);
 }
 
 enum TodoListCategory {

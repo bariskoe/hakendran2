@@ -38,7 +38,7 @@ Future<void> editListDialog(
                       'null'),
             ),
             const SizedBox(
-              height: UiPadding.xxlarge,
+              height: UiConstantsPadding.xxlarge,
             ),
             Flexible(
               child: SingleChildScrollView(
@@ -91,9 +91,9 @@ class CategorySymbol extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(UiPadding.regular),
+      padding: const EdgeInsets.all(UiConstantsPadding.regular),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(UiRadius.regular),
+        borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
         border: Border.all(
             width: selected ? 4 : 1,
             color: selected
@@ -106,7 +106,7 @@ class CategorySymbol extends StatelessWidget {
         children: [
           RegularDialogListElementText(
               text: name, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: UiPadding.small),
+          const SizedBox(width: UiConstantsPadding.small),
           Icon(icon)
         ],
       ),
@@ -178,8 +178,8 @@ class _CategoryListWidgetState extends State<CategoryListWidget> {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: UiPadding.large,
-      runSpacing: UiPadding.large,
+      spacing: UiConstantsPadding.large,
+      runSpacing: UiConstantsPadding.large,
       crossAxisAlignment: WrapCrossAlignment.center,
       alignment: WrapAlignment.start,
       children: categorySymbolList,

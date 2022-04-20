@@ -44,8 +44,8 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
 
   @override
   void didChangeDependencies() {
-    BlocProvider.of<SelectedTodolistBloc>(context)
-        .add(SelectedTodolistEventLoadSelectedTodolist());
+    // BlocProvider.of<SelectedTodolistBloc>(context)
+    //     .add(SelectedTodolistEventLoadSelectedTodolist());
     super.didChangeDependencies();
   }
 
@@ -81,14 +81,16 @@ _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
           BlocProvider.of<SelectedTodolistBloc>(context)
               .add(SelectedTodolistEventUnselect());
         },
-        key: ValueKey(state.todoListCategory.getBackgroundImage()),
-        appBarTitle: state.listName,
+        key:
+            ValueKey(state.todoListModel.todoListCategory.getBackgroundImage()),
+        appBarTitle: state.todoListModel.listName,
         child: Stack(
           children: [
             PageBackGroundImageWidget(
-                imagePath: state.todoListCategory.getBackgroundImage()),
+                imagePath:
+                    state.todoListModel.todoListCategory.getBackgroundImage()),
             DetailPageListWidget(state: state),
-            const FABrowOfDetailPage(),
+            FABrowOfDetailPage(state: state),
           ],
         ),
       ));
@@ -134,7 +136,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
         TodoListDetailPage.justAddedTodo = false;
       });
     }
-    List<TodoModel> list = widget.state.todos;
+    List<TodoModel> list = widget.state.todoListModel.todoModels;
     //Sorts the list by property 'accomplished'
     list.sort(((a, b) => b.accomplished ? 1 : -1));
     //Reverse the list in order to move the accomplished tasks to the bottom of the list
@@ -142,11 +144,11 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
-        itemCount: widget.state.todos.length + 1,
+        itemCount: widget.state.todoListModel.numberOfTodos + 1,
         itemBuilder: ((context, index) {
           //Put an invisible Container to the end of the list so that the Floating
           //Action Buttons don't disturb when scrolled down to the end
-          if (index == widget.state.todos.length) {
+          if (index == widget.state.todoListModel.numberOfTodos) {
             return Container(
               height: 100,
             );
@@ -190,14 +192,15 @@ class ListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: UiPadding.xlarge),
+      padding: const EdgeInsets.only(bottom: UiConstantsPadding.xlarge),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: UiPadding.xlarge),
-        height: UiSize.xxlarge,
+        padding:
+            const EdgeInsets.symmetric(horizontal: UiConstantsPadding.xlarge),
+        height: UiConstantsSize.xxlarge,
         decoration: StandardUiWidgets.standardBoxDecoration(
             context,
             model.accomplished
-                ? UiColors.allAccomplishedGradientColors
+                ? UiConstantsColors.allAccomplishedGradientColors
                 : [
                     Theme.of(context).colorScheme.secondaryContainer,
                     Theme.of(context).colorScheme.secondary,
@@ -247,11 +250,11 @@ class CheckBoxWidget extends StatelessWidget {
           alignment: Alignment.center,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(UiRadius.regular)),
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(UiConstantsRadius.regular)),
                 border: Border.all(color: Colors.white, width: 2)),
-            height: UiSize.small,
-            width: UiSize.small,
+            height: UiConstantsSize.small,
+            width: UiConstantsSize.small,
           ),
         ),
         if (model.accomplished) ...[
@@ -259,10 +262,10 @@ class CheckBoxWidget extends StatelessWidget {
             alignment: Alignment.center,
             child: SvgPicture.asset(
               ImageAssets.blueCheckmark,
-              height: UiSize.xxlarge,
+              height: UiConstantsSize.xxlarge,
               color: Colors.green,
               placeholderBuilder: (BuildContext context) => Container(
-                  padding: const EdgeInsets.all(UiPadding.regular),
+                  padding: const EdgeInsets.all(UiConstantsPadding.regular),
                   child: const CircularProgressIndicator()),
             ),
           )
@@ -289,30 +292,34 @@ class SwipeToDeleteBackgroundWidget extends StatelessWidget {
 class FABrowOfDetailPage extends StatelessWidget {
   const FABrowOfDetailPage({
     Key? key,
+    required this.state,
   }) : super(key: key);
 
+  final SelectedTodolistStateLoaded state;
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
       children: [
+        if (state.todoListModel.atLeastOneAccomplished) ...[
+          Padding(
+            padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                  heroTag: const Text('button3'),
+                  child: const Icon(Icons.refresh),
+                  onPressed: () {
+                    BlocProvider.of<SelectedTodolistBloc>(context).add(
+                      const SelectedTodoListEventResetAll(),
+                    );
+                  }),
+            ),
+          )
+        ],
         Padding(
-          padding: const EdgeInsets.all(UiPadding.xlarge),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-                heroTag: const Text('button3'),
-                child: const Icon(Icons.refresh),
-                onPressed: () {
-                  BlocProvider.of<SelectedTodolistBloc>(context).add(
-                    const SelectedTodoListEventResetAll(),
-                  );
-                }),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(UiPadding.xlarge),
+          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
           child: Align(
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
