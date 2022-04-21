@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/ui/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'standart_text_widgets.dart';
@@ -37,7 +38,10 @@ class StandardPageWidget extends StatelessWidget {
             ? AppBar(
                 leading: (willPop && Navigator.canPop(context))
                     ? GestureDetector(
-                        child: const Icon(Icons.arrow_back),
+                        child: const SizedBox(
+                            height: UiConstantsSize.xlarge,
+                            width: UiConstantsSize.xlarge,
+                            child: Icon(Icons.arrow_back)),
                         onTap: () {
                           Navigator.pop(context);
                           onPop != null ? onPop!() : () {};

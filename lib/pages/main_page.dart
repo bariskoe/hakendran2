@@ -37,10 +37,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _animation =
-        CurvedAnimation(parent: _controller!, curve: Curves.linearToEaseOut);
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller!,
+      curve: Curves.linearToEaseOut,
+    );
     super.initState();
   }
 
@@ -175,20 +179,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           );
         } else {
           TodoListModel model = reversedList[index];
-          return index == 0
+          return index == 0 && MainPage.justAddedList
               ? SizeTransition(
                   sizeFactor: _animation!,
                   axis: Axis.vertical,
                   child: DismissibleListElement(
                     model: model,
-                    reversedList: reversedList,
-                    index: index,
                   ),
                 )
               : DismissibleListElement(
                   model: model,
-                  reversedList: reversedList,
-                  index: index,
                 );
         }
       }),
@@ -200,13 +200,10 @@ class DismissibleListElement extends StatelessWidget {
   const DismissibleListElement({
     Key? key,
     required this.model,
-    required this.reversedList,
-    required this.index,
   }) : super(key: key);
 
   final TodoListModel model;
-  final List<TodoListModel> reversedList;
-  final int index;
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -230,13 +227,13 @@ class DismissibleListElement extends StatelessWidget {
           ),
           onTap: () {
             BlocProvider.of<SelectedTodolistBloc>(context).add(
-              SelectedTodoListEventSelectSpecificTodoList(
-                  id: reversedList[index].id!),
+              SelectedTodoListEventSelectSpecificTodoList(id: model.id!),
             );
 
             BlocProvider.of<SelectedTodolistBloc>(context).add(
-                SelectedTodolistEventLoadSelectedTodolist(
-                    id: reversedList[index].id!));
+              SelectedTodolistEventLoadSelectedTodolist(id: model.id!),
+            );
+
             Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/ui/standard_widgets/error_box_widget.dart';
+
 import '../assets.dart';
 import '../dialogs/edit_todo_dialog.dart';
 import '../models/todolist_model.dart';
@@ -33,19 +35,13 @@ class TodoListDetailPage extends StatefulWidget {
 
 class _TodoListDetailPageState extends State<TodoListDetailPage> {
   String nameOfList = '';
-
   @override
   void initState() {
-    //  BlocProvider.of<SelectedTodolistBloc>(context)
-    //      .add(SelectedTodolistEventLoadSelectedTodolist());
-
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    // BlocProvider.of<SelectedTodolistBloc>(context)
-    //     .add(SelectedTodolistEventLoadSelectedTodolist());
     super.didChangeDependencies();
   }
 
@@ -60,7 +56,7 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
         if (state is SelectedTodolistStateLoaded) {
           return _buildListLoaded(state, context);
         }
-        return Container();
+        return const ErrorBoxWidget();
       },
     );
   }
@@ -74,26 +70,22 @@ _buildLoading(BuildContext context) {
 }
 
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
-  return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 500),
-      child: StandardPageWidget(
-        onPop: () {
-          BlocProvider.of<SelectedTodolistBloc>(context)
-              .add(SelectedTodolistEventUnselect());
-        },
-        key:
-            ValueKey(state.todoListModel.todoListCategory.getBackgroundImage()),
-        appBarTitle: state.todoListModel.listName,
-        child: Stack(
-          children: [
-            PageBackGroundImageWidget(
-                imagePath:
-                    state.todoListModel.todoListCategory.getBackgroundImage()),
-            DetailPageListWidget(state: state),
-            FABrowOfDetailPage(state: state),
-          ],
-        ),
-      ));
+  return StandardPageWidget(
+    onPop: () {
+      BlocProvider.of<SelectedTodolistBloc>(context)
+          .add(SelectedTodolistEventUnselect());
+    },
+    appBarTitle: state.todoListModel.listName,
+    child: Stack(
+      children: [
+        PageBackGroundImageWidget(
+            imagePath:
+                state.todoListModel.todoListCategory.getBackgroundImage()),
+        DetailPageListWidget(state: state),
+        FABrowOfDetailPage(state: state),
+      ],
+    ),
+  );
 }
 
 class DetailPageListWidget extends StatefulWidget {
