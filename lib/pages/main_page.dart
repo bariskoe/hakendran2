@@ -300,12 +300,19 @@ class MainPageListItemWidget extends StatelessWidget {
   }
 }
 
-class FABrow extends StatelessWidget {
+class FABrow extends StatefulWidget {
   const FABrow({
     Key? key,
     required this.state,
   }) : super(key: key);
   final AllTodolistsState state;
+
+  @override
+  State<FABrow> createState() => _FABrowState();
+}
+
+class _FABrowState extends State<FABrow> {
+  double turns = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -317,30 +324,35 @@ class FABrow extends StatelessWidget {
           padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
           child: Align(
               alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                  heroTag: const Text('button3'),
-                  child: const Icon(Icons.refresh),
-                  onPressed: () {
-                    BlocProvider.of<AllTodolistsBloc>(context).add(
-                      AllTodolistsEventGetAllTodoLists(),
-                    );
-                  })),
+              child: AnimatedRotation(
+                turns: turns,
+                duration: const Duration(seconds: 1),
+                child: FloatingActionButton(
+                    heroTag: const Text('button3'),
+                    child: const Icon(Icons.refresh),
+                    onPressed: () {
+                      turns++;
+                      BlocProvider.of<AllTodolistsBloc>(context).add(
+                        AllTodolistsEventGetAllTodoLists(),
+                      );
+                    }),
+              )),
         ),
-        Padding(
-          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-                heroTag: const Text('button1'),
-                child: const Icon(Icons.delete),
-                onPressed: () {
-                  BlocProvider.of<AllTodolistsBloc>(context).add(
-                    AllTodolistsEventDeleteAllTodoLists(),
-                  );
-                }),
-          ),
-        ),
-        if (state != AllTodoListsStateError()) ...[
+        // Padding(
+        //   padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+        //   child: Align(
+        //     alignment: Alignment.bottomRight,
+        //     child: FloatingActionButton(
+        //         heroTag: const Text('button1'),
+        //         child: const Icon(Icons.delete),
+        //         onPressed: () {
+        //           BlocProvider.of<AllTodolistsBloc>(context).add(
+        //             AllTodolistsEventDeleteAllTodoLists(),
+        //           );
+        //         }),
+        //   ),
+        // ),
+        if (widget.state != AllTodoListsStateError()) ...[
           Padding(
             padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
             child: Align(
