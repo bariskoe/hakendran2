@@ -158,7 +158,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
             );
           } else {
             return data.measuring
-                ? Container(margin: EdgeInsets.all(5), height: 60)
+                ? Container(height: 60)
                 : GestureDetector(
                     onLongPress: () {
                       editTodoDialog(context, model);
@@ -166,6 +166,11 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                     child: Dismissible(
                       onDismissed: (direction) {
                         DetailPageListWidget.justDismissedTodo = true;
+                        //This is necessary to avoid the AutomaticAnimatedListView to build the
+                        //List with the old reversedList immediately before rebuilding it with
+                        //the new reversedList
+                        reversedList
+                            .removeWhere((element) => element.id == model.id);
                         BlocProvider.of<SelectedTodolistBloc>(context).add(
                             SelectedTodolistEventDeleteSpecificTodo(
                                 id: model.id!));
