@@ -70,12 +70,6 @@ class TodoModel extends Equatable {
         case RepeatPeriod.none:
           return false;
 
-        case RepeatPeriod.minutely:
-          if (timeHasPassed && accomplishedAt!.minute != now.minute) {
-            return true;
-          }
-          break;
-
         case RepeatPeriod.daily:
           if (timeHasPassed && accomplishedAt!.day != now.day) {
             return true;
@@ -132,7 +126,6 @@ enum RepeatPeriod {
   daily,
   weekly,
   monthly,
-  minutely,
 }
 
 extension RepeatPeriodExtension on RepeatPeriod {
@@ -154,8 +147,6 @@ extension RepeatPeriodExtension on RepeatPeriod {
         return AppLocalizations.of(context)?.repetitionPeriodWeekly ?? 'null';
       case RepeatPeriod.monthly:
         return AppLocalizations.of(context)?.repetitionPeriodMonthly ?? 'null';
-      case RepeatPeriod.minutely:
-        return AppLocalizations.of(context)?.repetitionPeriodMinutely ?? 'null';
     }
   }
 }
