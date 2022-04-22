@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/ui/standard_widgets/error_box_widget.dart';
+import 'package:great_list_view/great_list_view.dart';
 
 import '../assets.dart';
 import '../dialogs/edit_todo_dialog.dart';
@@ -104,6 +105,8 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
   AnimationController? _controller;
   Animation<double>? _animation;
 
+  final animatedListcontroller = AnimatedListController();
+
   @override
   void initState() {
     _controller =
@@ -132,40 +135,52 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //Sorts the list by property 'accomplished'
     list.sort(((a, b) => b.accomplished ? 1 : -1));
     //Reverse the list in order to move the accomplished tasks to the bottom of the list
-    List<TodoModel> reversedList = List.from(list.reversed);
+    //add an empty TodoModel at the end in order to extend the length of the list by 1,
+    //so that an invisible container with a height of 100 can be added.
+    List<TodoModel> reversedList = List.from(list.reversed)
+      ..add(TodoModel(id: null, task: '', accomplished: false));
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemCount: widget.state.todoListModel.numberOfTodos + 1,
-        itemBuilder: ((context, index) {
+      padding: const EdgeInsets.all(UiConstantsPadding.regular),
+      child: AutomaticAnimatedListView<TodoModel>(
+        comparator: AnimatedListDiffListComparator<TodoModel>(
+            sameItem: (a, b) => a.id == b.id,
+            sameContent: (a, b) => a.accomplished == b.accomplished),
+
+        listController: animatedListcontroller,
+        list: reversedList, //widget.state.todoListModel.todoModels,
+        itemBuilder: ((context, model, data) {
           //Put an invisible Container to the end of the list so that the Floating
           //Action Buttons don't disturb when scrolled down to the end
-          if (index == widget.state.todoListModel.numberOfTodos) {
+          if (reversedList.indexOf(model) == reversedList.length - 1) {
             return Container(
               height: 100,
             );
           } else {
-            TodoModel model = reversedList[index];
-            return GestureDetector(
-                onLongPress: () {
-                  editTodoDialog(context, model);
-                },
-                child: Dismissible(
-                  onDismissed: (direction) {
-                    DetailPageListWidget.justDismissedTodo = true;
-                    BlocProvider.of<SelectedTodolistBloc>(context).add(
-                        SelectedTodolistEventDeleteSpecificTodo(id: model.id!));
-                  },
-                  key: Key(model.id.toString()),
-                  background: const SwipeToDeleteBackgroundWidget(),
-                  child: index == 0 && TodoListDetailPage.justAddedTodo
-                      ? SizeTransition(
-                          sizeFactor: _animation!,
-                          axis: Axis.vertical,
-                          child: ListElement(model: model),
-                        )
-                      : ListElement(model: model),
-                ));
+            return data.measuring
+                ? Container(margin: EdgeInsets.all(5), height: 60)
+                : GestureDetector(
+                    onLongPress: () {
+                      editTodoDialog(context, model);
+                    },
+                    child: Dismissible(
+                      onDismissed: (direction) {
+                        DetailPageListWidget.justDismissedTodo = true;
+                        BlocProvider.of<SelectedTodolistBloc>(context).add(
+                            SelectedTodolistEventDeleteSpecificTodo(
+                                id: model.id!));
+                      },
+                      key: UniqueKey(),
+                      background: const SwipeToDeleteBackgroundWidget(),
+                      child: reversedList.indexOf(model) == 0 &&
+                              TodoListDetailPage.justAddedTodo
+                          ? SizeTransition(
+                              sizeFactor: _animation!,
+                              axis: Axis.vertical,
+                              child: ListElement(model: model),
+                            )
+                          : ListElement(model: model),
+                    ));
           }
         }),
       ),
