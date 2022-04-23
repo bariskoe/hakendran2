@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '../models/todo_model.dart';
 import '../models/todolist_model.dart';
@@ -173,7 +174,7 @@ class DatabaseHelper {
     return category;
   }
 
-  static setAccomplishmentStatusOfTodo(
+  static Future<int> setAccomplishmentStatusOfTodo(
       {required int id, required bool accomplished}) async {
     Database db = await instance.database;
     int status =
@@ -225,10 +226,14 @@ class DatabaseHelper {
   }
 
   static checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
+    final _lock = Lock();
     List<TodoModel> listOfTodoModels = await getAllTodos();
     for (TodoModel model in listOfTodoModels) {
       if (model.shouldResetAccomplishmentStatus()) {
-        setAccomplishmentStatusOfTodo(id: model.id!, accomplished: false);
+        _lock.synchronized(() async {
+          await setAccomplishmentStatusOfTodo(
+              id: model.id!, accomplished: false);
+        });
       }
     }
   }
