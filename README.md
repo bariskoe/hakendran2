@@ -7,3 +7,6 @@ integrated localization for English, German and Turkish.
 
 All pictures used in this project are CC0 assets taken from pixabay.de. 
 Feel free to contact me on bariskoe@gmail.com if you are looking for a developer with 2 years of work experience in Flutter.
+
+Download the APK of this App at
+https://drive.google.com/file/d/1Rh-TLLM1PBu8Ftxii7cEMDM7iM72eWYw/view?usp=sharing
