@@ -1,7 +1,10 @@
+import 'package:baristodolistapp/domain/usecases/allTodoLists_usecases.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../database/databse_helper.dart';
+import '../../domain/failures/failures.dart';
 import '../../models/todolist_model.dart';
 import '../../pages/main_page.dart';
 import '../selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
@@ -12,7 +15,11 @@ part 'all_todolists_state.dart';
 class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
   final SelectedTodolistBloc _selectedTodolistBloc;
 
-  AllTodolistsBloc({required SelectedTodolistBloc selectedTodolistBloc})
+  final AllTodoListsUsecases allTodoListsUsecases;
+
+  AllTodolistsBloc(
+      {required SelectedTodolistBloc selectedTodolistBloc,
+      required this.allTodoListsUsecases})
       : _selectedTodolistBloc = selectedTodolistBloc,
         super(AllTodolistsInitial()) {
     _selectedTodolistBloc.stream.listen((state) {
@@ -41,9 +48,19 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
         //   emit(AllTodoListsStateLoading());
+//TODO: Implement usecase CreateNewTodoListUsecase
+        // int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
+        //   TodoListModel(
+        //     id: null,
+        //     todoModels: const [],
+        //     listName: event.listName,
+        //     todoListCategory: event.todoListCategory,
+        //   ),
+        // );
 
-        int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
-          TodoListModel(
+        Either<Failure, int> idOflastCreatedRowOrFailure =
+            await allTodoListsUsecases.createNewTodoList(
+          todoListEntity: TodoListModel(
             id: null,
             todoModels: const [],
             listName: event.listName,
@@ -51,12 +68,12 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
           ),
         );
 
-        if (idOflastCreatedRow != 0) {
+        idOflastCreatedRowOrFailure.fold((l) {
+          emit(AllTodoListsStateError());
+        }, (r) {
           MainPage.justAddedList = true;
           add(AllTodolistsEventGetAllTodoLists());
-        } else {
-          emit(AllTodoListsStateError());
-        }
+        });
       },
     );
     on<AllTodolistsEventGetAllTodoLists>(

@@ -33,18 +33,29 @@ class BarisToDoListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => SelectedTodolistBloc(),
-        ),
-        BlocProvider(
-          create: (context) => AllTodolistsBloc(
-              selectedTodolistBloc:
-                  BlocProvider.of<SelectedTodolistBloc>(context)),
-        ),
+        BlocProvider(create: (context) => getIt<AllTodolistsBloc>()),
+        BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
+        //   BlocProvider(
+        //     create: (context) => SelectedTodolistBloc(),
+        //   ),
+        //   BlocProvider(
+        //     create: (context) => AllTodolistsBloc(
+        //         selectedTodolistBloc:
+        //             BlocProvider.of<SelectedTodolistBloc>(context)),
+        //   ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: Themes.greenTheme(),
+        theme: ThemeData(
+            colorSchemeSeed: Themes.blueThemeSeed,
+            brightness: Brightness.light,
+            useMaterial3: true,
+            textTheme: TextTheme(bodyMedium: TextStyle())),
+        darkTheme: ThemeData(
+          colorSchemeSeed: Themes.blueThemeSeed,
+          brightness: Brightness.dark,
+          useMaterial3: true,
+        ),
         home: const LifeCycleManager(child: MainPage()),
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -61,6 +72,3 @@ class BarisToDoListApp extends StatelessWidget {
     );
   }
 }
-
-
-//TODO Include licenses of packages that require attribution, i.e. BackgroundFetch 

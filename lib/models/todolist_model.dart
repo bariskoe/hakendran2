@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
 
 import '../assets.dart';
@@ -6,19 +7,24 @@ import '../database/databse_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class TodoListModel extends Equatable {
-  final int? id;
+class TodoListModel extends TodoListEntity with EquatableMixin {
+  // final int? id;
 
-  final String listName;
-  final List<TodoModel> todoModels;
-  final TodoListCategory todoListCategory;
+  // final String listName;
+  // final List<TodoModel> todoModels;
+  // final TodoListCategory todoListCategory;
 
-  const TodoListModel({
-    required this.id,
-    required this.listName,
-    required this.todoModels,
-    this.todoListCategory = TodoListCategory.none,
-  });
+  TodoListModel({
+    required int? id,
+    required String listName,
+    required List<TodoModel> todoModels,
+    required todoListCategory,
+  }) : super(
+          id: id,
+          listName: listName,
+          todoModels: todoModels,
+          todoListCategory: todoListCategory,
+        );
 
   @override
   List<Object?> get props => [

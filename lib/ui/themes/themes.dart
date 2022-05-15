@@ -36,4 +36,14 @@ class Themes {
       ),
     );
   }
+
+  static Color get blueThemeSeed => const Color.fromRGBO(9, 47, 88, 1);
+
+  static ThemeData blueTheme() {
+    return ThemeData(
+        colorSchemeSeed: Themes.blueThemeSeed,
+        brightness: Brightness.light,
+        useMaterial3: true,
+        textTheme: TextTheme(bodyMedium: TextStyle()));
+  }
 }

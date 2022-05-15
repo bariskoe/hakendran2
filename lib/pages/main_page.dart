@@ -262,7 +262,7 @@ class MainPageListItemWidget extends StatelessWidget {
       decoration: StandardUiWidgets.standardBoxDecoration(
           context,
           todoListModel.allAccomplished
-              ? [Colors.black.withOpacity(0.5), Colors.black.withOpacity(0.2)]
+              ? UiConstantsColors.allAccomplishedGradientColors
               : null),
       child: Row(
         children: [

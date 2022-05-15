@@ -46,7 +46,7 @@ class UiConstantsFontSize {
 
 class UiConstantsColors {
   static List<Color> allAccomplishedGradientColors = [
-    Colors.black.withOpacity(0.5),
-    Colors.black.withOpacity(0.2)
+    Colors.black54.withOpacity(0.1),
+    Colors.black54.withOpacity(0.3)
   ];
 }
