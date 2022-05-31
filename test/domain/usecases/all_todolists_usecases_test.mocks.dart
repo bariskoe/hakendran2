@@ -6,7 +6,7 @@ import 'dart:async' as _i4;
 
 import 'package:baristodolistapp/domain/entities/todolist_entity.dart' as _i6;
 import 'package:baristodolistapp/domain/failures/failures.dart' as _i5;
-import 'package:baristodolistapp/domain/repositories/allTodolists_repository.dart'
+import 'package:baristodolistapp/domain/repositories/all_todolists_repository.dart'
     as _i3;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;

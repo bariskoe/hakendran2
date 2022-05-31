@@ -83,7 +83,7 @@ class DatabaseHelper {
     if (listOfTodoLists.isEmpty) {
       Logger().d('list is empty');
     }
-    List<Map> finalListOfTodoLists = [];
+
     List<TodoListModel> listOfTodoListModels = [];
 
     for (Map todoListMap in listOfTodoLists) {
@@ -101,7 +101,7 @@ class DatabaseHelper {
     }
 
     // finalListOfTodoLists.map((e) => TodoListModel.fromMap(e)).toList();
-    print('listOfTodoListModels $listOfTodoListModels');
+
     return listOfTodoListModels;
   }
 

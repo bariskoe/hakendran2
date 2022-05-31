@@ -1,5 +1,6 @@
 import 'package:baristodolistapp/ui/standard_widgets/error_box_widget.dart';
 import 'package:great_list_view/great_list_view.dart';
+import 'package:logger/logger.dart';
 
 import '../assets.dart';
 import '../dialogs/edit_todo_dialog.dart';
@@ -49,6 +50,13 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
+      //Don't build if a List Element has just been dismissed. That part is taken
+      //care of by the dismissibe Widget
+      buildWhen: (previous, current) =>
+          !(((current is SelectedTodolistStateLoaded) &&
+                  (previous is SelectedTodolistStateLoaded)) &&
+              (current.todoListModel.numberOfTodos <
+                  previous.todoListModel.numberOfTodos)),
       builder: (context, state) {
         if (state is SelectedTodoListStateLoading) {
           _buildLoading(context);
@@ -71,6 +79,7 @@ _buildLoading(BuildContext context) {
 }
 
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
+  Logger().d('buildListLoaded wird durchgeführt');
   return StandardPageWidget(
     onPop: () {
       BlocProvider.of<SelectedTodolistBloc>(context)
@@ -169,6 +178,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                         //This is necessary to avoid the AutomaticAnimatedListView to build the
                         //List with the old reversedList immediately before rebuilding it with
                         //the new reversedList
+
                         reversedList
                             .removeWhere((element) => element.id == model.id);
                         BlocProvider.of<SelectedTodolistBloc>(context).add(

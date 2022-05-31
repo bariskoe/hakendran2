@@ -1,6 +1,6 @@
 import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
-import 'package:baristodolistapp/domain/repositories/allTodolists_repository.dart';
-import 'package:baristodolistapp/domain/usecases/allTodoLists_usecases.dart';
+import 'package:baristodolistapp/domain/repositories/all_todolists_repository.dart';
+import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -20,7 +20,7 @@ void main() {
   });
 
   group('createNewTodoList usecase', () {
-    final TodoListEntity t_todoListEntity = TodoListEntity(
+    final TodoListEntity tTodoListEntity = TodoListEntity(
       id: null,
       listName: 'Sport',
       todoModels: [],
@@ -29,15 +29,15 @@ void main() {
     test('should return an integer', () async {
       // arrange
       when(mockAllTodoListsRepository.createNewTodoList(
-              todoListEntity: t_todoListEntity))
+              todoListEntity: tTodoListEntity))
           .thenAnswer((realInvocation) async => const Right(1));
       // act
       final result = await allTodoListsUsecases.createNewTodoList(
-          todoListEntity: t_todoListEntity);
+          todoListEntity: tTodoListEntity);
       //assert
-      expect(result, Right(1));
+      expect(result, const Right(1));
       verify(mockAllTodoListsRepository.createNewTodoList(
-          todoListEntity: t_todoListEntity));
+          todoListEntity: tTodoListEntity));
       verifyNoMoreInteractions(mockAllTodoListsRepository);
     });
   });

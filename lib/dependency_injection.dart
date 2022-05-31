@@ -1,13 +1,13 @@
-import 'package:baristodolistapp/bloc/allTodoLists/all_todolists_bloc.dart';
-import 'package:baristodolistapp/domain/repositories/allTodolists_repository.dart';
-import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource.dart';
-import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource_impl.dart';
-import 'package:baristodolistapp/infrastructure/repositories/all_todo_lists_repository_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'bloc/allTodoLists/all_todolists_bloc.dart';
 import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
-import 'domain/usecases/allTodoLists_usecases.dart';
+import 'domain/repositories/all_todolists_repository.dart';
+import 'domain/usecases/all_todolists_usecases.dart';
+import 'infrastructure/datasources/local_sqlite_datasource.dart';
+import 'infrastructure/datasources/local_sqlite_datasource_impl.dart';
+import 'infrastructure/repositories/all_todo_lists_repository_impl.dart';
 
 final getIt = GetIt.I;
 

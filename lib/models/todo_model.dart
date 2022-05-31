@@ -82,12 +82,12 @@ class TodoModel extends Equatable {
         //and therefor true should be returned. This is valid for all combinations
         //of now and accomplishedAt.
         case RepeatPeriod.weekly:
-          if (timeHasPassed && now.weekday - accomplishedAt!.weekday < 0) {
+          if (timeHasPassed && (now.weekday - accomplishedAt!.weekday) < 0) {
             return true;
           }
           break;
         case RepeatPeriod.monthly:
-          if (timeHasPassed && accomplishedAt!.month != now.month) {
+          if (timeHasPassed && (accomplishedAt!.month != now.month)) {
             return true;
           }
           break;

@@ -50,7 +50,7 @@ class BarisToDoListApp extends StatelessWidget {
             colorSchemeSeed: Themes.blueThemeSeed,
             brightness: Brightness.light,
             useMaterial3: true,
-            textTheme: TextTheme(bodyMedium: TextStyle())),
+            textTheme: const TextTheme(bodyMedium: TextStyle())),
         darkTheme: ThemeData(
           colorSchemeSeed: Themes.blueThemeSeed,
           brightness: Brightness.dark,

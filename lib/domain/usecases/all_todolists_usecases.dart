@@ -2,7 +2,7 @@ import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:dartz/dartz.dart';
 
 import '../failures/failures.dart';
-import '../repositories/allTodolists_repository.dart';
+import '../repositories/all_todolists_repository.dart';
 
 class AllTodoListsUsecases {
   final AllTodoListsRepository allTodoListsRepository;

@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/usecases/allTodoLists_usecases.dart';
+import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -47,17 +47,6 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     );
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
-        //   emit(AllTodoListsStateLoading());
-//TODO: Implement usecase CreateNewTodoListUsecase
-        // int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
-        //   TodoListModel(
-        //     id: null,
-        //     todoModels: const [],
-        //     listName: event.listName,
-        //     todoListCategory: event.todoListCategory,
-        //   ),
-        // );
-
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
           todoListEntity: TodoListModel(

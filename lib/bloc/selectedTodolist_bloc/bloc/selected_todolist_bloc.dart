@@ -1,3 +1,5 @@
+import 'package:logger/logger.dart';
+
 import '../../../models/todolist_model.dart';
 import '../../../pages/todo_detail_page.dart';
 import 'package:bloc/bloc.dart';
@@ -61,8 +63,11 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
-      await DatabaseHelper.deleteSpecificTodo(id: event.id);
-      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+      int deletedRows = await DatabaseHelper.deleteSpecificTodo(id: event.id);
+      Logger().i('deletedrows $deletedRows');
+      if (deletedRows != 0) {
+        add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+      }
     });
 
     on<SelectedTodoListEventResetAll>((event, emit) async {
