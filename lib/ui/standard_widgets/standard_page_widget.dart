@@ -1,6 +1,6 @@
-import 'package:baristodolistapp/ui/constants/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import 'standart_text_widgets.dart';
 
 class StandardPageWidget extends StatelessWidget {

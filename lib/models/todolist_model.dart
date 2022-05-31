@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
+import '../domain/entities/todolist_entity.dart';
+import 'todo_model.dart';
 
 import '../assets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

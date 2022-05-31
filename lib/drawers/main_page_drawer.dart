@@ -1,8 +1,8 @@
-import 'package:baristodolistapp/strings/string_constants.dart';
+import 'package:flutter/material.dart';
 
 import '../assets.dart';
+import '../strings/string_constants.dart';
 import '../ui/constants/constants.dart';
-import 'package:flutter/material.dart';
 
 Drawer mainPageDrawer() {
   DateTime now = DateTime.now();

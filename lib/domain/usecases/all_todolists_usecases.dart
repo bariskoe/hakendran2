@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
+import '../entities/todolist_entity.dart';
 import 'package:dartz/dartz.dart';
 
 import '../failures/failures.dart';

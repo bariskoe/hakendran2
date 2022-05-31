@@ -11,3 +11,5 @@ Feel free to contact me on bariskoe@gmail.com if you are looking for a developer
 Download the APK of this App at
 
 https://drive.google.com/file/d/14-xDxaSc2NCfZDbHvV3D3t79vAYl9uFD/view?usp=sharing
+
+<img src="screenshots/todolists.jpg"> <img src="screenshots/specific_todolist.jpg"> <img src="screenshots/new_todo_dialog.jpg">   

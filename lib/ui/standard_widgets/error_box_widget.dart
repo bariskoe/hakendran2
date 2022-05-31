@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
+
 import '../../assets.dart';
 import '../constants/constants.dart';
 import 'standard_ui_widgets.dart';
 import 'standart_text_widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ErrorBoxWidget extends StatefulWidget {
   const ErrorBoxWidget({Key? key}) : super(key: key);

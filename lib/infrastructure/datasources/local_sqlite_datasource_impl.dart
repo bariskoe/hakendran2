@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
-import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource.dart';
+import '../../domain/entities/todolist_entity.dart';
+import 'local_sqlite_datasource.dart';
 
 import '../../database/databse_helper.dart';
 import '../../models/todolist_model.dart';

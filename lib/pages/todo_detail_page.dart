@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/ui/standard_widgets/error_box_widget.dart';
+import '../ui/standard_widgets/error_box_widget.dart';
 import 'package:great_list_view/great_list_view.dart';
 import 'package:logger/logger.dart';
 
