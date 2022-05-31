@@ -12,4 +12,4 @@ Download the APK of this App at
 
 https://drive.google.com/file/d/14-xDxaSc2NCfZDbHvV3D3t79vAYl9uFD/view?usp=sharing
 
-<img src="screenshots/todolists.jpg" width="200">   <img src="screenshots/specific_todolist.jpg" width="200">   <img src="screenshots/new_todolist_dialog.jpg" width="200">   <img src="screenshots/new_todo_dialog.jpg" width="200">   
+<img src="screenshots/todolists.jpg" width="200">  &nbsp;&nbsp; <img src="screenshots/specific_todolist.jpg" width="200"> &nbsp;&nbsp;  <img src="screenshots/new_todolist_dialog.jpg" width="200"> &nbsp;&nbsp;  <img src="screenshots/new_todo_dialog.jpg" width="200">   
