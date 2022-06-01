@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/models/todo_list_update_model.dart';
+
 import '../../domain/usecases/all_todolists_usecases.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -34,23 +36,11 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       });
     */
 
-    on<AllTodolistsEventDeleteAllTodoLists>(
-      (event, emit) async {
-        emit(AllTodoListsStateLoading());
-        //Try to delete and then get all the lists (there should be)
-        //no list left
-        await DatabaseHelper.deleteAllTodoLists();
-        add(
-          AllTodolistsEventGetAllTodoLists(),
-        );
-      },
-    );
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
           todoListEntity: TodoListModel(
-            id: null,
             todoModels: const [],
             listName: event.listName,
             todoListCategory: event.todoListCategory,
@@ -68,28 +58,38 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodolistsEventGetAllTodoLists>(
       (event, emit) async {
         emit(AllTodoListsStateLoading());
-        List<TodoListModel> listOfTodoListModels =
-            await DatabaseHelper.getAllTodoLists();
-        if (listOfTodoListModels.isEmpty) {
-          emit(AllTodoListsStateListEmpty());
-        } else {
-          emit(AllTodoListsStateLoaded(listOfAllLists: listOfTodoListModels));
-        }
+
+        Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
+            await allTodoListsUsecases.getAllTodoLists();
+
+        failureOrListOfTodoListModels.fold((l) => null, (r) {
+          if (r.isEmpty) {
+            emit(AllTodoListsStateListEmpty());
+          } else {
+            emit(AllTodoListsStateLoaded(listOfAllLists: r));
+          }
+        });
       },
     );
 
     on<AllTodoListEventUpdateListParameters>((event, emit) async {
       emit(AllTodoListsStateLoading());
-      int changesMade = await DatabaseHelper.updateSpecificListParameters(
-          id: event.id,
-          listName: event.listName,
-          category: event.todoListCategory);
 
-      if (changesMade > 0) {
-        add(AllTodolistsEventGetAllTodoLists());
-      } else {
-        emit(AllTodoListsStateError());
-      }
+      Either<Failure, int> failureOrChanges =
+          await allTodoListsUsecases.updateSpecificListParameters(
+              todoListUpdateModel: TodoListUpdateModel(
+        id: event.id,
+        listName: event.listName,
+        todoListCategory: event.todoListCategory,
+      ));
+
+      failureOrChanges.fold((l) => emit(AllTodoListsStateError()), (r) {
+        if (r > 0) {
+          add(AllTodolistsEventGetAllTodoLists());
+        } else {
+          emit(AllTodoListsStateError());
+        }
+      });
     });
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
@@ -108,5 +108,17 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       await DatabaseHelper.checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
       add(AllTodolistsEventGetAllTodoLists());
     });
+
+    on<AllTodolistsEventDeleteAllTodoLists>(
+      (event, emit) async {
+        emit(AllTodoListsStateLoading());
+        //Try to delete and then get all the lists (there should be)
+        //no list left
+        await DatabaseHelper.deleteAllTodoLists();
+        add(
+          AllTodolistsEventGetAllTodoLists(),
+        );
+      },
+    );
   }
 }

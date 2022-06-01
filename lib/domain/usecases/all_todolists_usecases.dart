@@ -1,3 +1,6 @@
+import 'package:baristodolistapp/models/todo_list_update_model.dart';
+
+import '../../models/todolist_model.dart';
 import '../entities/todolist_entity.dart';
 import 'package:dartz/dartz.dart';
 
@@ -13,5 +16,15 @@ class AllTodoListsUsecases {
   }) async {
     return allTodoListsRepository.createNewTodoList(
         todoListEntity: todoListEntity);
+  }
+
+  Future<Either<Failure, List<TodoListModel>>> getAllTodoLists() async {
+    return allTodoListsRepository.getAllTodoLists();
+  }
+
+  Future<Either<Failure, int>> updateSpecificListParameters(
+      {required TodoListUpdateModel todoListUpdateModel}) {
+    return allTodoListsRepository.updateSpecificListParameters(
+        todoListUpdateModel: todoListUpdateModel);
   }
 }

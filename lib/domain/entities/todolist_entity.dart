@@ -9,9 +9,9 @@ class TodoListEntity {
   final TodoListCategory todoListCategory;
 
   TodoListEntity({
-    required this.id,
     required this.listName,
-    required this.todoModels,
+    this.todoModels = const [],
+    this.id,
     this.todoListCategory = TodoListCategory.none,
   });
 }

@@ -8,14 +8,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 class TodoListModel extends TodoListEntity with EquatableMixin {
-  // final int? id;
-
-  // final String listName;
-  // final List<TodoModel> todoModels;
-  // final TodoListCategory todoListCategory;
-
   TodoListModel({
-    required int? id,
+    int? id,
     required String listName,
     required List<TodoModel> todoModels,
     required todoListCategory,

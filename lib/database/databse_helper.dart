@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:baristodolistapp/models/todo_list_update_model.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -123,15 +124,16 @@ class DatabaseHelper {
         [id]);
   }
 
-  static updateSpecificListParameters({
-    required int id,
-    required String listName,
-    required TodoListCategory category,
-  }) async {
+  static updateSpecificListParameters(
+      {required TodoListUpdateModel todoListUpdateModel}) async {
     Database db = await instance.database;
     return await db.rawUpdate(
         'UPDATE $todoListsTableName SET $todoListsTableFieldListName = ?, $todoListsTableFieldCategory = ? WHERE $todoListsTableFieldId = ?',
-        [listName, category.serialize(), id]);
+        [
+          todoListUpdateModel.listName,
+          todoListUpdateModel.todoListCategory.serialize(),
+          todoListUpdateModel.id
+        ]);
   }
 
   ///Regarding TodosTable ---------------------------------------------------------
