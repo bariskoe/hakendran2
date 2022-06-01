@@ -31,10 +31,18 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodolistEventAddNewTodo>((event, emit) async {
-      event.todoModel.parentTodoListId = selectedTodoList;
+      TodoModel adjustbleTodoModel;
+      if (selectedTodoList != null) {
+        final eventModel = event.todoModel;
+        adjustbleTodoModel = TodoModel(
+            id: eventModel.id,
+            task: eventModel.task,
+            accomplished: eventModel.accomplished,
+            parentTodoListId: selectedTodoList!);
+        TodoListDetailPage.justAddedTodo = true;
+        await DatabaseHelper.addTodoToSpecificList(adjustbleTodoModel);
+      }
 
-      TodoListDetailPage.justAddedTodo = true;
-      await DatabaseHelper.addTodoToSpecificList(event.todoModel);
       add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
     });
 

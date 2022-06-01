@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:baristodolistapp/models/todo_list_update_model.dart';
+import '../models/todo_list_update_model.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -227,7 +227,8 @@ class DatabaseHelper {
     return listOfTodoModels;
   }
 
-  static checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
+  static Future<bool>
+      checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
     final _lock = Lock();
     List<TodoModel> listOfTodoModels = await getAllTodos();
     for (TodoModel model in listOfTodoModels) {
@@ -238,6 +239,7 @@ class DatabaseHelper {
         });
       }
     }
+    return true;
   }
 
   static Future<TodoListModel> getSpecificTodoList({required int id}) async {

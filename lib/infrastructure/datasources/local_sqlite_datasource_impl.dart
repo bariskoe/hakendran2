@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/models/todo_list_update_model.dart';
+import '../../models/todo_list_update_model.dart';
 
 import '../../domain/entities/todolist_entity.dart';
 import 'local_sqlite_datasource.dart';
@@ -32,5 +32,21 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
       {required TodoListUpdateModel todoListUpdateModel}) async {
     return await DatabaseHelper.updateSpecificListParameters(
         todoListUpdateModel: todoListUpdateModel);
+  }
+
+  @override
+  Future<int> deleteSpecifiTodoList({required int id}) async {
+    return await DatabaseHelper.deleteSpecifiTodoList(id: id);
+  }
+
+  @override
+  Future<bool> checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
+    return await DatabaseHelper
+        .checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+  }
+
+  @override
+  Future<int> deleteAllTodoLists() async {
+    return await DatabaseHelper.deleteAllTodoLists();
   }
 }

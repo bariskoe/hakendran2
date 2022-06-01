@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/models/todo_list_update_model.dart';
+import '../../models/todo_list_update_model.dart';
 
 import '../../domain/usecases/all_todolists_usecases.dart';
 import 'package:bloc/bloc.dart';
@@ -93,19 +93,23 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     });
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
-      emit(AllTodoListsStateLoading());
-      int changesMade =
-          await DatabaseHelper.deleteSpecifiTodoList(id: event.id);
-      if (changesMade > 0) {
-        add(AllTodolistsEventGetAllTodoLists());
-      } else {
-        emit(AllTodoListsStateError());
-      }
+      //emit(AllTodoListsStateLoading());
+
+      Either<Failure, int> failureOrChangesMade =
+          await allTodoListsUsecases.deleteSpecifiTodoList(id: event.id);
+
+      failureOrChangesMade.fold(
+          (l) => emit(AllTodoListsStateError()), (r) => null);
     });
+
     on<AllTodoListEventCheckRepeatPeriodsAndResetAccomplishedIfNeccessary>(
         (event, emit) async {
       emit(AllTodoListsStateLoading());
-      await DatabaseHelper.checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+      //await DatabaseHelper.checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+      Either<Failure, bool> failureOrchecked = await allTodoListsUsecases
+          .checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+      failureOrchecked.fold((l) => emit(AllTodoListsStateError()), (r) => null);
+
       add(AllTodolistsEventGetAllTodoLists());
     });
 
@@ -114,10 +118,12 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         emit(AllTodoListsStateLoading());
         //Try to delete and then get all the lists (there should be)
         //no list left
-        await DatabaseHelper.deleteAllTodoLists();
-        add(
-          AllTodolistsEventGetAllTodoLists(),
-        );
+
+        //  await DatabaseHelper.deleteAllTodoLists();
+        Either<Failure, int> failureOrSuccess =
+            await allTodoListsUsecases.deleteAllTodoLists();
+        failureOrSuccess.fold((l) => emit(AllTodoListsStateError()),
+            (r) => add(AllTodolistsEventGetAllTodoLists()));
       },
     );
   }

@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/models/todolist_model.dart';
+import '../../models/todolist_model.dart';
 
 class TodoListUpdateEntity {
   int id;

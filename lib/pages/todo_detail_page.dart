@@ -79,7 +79,6 @@ _buildLoading(BuildContext context) {
 }
 
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
-  Logger().d('buildListLoaded wird durchgeführt');
   return StandardPageWidget(
     onPop: () {
       BlocProvider.of<SelectedTodolistBloc>(context)
@@ -147,7 +146,8 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //add an empty TodoModel at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
     List<TodoModel> reversedList = List.from(list.reversed)
-      ..add(TodoModel(id: null, task: '', accomplished: false));
+      ..add(const TodoModel(
+          id: null, task: '', accomplished: false, parentTodoListId: 1234567));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),

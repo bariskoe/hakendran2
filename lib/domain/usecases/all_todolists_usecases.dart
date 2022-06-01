@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/models/todo_list_update_model.dart';
+import '../../models/todo_list_update_model.dart';
 
 import '../../models/todolist_model.dart';
 import '../entities/todolist_entity.dart';
@@ -26,5 +26,19 @@ class AllTodoListsUsecases {
       {required TodoListUpdateModel todoListUpdateModel}) {
     return allTodoListsRepository.updateSpecificListParameters(
         todoListUpdateModel: todoListUpdateModel);
+  }
+
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required int id}) {
+    return allTodoListsRepository.deleteSpecifiTodoList(id: id);
+  }
+
+  Future<Either<Failure, bool>>
+      checkRepeatPeriodsAndResetAccomplishedIfNeccessary() {
+    return allTodoListsRepository
+        .checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+  }
+
+  Future<Either<Failure, int>> deleteAllTodoLists() {
+    return allTodoListsRepository.deleteAllTodoLists();
   }
 }

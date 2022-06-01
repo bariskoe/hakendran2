@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/models/todo_list_update_model.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
+import '../../models/todo_list_update_model.dart';
+import '../../models/todolist_model.dart';
 
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/failures/failures.dart';
@@ -40,12 +40,51 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   Future<Either<Failure, int>> updateSpecificListParameters(
       {required TodoListUpdateModel todoListUpdateModel}) async {
     try {
-      int changesMade =
-          await localSqliteDataSource.updateSpecificListParameters(
-              todoListUpdateModel: todoListUpdateModel);
-      return Right(changesMade);
+      int changes = await localSqliteDataSource.updateSpecificListParameters(
+          todoListUpdateModel: todoListUpdateModel);
+      if (changes > 0) {
+        return Right(changes);
+      } else {
+        return Left(DatabaseFailure());
+      }
     } catch (e) {
       return left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required int id}) async {
+    try {
+      int changes = await localSqliteDataSource.deleteSpecifiTodoList(id: id);
+      if (changes > 0) {
+        return Right(changes);
+      } else {
+        return Left(DatabaseFailure());
+      }
+    } catch (e) {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>>
+      checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
+    try {
+      bool success = await localSqliteDataSource
+          .checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+      return Right(success);
+    } catch (e) {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> deleteAllTodoLists() async {
+    try {
+      int success = await localSqliteDataSource.deleteAllTodoLists();
+      return Right(success);
+    } catch (e) {
+      return Left(DatabaseFailure());
     }
   }
 }

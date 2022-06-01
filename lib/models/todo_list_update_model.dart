@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/entities/todo_list_update_entity.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
+import '../domain/entities/todo_list_update_entity.dart';
+import 'todolist_model.dart';
 import 'package:equatable/equatable.dart';
 
 class TodoListUpdateModel extends TodoListUpdateEntity with EquatableMixin {

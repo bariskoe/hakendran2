@@ -7,15 +7,15 @@ class TodoModel extends Equatable {
   final int? id;
   final String task;
   final bool accomplished;
-  int? parentTodoListId;
+  final int parentTodoListId;
   final RepeatPeriod repeatPeriod;
-  DateTime? accomplishedAt;
+  final DateTime? accomplishedAt;
 
-  TodoModel({
+  const TodoModel({
     required this.id,
     required this.task,
     required this.accomplished,
-    this.parentTodoListId,
+    required this.parentTodoListId,
     this.repeatPeriod = RepeatPeriod.none,
     this.accomplishedAt,
   });
