@@ -11,6 +11,7 @@ import '../drawers/main_page_drawer.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/error_box_widget.dart';
+import '../ui/standard_widgets/loading_widget.dart';
 import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
@@ -75,6 +76,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       child: Stack(
         children: [
           BlocBuilder<AllTodolistsBloc, AllTodolistsState>(
+            buildWhen: (previous, current) =>
+                current != AllTodoListsStateLoading(),
             builder: (context, state) {
               if (MainPage.justAddedList) {
                 _controller?.reset();
@@ -82,9 +85,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   MainPage.justAddedList = false;
                 });
               }
-              if (state is AllTodoListsStateLoading) {
-                return Center(child: Container());
-              }
+              // if (state is AllTodoListsStateLoading) {
+              //   return Center(child: Container());
+              // }
               if (state is AllTodoListsStateLoaded) {
                 return Container(
                   child: _buildListLoaded(state, context),
@@ -111,6 +114,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               return FABrow(
                 state: state,
               );
+            },
+          ),
+          BlocBuilder<AllTodolistsBloc, AllTodolistsState>(
+            builder: (context, state) {
+              if (state is AllTodoListsStateLoading) {
+                return const LoadingWidget();
+              } else {
+                return Container();
+              }
             },
           )
         ],
@@ -338,20 +350,6 @@ class _FABrowState extends State<FABrow> {
                     }),
               )),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
-        //   child: Align(
-        //     alignment: Alignment.bottomRight,
-        //     child: FloatingActionButton(
-        //         heroTag: const Text('button1'),
-        //         child: const Icon(Icons.delete),
-        //         onPressed: () {
-        //           BlocProvider.of<AllTodolistsBloc>(context).add(
-        //             AllTodolistsEventDeleteAllTodoLists(),
-        //           );
-        //         }),
-        //   ),
-        // ),
         if (widget.state != AllTodoListsStateError()) ...[
           Padding(
             padding: const EdgeInsets.all(UiConstantsPadding.xlarge),

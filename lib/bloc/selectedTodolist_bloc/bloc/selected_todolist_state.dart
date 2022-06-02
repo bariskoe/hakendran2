@@ -21,3 +21,5 @@ class SelectedTodolistStateLoaded extends SelectedTodolistState {
 }
 
 class SelectedTodoListStateLoading extends SelectedTodolistState {}
+
+class SelectedTodolistStateError extends SelectedTodolistState {}

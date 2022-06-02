@@ -1,27 +1,24 @@
-import '../ui/standard_widgets/error_box_widget.dart';
-import 'package:great_list_view/great_list_view.dart';
-import 'package:logger/logger.dart';
-
-import '../assets.dart';
-import '../dialogs/edit_todo_dialog.dart';
-import '../models/todolist_model.dart';
-import '../ui/widgets/page_background_image_widget.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:loading_animations/loading_animations.dart';
-
-import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
-
-import '../models/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:great_list_view/great_list_view.dart';
+import 'package:loading_animations/loading_animations.dart';
 
+import '../assets.dart';
+import '../bloc/allTodoLists/all_todolists_bloc.dart';
+import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dialogs/add_todo_dialog.dart';
-
+import '../dialogs/edit_todo_dialog.dart';
+import '../models/todo_model.dart';
+import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
+import '../ui/standard_widgets/error_box_widget.dart';
+import '../ui/standard_widgets/loading_widget.dart';
 import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../ui/widgets/page_background_image_widget.dart';
 
 class TodoListDetailPage extends StatefulWidget {
   const TodoListDetailPage({
@@ -49,24 +46,38 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
-      //Don't build if a List Element has just been dismissed. That part is taken
-      //care of by the dismissibe Widget
-      buildWhen: (previous, current) =>
-          !(((current is SelectedTodolistStateLoaded) &&
-                  (previous is SelectedTodolistStateLoaded)) &&
-              (current.todoListModel.numberOfTodos <
-                  previous.todoListModel.numberOfTodos)),
-      builder: (context, state) {
-        if (state is SelectedTodoListStateLoading) {
-          _buildLoading(context);
-        }
+    return Stack(
+      children: [
+        BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
+          //Don't build if a List Element has just been dismissed. That part is taken
+          //care of by the dismissibe Widget
+          buildWhen: (previous, current) =>
+              (!(((current is SelectedTodolistStateLoaded) &&
+                      (previous is SelectedTodolistStateLoaded)) &&
+                  (current.todoListModel.numberOfTodos <
+                      previous.todoListModel.numberOfTodos))) &&
+              (current != SelectedTodoListStateLoading()),
+          builder: (context, state) {
+            if (state is SelectedTodolistStateError) {
+              return _buildError(context);
+            }
 
-        if (state is SelectedTodolistStateLoaded) {
-          return _buildListLoaded(state, context);
-        }
-        return const ErrorBoxWidget();
-      },
+            if (state is SelectedTodolistStateLoaded) {
+              return _buildListLoaded(state, context);
+            }
+            return const ErrorBoxWidget();
+          },
+        ),
+        BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
+          builder: (context, state) {
+            if (state is SelectedTodoListStateLoading) {
+              return const LoadingWidget();
+            } else {
+              return Container();
+            }
+          },
+        )
+      ],
     );
   }
 }
@@ -78,11 +89,17 @@ _buildLoading(BuildContext context) {
   ));
 }
 
+_buildError(BuildContext context) {
+  return const Center(child: ErrorBoxWidget());
+}
+
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
   return StandardPageWidget(
     onPop: () {
       BlocProvider.of<SelectedTodolistBloc>(context)
           .add(SelectedTodolistEventUnselect());
+      BlocProvider.of<AllTodolistsBloc>(context)
+          .add(AllTodolistsEventGetAllTodoLists());
     },
     appBarTitle: state.todoListModel.listName,
     child: Stack(
@@ -91,7 +108,7 @@ _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
             imagePath:
                 state.todoListModel.todoListCategory.getBackgroundImage()),
         DetailPageListWidget(state: state),
-        FABrowOfDetailPage(state: state),
+        FABrowOfDetailPage(loadedState: state),
       ],
     ),
   );
@@ -314,46 +331,51 @@ class SwipeToDeleteBackgroundWidget extends StatelessWidget {
 class FABrowOfDetailPage extends StatelessWidget {
   const FABrowOfDetailPage({
     Key? key,
-    required this.state,
+    required this.loadedState,
   }) : super(key: key);
 
-  final SelectedTodolistStateLoaded state;
+  final SelectedTodolistStateLoaded loadedState;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        if (state.todoListModel.atLeastOneAccomplished) ...[
-          Padding(
-            padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                  heroTag: const Text('button3'),
-                  child: const Icon(Icons.refresh),
-                  onPressed: () {
-                    BlocProvider.of<SelectedTodolistBloc>(context).add(
-                      const SelectedTodoListEventResetAll(),
-                    );
-                  }),
-            ),
-          )
-        ],
-        Padding(
-          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              heroTag: const Text('button4'),
-              child: const Icon(Icons.add),
-              onPressed: () => addTodoDialog(
-                context: context,
+    return BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            if (state is SelectedTodolistStateLoaded &&
+                state.todoListModel.atLeastOneAccomplished) ...[
+              Padding(
+                padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton(
+                      heroTag: const Text('button3'),
+                      child: const Icon(Icons.refresh),
+                      onPressed: () {
+                        BlocProvider.of<SelectedTodolistBloc>(context).add(
+                          const SelectedTodoListEventResetAll(),
+                        );
+                      }),
+                ),
+              )
+            ],
+            Padding(
+              padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: FloatingActionButton(
+                  heroTag: const Text('button4'),
+                  child: const Icon(Icons.add),
+                  onPressed: () => addTodoDialog(
+                    context: context,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

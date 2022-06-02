@@ -14,4 +14,11 @@ class TodoListEntity {
     this.id,
     this.todoListCategory = TodoListCategory.none,
   });
+
+  TodoListModel toModel() {
+    return TodoListModel(
+        listName: listName,
+        todoModels: todoModels,
+        todoListCategory: todoListCategory);
+  }
 }

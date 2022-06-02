@@ -1,7 +1,6 @@
-import '../../models/todolist_model.dart';
-
 import '../../domain/entities/todolist_entity.dart';
 import '../../models/todo_list_update_model.dart';
+import '../../models/todolist_model.dart';
 
 abstract class LocalSqliteDataSource {
   Future<int> createNewTodoList({required TodoListEntity todoListEntity});
@@ -15,4 +14,6 @@ abstract class LocalSqliteDataSource {
   Future<bool> checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
 
   Future<int> deleteAllTodoLists();
+
+  Future<TodoListEntity> getSpecificTodoList({required int id});
 }

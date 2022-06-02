@@ -49,4 +49,9 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   Future<int> deleteAllTodoLists() async {
     return await DatabaseHelper.deleteAllTodoLists();
   }
+
+  @override
+  Future<TodoListEntity> getSpecificTodoList({required int id}) async {
+    return await DatabaseHelper.getSpecificTodoList(id: id);
+  }
 }

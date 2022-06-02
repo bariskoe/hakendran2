@@ -1,12 +1,10 @@
-import '../../models/todo_list_update_model.dart';
-
-import '../../domain/usecases/all_todolists_usecases.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../database/databse_helper.dart';
 import '../../domain/failures/failures.dart';
+import '../../domain/usecases/all_todolists_usecases.dart';
+import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
 import '../../pages/main_page.dart';
 import '../selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
@@ -38,6 +36,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
+        emit(AllTodoListsStateLoading());
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
           todoListEntity: TodoListModel(
@@ -93,7 +92,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     });
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
-      //emit(AllTodoListsStateLoading());
+      emit(AllTodoListsStateLoading());
 
       Either<Failure, int> failureOrChangesMade =
           await allTodoListsUsecases.deleteSpecifiTodoList(id: event.id);
@@ -105,7 +104,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodoListEventCheckRepeatPeriodsAndResetAccomplishedIfNeccessary>(
         (event, emit) async {
       emit(AllTodoListsStateLoading());
-      //await DatabaseHelper.checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
+
       Either<Failure, bool> failureOrchecked = await allTodoListsUsecases
           .checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
       failureOrchecked.fold((l) => emit(AllTodoListsStateError()), (r) => null);
@@ -119,7 +118,6 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         //Try to delete and then get all the lists (there should be)
         //no list left
 
-        //  await DatabaseHelper.deleteAllTodoLists();
         Either<Failure, int> failureOrSuccess =
             await allTodoListsUsecases.deleteAllTodoLists();
         failureOrSuccess.fold((l) => emit(AllTodoListsStateError()),

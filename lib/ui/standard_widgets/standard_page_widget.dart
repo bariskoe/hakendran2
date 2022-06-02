@@ -30,6 +30,7 @@ class StandardPageWidget extends StatelessWidget {
         if (willPop && Navigator.canPop(context)) {
           Navigator.pop(context);
         }
+        onPop != null ? onPop!() : () {};
         return Future.value(false);
       },
       child: Scaffold(
