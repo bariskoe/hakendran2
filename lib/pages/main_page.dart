@@ -85,9 +85,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   MainPage.justAddedList = false;
                 });
               }
-              // if (state is AllTodoListsStateLoading) {
-              //   return Center(child: Container());
-              // }
+
               if (state is AllTodoListsStateLoaded) {
                 return Container(
                   child: _buildListLoaded(state, context),

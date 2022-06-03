@@ -25,14 +25,6 @@ Future<void> addTodoDialog({
           children: [
             AddItemTextfieldWidget(
                 textEditingController: _textEditingController),
-            // TextField(
-            //   controller: _textEditingController,
-            //   decoration: StandardTextfieldDecoration.textFieldInputDecoration(
-            //       context: context,
-            //       labelText: AppLocalizations.of(context)
-            //               ?.addTodoDialogTextfieldLabel ??
-            //           'null'),
-            // ),
             const SizedBox(
               height: UiConstantsPadding.xxlarge,
             ),

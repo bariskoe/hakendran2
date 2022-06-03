@@ -92,8 +92,6 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     });
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
-      emit(AllTodoListsStateLoading());
-
       Either<Failure, int> failureOrChangesMade =
           await allTodoListsUsecases.deleteSpecifiTodoList(id: event.id);
 

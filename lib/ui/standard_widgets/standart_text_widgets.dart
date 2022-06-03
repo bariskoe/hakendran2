@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
@@ -22,8 +23,9 @@ class BigListElementText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       text,
+      maxLines: 2,
       style: TextStyle(
           color: Theme.of(context).colorScheme.onPrimaryContainer,
           fontFamily: 'Handlee',

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:great_list_view/great_list_view.dart';
-import 'package:loading_animations/loading_animations.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
@@ -80,13 +79,6 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
       ],
     );
   }
-}
-
-_buildLoading(BuildContext context) {
-  return Center(
-      child: LoadingBouncingGrid.square(
-    backgroundColor: Theme.of(context).colorScheme.primary,
-  ));
 }
 
 _buildError(BuildContext context) {
