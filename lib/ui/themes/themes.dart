@@ -45,7 +45,8 @@ class Themes {
         brightness: Brightness.light,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           shape: RoundedRectangleBorder(
-              side: BorderSide(width: 3, color: Colors.amber),
+              side:
+                  BorderSide(width: 3, color: Color.fromRGBO(249, 252, 50, 1)),
               borderRadius: BorderRadius.all(Radius.circular(90.0))),
           backgroundColor: Color.fromRGBO(5, 16, 79, 1),
         ),
