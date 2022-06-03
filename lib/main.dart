@@ -35,22 +35,15 @@ class BarisToDoListApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => getIt<AllTodolistsBloc>()),
         BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
-        //   BlocProvider(
-        //     create: (context) => SelectedTodolistBloc(),
-        //   ),
-        //   BlocProvider(
-        //     create: (context) => AllTodolistsBloc(
-        //         selectedTodolistBloc:
-        //             BlocProvider.of<SelectedTodolistBloc>(context)),
-        //   ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            colorSchemeSeed: Themes.blueThemeSeed,
-            brightness: Brightness.light,
-            useMaterial3: true,
-            textTheme: const TextTheme(bodyMedium: TextStyle())),
+        theme: Themes.blueTheme(),
+        //ThemeData(
+        //     colorSchemeSeed: Themes.blueThemeSeed,
+        //     brightness: Brightness.light,
+        //     useMaterial3: true,
+        //     textTheme: const TextTheme(bodyMedium: TextStyle())),
         darkTheme: ThemeData(
           colorSchemeSeed: Themes.blueThemeSeed,
           brightness: Brightness.dark,

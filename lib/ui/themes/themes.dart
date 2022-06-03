@@ -43,6 +43,12 @@ class Themes {
     return ThemeData(
         colorSchemeSeed: Themes.blueThemeSeed,
         brightness: Brightness.light,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(width: 3, color: Colors.amber),
+              borderRadius: BorderRadius.all(Radius.circular(90.0))),
+          backgroundColor: Color.fromRGBO(5, 16, 79, 1),
+        ),
         useMaterial3: true,
         textTheme: const TextTheme(bodyMedium: TextStyle()));
   }
