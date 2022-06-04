@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/models/todo_model.dart';
+
 import '../../models/todo_list_update_model.dart';
 
 import '../../domain/entities/todolist_entity.dart';
@@ -28,15 +30,21 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }
 
   @override
-  Future<int> updateSpecificListParameters(
-      {required TodoListUpdateModel todoListUpdateModel}) async {
+  Future<int> updateSpecificListParameters({
+    required TodoListUpdateModel todoListUpdateModel,
+  }) async {
     return await DatabaseHelper.updateSpecificListParameters(
-        todoListUpdateModel: todoListUpdateModel);
+      todoListUpdateModel: todoListUpdateModel,
+    );
   }
 
   @override
-  Future<int> deleteSpecifiTodoList({required int id}) async {
-    return await DatabaseHelper.deleteSpecifiTodoList(id: id);
+  Future<int> deleteSpecifiTodoList({
+    required int id,
+  }) async {
+    return await DatabaseHelper.deleteSpecifiTodoList(
+      id: id,
+    );
   }
 
   @override
@@ -51,7 +59,49 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }
 
   @override
-  Future<TodoListEntity> getSpecificTodoList({required int id}) async {
-    return await DatabaseHelper.getSpecificTodoList(id: id);
+  Future<TodoListEntity> getSpecificTodoList({
+    required int id,
+  }) async {
+    return await DatabaseHelper.getSpecificTodoList(
+      id: id,
+    );
+  }
+
+  @override
+  Future<int> addTodoToSpecificList({
+    required TodoModel todoModel,
+  }) async {
+    return await DatabaseHelper.addTodoToSpecificList(
+      todoModel: todoModel,
+    );
+  }
+
+  @override
+  Future<int> setAccomplishmentStatusOfTodo({
+    required int id,
+    required bool accomplished,
+  }) async {
+    return await DatabaseHelper.setAccomplishmentStatusOfTodo(
+      id: id,
+      accomplished: accomplished,
+    );
+  }
+
+  @override
+  Future<int> updateSpecificTodo({
+    required TodoModel todoModel,
+  }) async {
+    return await DatabaseHelper.updateSpecificTodo(
+      model: todoModel,
+    );
+  }
+
+  @override
+  Future<int> resetAllTodosOfSpecificList({
+    required int id,
+  }) async {
+    return await DatabaseHelper.resetAllTodosOfSpecificList(
+      id: id,
+    );
   }
 }

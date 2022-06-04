@@ -17,6 +17,7 @@ class TodoListEntity {
 
   TodoListModel toModel() {
     return TodoListModel(
+        id: id,
         listName: listName,
         todoModels: todoModels,
         todoListCategory: todoListCategory);

@@ -48,14 +48,16 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
     return Stack(
       children: [
         BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
-          //Don't build if a List Element has just been dismissed. That part is taken
-          //care of by the dismissibe Widget
-          buildWhen: (previous, current) =>
-              (!(((current is SelectedTodolistStateLoaded) &&
-                      (previous is SelectedTodolistStateLoaded)) &&
-                  (current.todoListModel.numberOfTodos <
-                      previous.todoListModel.numberOfTodos))) &&
-              (current != SelectedTodoListStateLoading()),
+          // Don't build if a List Element has just been dismissed. That part is taken
+          // care of by the dismissibe Widget
+          // buildWhen: (previous, current) =>
+          //     ((((current is SelectedTodolistStateLoaded) &&
+          //             (previous is SelectedTodolistStateLoaded)) &&
+          //         !(current.todoListModel.numberOfTodos <
+          //             previous.todoListModel.numberOfTodos))),
+          //         &&
+          // (current != SelectedTodoListStateLoading()),
+
           builder: (context, state) {
             if (state is SelectedTodolistStateError) {
               return _buildError(context);

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 
 import '../../../database/databse_helper.dart';
 import '../../../domain/entities/todolist_entity.dart';
@@ -28,15 +29,23 @@ class SelectedTodolistBloc
     on<SelectedTodolistEvent>((event, emit) async {});
 
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
+      emit(SelectedTodoListStateLoading());
       Either<Failure, TodoListEntity> model =
-          await selectedTodolistUsecases.getSpecificTodoLis(id: event.id);
-
-      model.fold((l) => emit(SelectedTodolistStateError()),
-          (r) => emit(SelectedTodolistStateLoaded(todoListModel: r.toModel())));
+          await selectedTodolistUsecases.getSpecificTodoList(id: event.id);
+      model.fold((l) => emit(SelectedTodolistStateError()), (r) {
+        emit(
+          SelectedTodolistStateLoaded(
+            todoListModel: r.toModel(),
+          ),
+        );
+        Logger().d(r.toModel().toString());
+      });
+      Logger().d('selected list loaded');
     });
 
     on<SelectedTodolistEventAddNewTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
+
       TodoModel adjustbleTodoModel;
       if (selectedTodoList != null) {
         final eventModel = event.todoModel;
@@ -46,10 +55,14 @@ class SelectedTodolistBloc
             accomplished: eventModel.accomplished,
             parentTodoListId: selectedTodoList!);
         TodoListDetailPage.justAddedTodo = true;
-        await DatabaseHelper.addTodoToSpecificList(adjustbleTodoModel);
-      }
 
-      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+        Either<Failure, int> didSave = await selectedTodolistUsecases
+            .addTodoToSpecificList(todoModel: adjustbleTodoModel);
+        didSave.fold(
+            (l) => emit(SelectedTodolistStateError()),
+            (r) => add(SelectedTodolistEventLoadSelectedTodolist(
+                id: selectedTodoList!)));
+      }
     });
 
     on<SelectedTodolistEventUnselect>((event, emit) async {
@@ -62,32 +75,48 @@ class SelectedTodolistBloc
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(
       (event, emit) async {
-        await DatabaseHelper.setAccomplishmentStatusOfTodo(
-            id: event.id, accomplished: event.accomplished);
-
-        add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+        Either<Failure, int> changes =
+            await selectedTodolistUsecases.setAccomplishmentStatusOfTodo(
+                id: event.id, accomplished: event.accomplished);
+        changes.fold(
+          (l) => emit(SelectedTodolistStateError()),
+          (r) => add(
+            SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+          ),
+        );
       },
     );
 
     on<SelectedTodolistEventUpdateTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
-
-      await DatabaseHelper.updateSpecificTodo(model: event.todoModel);
-      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+      Either<Failure, int> changes = await selectedTodolistUsecases
+          .updateSpecificTodo(todoModel: event.todoModel);
+      Logger().d('changes sind $changes');
+      changes.fold(
+        (l) => emit(SelectedTodolistStateError()),
+        (r) => add(
+          SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+        ),
+      );
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
-      int deletedRows = await DatabaseHelper.deleteSpecificTodo(id: event.id);
-
-      if (deletedRows != 0) {
-        add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
-      }
+      await DatabaseHelper.deleteSpecificTodo(id: event.id);
+//No need to reload the list here. The Dismissible Listview takes care of the ui.
     });
 
     on<SelectedTodoListEventResetAll>((event, emit) async {
       emit(SelectedTodoListStateLoading());
-      DatabaseHelper.resetAllTodosOfSpecificList(id: selectedTodoList!);
-      add(SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!));
+
+      Either<Failure, int> failureOrChanges = await selectedTodolistUsecases
+          .resetAllTodosOfSpecificList(id: selectedTodoList!);
+
+      failureOrChanges.fold(
+        (l) => emit(SelectedTodolistStateError()),
+        (r) => add(
+          SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+        ),
+      );
     });
   }
 }
