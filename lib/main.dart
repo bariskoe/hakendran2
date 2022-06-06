@@ -16,8 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupDependencyInjectionWithGetIt();
 
-  //runApp(const ToDoListApp());
-
   BlocOverrides.runZoned(
     () {
       runApp(const BarisToDoListApp());
@@ -39,11 +37,6 @@ class BarisToDoListApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: Themes.blueTheme(),
-        //ThemeData(
-        //     colorSchemeSeed: Themes.blueThemeSeed,
-        //     brightness: Brightness.light,
-        //     useMaterial3: true,
-        //     textTheme: const TextTheme(bodyMedium: TextStyle())),
         darkTheme: ThemeData(
           colorSchemeSeed: Themes.blueThemeSeed,
           brightness: Brightness.dark,
