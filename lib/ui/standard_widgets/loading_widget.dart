@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// This Widget atop of the whole screen to get a nice loading Animation
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({
     Key? key,
