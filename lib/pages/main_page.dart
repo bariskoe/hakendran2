@@ -70,7 +70,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           );
         })
       ],
-      drawer: mainPageDrawer(),
+      drawer: const MainPageDrawer(),
       willPop: false,
       appBarTitle: AppLocalizations.of(context)?.mainPageAppbarTitle,
       child: Stack(
@@ -339,7 +339,8 @@ class _FABrowState extends State<FABrow> {
                 duration: const Duration(seconds: 1),
                 child: FloatingActionButton(
                     heroTag: const Text('button3'),
-                    child: const Icon(Icons.refresh),
+                    child: const Icon(Icons.refresh,
+                        color: UiConstantsColors.iconOnDark),
                     onPressed: () {
                       turns++;
                       BlocProvider.of<AllTodolistsBloc>(context).add(
@@ -355,7 +356,10 @@ class _FABrowState extends State<FABrow> {
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
                 heroTag: const Text('button2'),
-                child: const Icon(Icons.add),
+                child: const Icon(
+                  Icons.add,
+                  color: UiConstantsColors.iconOnDark,
+                ),
                 onPressed: () => addListDialog(context),
               ),
             ),

@@ -13,7 +13,7 @@ int _selectedRepeatPeriodIndex = 0;
 Future<void> addTodoDialog({
   required BuildContext context,
 }) async {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -24,14 +24,14 @@ Future<void> addTodoDialog({
           mainAxisSize: MainAxisSize.min,
           children: [
             AddItemTextfieldWidget(
-                textEditingController: _textEditingController),
+                textEditingController: textEditingController),
             const SizedBox(
               height: UiConstantsPadding.xxlarge,
             ),
-            Flexible(
+            const Flexible(
               child: SingleChildScrollView(
                 child: ListBody(
-                  children: const <Widget>[
+                  children: <Widget>[
                     RepeatPeriodListWidget(),
                   ],
                 ),
@@ -46,14 +46,14 @@ Future<void> addTodoDialog({
           TextButton(
             child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
             onPressed: () {
-              bool canPress = _textEditingController.text.isNotEmpty;
+              bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
                 BlocProvider.of<SelectedTodolistBloc>(context).add(
                   SelectedTodolistEventAddNewTodo(
                     todoModel: TodoModel(
                       id: null,
                       accomplished: false,
-                      task: _textEditingController.text,
+                      task: textEditingController.text,
                       parentTodoListId: 123456,
                       repeatPeriod: RepeatPeriodExtension.deserialize(
                           value: _selectedRepeatPeriodIndex),

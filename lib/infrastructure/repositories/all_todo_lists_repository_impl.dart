@@ -10,7 +10,7 @@ import 'package:dartz/dartz.dart';
 class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   final LocalSqliteDataSource localSqliteDataSource;
 
-  AllTodoListsRepositoryImpl({required final this.localSqliteDataSource});
+  AllTodoListsRepositoryImpl({required this.localSqliteDataSource});
 
   @override
   Future<Either<Failure, int>> createNewTodoList({

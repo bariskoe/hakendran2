@@ -37,6 +37,23 @@ class Themes {
     );
   }
 
+  static Color get darkGreenThemeSeed => const Color.fromRGBO(0, 115, 101, 1);
+
+  static ThemeData darkGreenTheme() {
+    return ThemeData(
+        colorSchemeSeed: Themes.darkGreenThemeSeed,
+        brightness: Brightness.light,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          shape: RoundedRectangleBorder(
+              side:
+                  BorderSide(width: 3, color: Color.fromRGBO(250, 241, 230, 1)),
+              borderRadius: BorderRadius.all(Radius.circular(90.0))),
+          backgroundColor: Color.fromRGBO(0, 107, 84, 1),
+        ),
+        useMaterial3: true,
+        textTheme: const TextTheme(bodyMedium: TextStyle()));
+  }
+
   static Color get blueThemeSeed => const Color.fromRGBO(9, 47, 88, 1);
 
   static ThemeData blueTheme() {

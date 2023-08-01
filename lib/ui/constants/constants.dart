@@ -49,4 +49,6 @@ class UiConstantsColors {
     Colors.black54.withOpacity(0.1),
     Colors.black54.withOpacity(0.3)
   ];
+
+  static const Color iconOnDark = Color.fromRGBO(237, 237, 237, 1.0);
 }

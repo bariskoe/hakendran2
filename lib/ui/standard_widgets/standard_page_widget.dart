@@ -47,7 +47,7 @@ class StandardPageWidget extends StatelessWidget {
                           Navigator.pop(context);
                           onPop != null ? onPop!() : () {};
                         })
-                    : null,
+                    : Container(),
                 title: appBarTitle != null
                     ? AppbarTextWidget(text: appBarTitle!)
                     : null,

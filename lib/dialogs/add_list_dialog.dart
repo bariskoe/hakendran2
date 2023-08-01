@@ -13,7 +13,7 @@ import '../bloc/allTodoLists/all_todolists_bloc.dart';
 int _selectedCategoryIndex = 0;
 
 Future<void> addListDialog(BuildContext context) async {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -24,14 +24,14 @@ Future<void> addListDialog(BuildContext context) async {
           mainAxisSize: MainAxisSize.min,
           children: [
             AddItemTextfieldWidget(
-                textEditingController: _textEditingController),
+                textEditingController: textEditingController),
             const SizedBox(
               height: UiConstantsPadding.xxlarge,
             ),
-            Flexible(
+            const Flexible(
               child: SingleChildScrollView(
                 child: ListBody(
-                  children: const <Widget>[
+                  children: <Widget>[
                     CategoryListWidget(),
                   ],
                 ),
@@ -46,11 +46,11 @@ Future<void> addListDialog(BuildContext context) async {
           TextButton(
             child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
             onPressed: () {
-              bool canPress = _textEditingController.text.isNotEmpty;
+              bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
                 BlocProvider.of<AllTodolistsBloc>(context).add(
                     AllTodolistsEventCreateNewTodoList(
-                        listName: _textEditingController.text,
+                        listName: textEditingController.text,
                         todoListCategory: TodoListCategoryExtension.deserialize(
                             _selectedCategoryIndex)));
                 Navigator.of(context).pop();

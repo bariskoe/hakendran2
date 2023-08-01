@@ -246,11 +246,11 @@ class DatabaseHelper {
 
   static Future<bool>
       checkRepeatPeriodsAndResetAccomplishedIfNeccessary() async {
-    final _lock = Lock();
+    final lock = Lock();
     List<TodoModel> listOfTodoModels = await getAllTodos();
     for (TodoModel model in listOfTodoModels) {
       if (model.shouldResetAccomplishmentStatus()) {
-        _lock.synchronized(() async {
+        lock.synchronized(() async {
           await setAccomplishmentStatusOfTodo(
               id: model.id!, accomplished: false);
         });

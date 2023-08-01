@@ -21,7 +21,7 @@ class _ErrorBoxWidgetState extends State<ErrorBoxWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         startAnimation = true;
       });

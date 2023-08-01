@@ -15,7 +15,7 @@ Future<void> editListDialog(
   BuildContext context,
   TodoListModel todoListModel,
 ) async {
-  TextEditingController _textEditingController =
+  TextEditingController textEditingController =
       TextEditingController(text: todoListModel.listName);
   _selectedCategoryIndexInEditListDialog =
       todoListModel.todoListCategory.serialize();
@@ -30,7 +30,7 @@ Future<void> editListDialog(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller: _textEditingController,
+              controller: textEditingController,
               decoration: StandardTextfieldDecoration.textFieldInputDecoration(
                   context: context,
                   labelText: AppLocalizations.of(context)
@@ -40,10 +40,10 @@ Future<void> editListDialog(
             const SizedBox(
               height: UiConstantsPadding.xxlarge,
             ),
-            Flexible(
+            const Flexible(
               child: SingleChildScrollView(
                 child: ListBody(
-                  children: const <Widget>[
+                  children: <Widget>[
                     CategoryListWidget(),
                   ],
                 ),
@@ -58,12 +58,12 @@ Future<void> editListDialog(
           TextButton(
             child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
             onPressed: () {
-              bool canPress = _textEditingController.text.isNotEmpty;
+              bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
                 BlocProvider.of<AllTodolistsBloc>(context)
                     .add(AllTodoListEventUpdateListParameters(
                   id: todoListModel.id!,
-                  listName: _textEditingController.text,
+                  listName: textEditingController.text,
                   todoListCategory: TodoListCategoryExtension.deserialize(
                       _selectedCategoryIndexInEditListDialog!),
                 ));

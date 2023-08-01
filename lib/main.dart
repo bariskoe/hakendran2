@@ -1,27 +1,24 @@
-import 'lifecycle_manager.dart';
-
-import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
+import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import 'dependency_injection.dart';
-import 'pages/main_page.dart';
-import 'simple_bloc_observer.dart';
+import 'firebase_options.dart';
+import 'lifecycle_manager.dart';
+import 'pages/data_preparation_page.dart';
+import 'routing.dart';
 import 'ui/themes/themes.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupDependencyInjectionWithGetIt();
 
-  BlocOverrides.runZoned(
-    () {
-      runApp(const BarisToDoListApp());
-    },
-    blocObserver: SimpleBlocObserver(),
-  );
+  runApp(const BarisToDoListApp());
 }
 
 class BarisToDoListApp extends StatelessWidget {
@@ -36,13 +33,13 @@ class BarisToDoListApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: Themes.blueTheme(),
+        theme: Themes.darkGreenTheme(),
         darkTheme: ThemeData(
-          colorSchemeSeed: Themes.blueThemeSeed,
+          colorSchemeSeed: Themes.darkGreenThemeSeed,
           brightness: Brightness.dark,
           useMaterial3: true,
         ),
-        home: const LifeCycleManager(child: MainPage()),
+        home: const LifeCycleManager(child: DatapreparationPage()),
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -54,6 +51,7 @@ class BarisToDoListApp extends StatelessWidget {
           Locale('de', ''),
           Locale('tr', ''),
         ],
+        routes: Routing.routes,
       ),
     );
   }
