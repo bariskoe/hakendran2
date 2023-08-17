@@ -273,7 +273,19 @@ class MainPageListItemWidget extends StatelessWidget {
           context,
           todoListModel.allAccomplished
               ? UiConstantsColors.allAccomplishedGradientColors
-              : null),
+              :
+              // [
+              //     Color.fromRGBO(230, 244, 245, 1),
+              //     Color.fromRGBO(187, 234, 223, 1),
+              //     Color.fromRGBO(139, 244, 167, 1),
+              //   ]
+              [
+                  Color.fromRGBO(
+                      230, 250, 245, 1), // Fast weiß (sehr helle Grüntönung)
+                  Color.fromRGBO(165, 211, 204, 1), // Helle Grüntönung
+                  Color.fromRGBO(115, 190, 180, 1), // Mittlere Grüntönung
+                  // Hauptfarbe (dunkle Grüntönung)
+                ]),
       child: Row(
         children: [
           Expanded(
