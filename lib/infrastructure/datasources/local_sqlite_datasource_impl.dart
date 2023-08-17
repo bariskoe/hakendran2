@@ -42,7 +42,7 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   Future<int> deleteSpecifiTodoList({
     required int id,
   }) async {
-    return await DatabaseHelper.deleteSpecifiTodoList(
+    return await DatabaseHelper.deleteSpecificTodoList(
       id: id,
     );
   }

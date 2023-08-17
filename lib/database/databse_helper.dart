@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:baristodolistapp/dependency_injection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/todo_list_update_model.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
@@ -110,19 +113,23 @@ class DatabaseHelper {
     TodoListModel todoListModel,
   ) async {
     Database db = await instance.database;
+    saveTimestamp();
     return await db.insert(
         todoListsTableName, todoListModel.toMapForInsertNewListIntoDatabase());
   }
 
   static Future<int> deleteAllTodoLists() async {
     Database db = await instance.database;
+
+    saveTimestamp();
     return await db.delete(todoListsTableName);
   }
 
-  static Future<int> deleteSpecifiTodoList({
+  static Future<int> deleteSpecificTodoList({
     required int id,
   }) async {
     Database db = await instance.database;
+    saveTimestamp();
     return await db.rawDelete(
         'DELETE FROM $todoListsTableName WHERE $todoListsTableFieldId = ?',
         [id]);
@@ -132,6 +139,7 @@ class DatabaseHelper {
     required TodoListUpdateModel todoListUpdateModel,
   }) async {
     Database db = await instance.database;
+    saveTimestamp();
     return await db.rawUpdate(
         'UPDATE $todoListsTableName SET $todoListsTableFieldListName = ?, $todoListsTableFieldCategory = ? WHERE $todoListsTableFieldId = ?',
         [
@@ -160,6 +168,7 @@ class DatabaseHelper {
     required TodoModel todoModel,
   }) async {
     Database db = await instance.database;
+    saveTimestamp();
     return await db.insert(todosTableName, todoModel.toMap());
   }
 
@@ -199,7 +208,7 @@ class DatabaseHelper {
     final update = await db.rawUpdate(
         'UPDATE $todosTableName SET $todosTableFieldAccomplished = ?, $todosTableFieldaccomplishedAt = ? WHERE $todosTableFieldId = ?',
         [status, timeOfAccomplishement, id]);
-
+    saveTimestamp();
     return update;
   }
 
@@ -210,7 +219,7 @@ class DatabaseHelper {
     final update = await db.rawUpdate(
         'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ? WHERE $todosTableFieldId = ?',
         [model.task, model.repeatPeriod.serialize(), model.id]);
-
+    saveTimestamp();
     return update;
   }
 
@@ -220,7 +229,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     final delete = await db.rawDelete(
         'DELETE FROM $todosTableName WHERE $todosTableFieldId = ?', [id]);
-
+    saveTimestamp();
     return delete;
   }
 
@@ -228,6 +237,7 @@ class DatabaseHelper {
     required int id,
   }) async {
     Database db = await instance.database;
+    saveTimestamp();
     return await db.rawUpdate(
         'UPDATE $todosTableName SET $todosTableFieldAccomplished = ? WHERE $todosTableFieldTodoListId = ?',
         [AccomplishmentStatusExtension.serialize(accomplished: false), id]);
@@ -273,4 +283,13 @@ class DatabaseHelper {
       todoListCategory: category,
     );
   }
+}
+
+Future<bool> saveTimestamp() async {
+  final now = DateTime.now().millisecondsSinceEpoch;
+  return await getIt<SharedPreferences>().setInt('DbTimestamp', now);
+}
+
+Future<int> getTimestampOfLastDBTransaction() async {
+  return getIt<SharedPreferences>().getInt('DbTimestamp') ?? 0;
 }

@@ -14,8 +14,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController usernameController =
+      TextEditingController(text: 'bariskoe@gmail.com');
+  TextEditingController passwordController =
+      TextEditingController(text: 'asdfghjkl');
 
   bool loginShowing = true;
   var logger = Logger();
@@ -78,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                               loading = true;
                             });
                             try {
-                              // final credential =
                               var credential = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
                                       email: usernameController.text,
@@ -86,6 +87,12 @@ class _LoginPageState extends State<LoginPage> {
                               // No need to push to MainPage here. FirebaseAuth.instance.authStateChanges() on
                               // DataPreparationPage listens for auth changes and pushes to MainPage.
                               if (credential.user != null) {
+                                Logger().i('Credentials are: $credential');
+                                final idToken = await FirebaseAuth
+                                    .instance.currentUser
+                                    ?.getIdToken(true);
+                                Logger().i('idtoken is $idToken');
+                                logger.i("The credentials are $credential");
                                 loading = false;
                               }
                             } on FirebaseAuthException catch (e) {
@@ -159,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            if (loading) ...[LoadingWidget()]
+            if (loading) ...[const LoadingWidget()]
           ],
         ));
   }
