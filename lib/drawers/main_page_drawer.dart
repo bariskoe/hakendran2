@@ -1,5 +1,14 @@
+import 'package:baristodolistapp/bloc/allTodoLists/all_todolists_bloc.dart';
+import 'package:baristodolistapp/bloc/authentication/authentication_bloc.dart';
+import 'package:baristodolistapp/dependency_injection.dart';
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
+import 'package:baristodolistapp/routing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/route_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../assets.dart';
 import '../strings/string_constants.dart';
@@ -29,10 +38,27 @@ class MainPageDrawer extends Drawer {
                 onTap: () async {
                   // No need to popUntil() LoginPage here. FirebaseAuth.instance.authStateChanges() listens for logouts
                   // and pushes to LoginPage.
-                  await FirebaseAuth.instance.signOut();
+                  //await FirebaseAuth.instance.signOut();
+                  getIt<AuthenticationBloc>().add(AuthenticationEventSignOut());
+
+                  getIt<SharedPreferences>()
+                      .setString(StringConstants.spFirebaseIDTokenKey, '');
+                  //Navigator.popUntil(context, (route) => route.se);
+                  Get.offNamed(RoutingService.loginPage);
                 },
                 child: const Row(
                   children: [Icon(Icons.logout), Text('Logout')],
+                )),
+            SizedBox(
+              height: 50,
+            ),
+            GestureDetector(
+                onTap: () async {
+                  getIt<AllTodolistsBloc>().add(
+                      AllTodolistsEventSynchronizeAllTodoListsWithBackend());
+                },
+                child: const Row(
+                  children: [Icon(Icons.upload), Text('Synchronize')],
                 ))
           ],
         ),

@@ -3,6 +3,7 @@ import '../../models/todolist_model.dart';
 
 class TodoListEntity {
   final int? id;
+  final String? uuid;
 
   final String listName;
   final List<TodoModel> todoModels;
@@ -13,6 +14,7 @@ class TodoListEntity {
     this.todoModels = const [],
     this.id,
     this.todoListCategory = TodoListCategory.none,
+    this.uuid,
   });
 
   TodoListModel toModel() {

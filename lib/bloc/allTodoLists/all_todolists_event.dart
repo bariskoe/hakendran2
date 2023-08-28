@@ -27,26 +27,26 @@ class AllTodolistsEventGetAllTodoLists extends AllTodolistsEvent {}
 class AllTodolistsEventDeleteAllTodoLists extends AllTodolistsEvent {}
 
 class AllTodolistsEventDeleteSpecificTodolist extends AllTodolistsEvent {
-  final int id;
-  const AllTodolistsEventDeleteSpecificTodolist({required this.id});
+  final String uuid;
+  const AllTodolistsEventDeleteSpecificTodolist({required this.uuid});
 
   @override
   List<Object> get props => [id];
 }
 
 class AllTodoListEventUpdateListParameters extends AllTodolistsEvent {
-  final int id;
+  final String uuid;
   final String listName;
   final TodoListCategory todoListCategory;
   const AllTodoListEventUpdateListParameters({
-    required this.id,
+    required this.uuid,
     required this.listName,
     required this.todoListCategory,
   });
 
   @override
   List<Object> get props => [
-        id,
+        uuid,
         listName,
         todoListCategory,
       ];
@@ -54,3 +54,9 @@ class AllTodoListEventUpdateListParameters extends AllTodolistsEvent {
 
 class AllTodoListEventCheckRepeatPeriodsAndResetAccomplishedIfNeccessary
     extends AllTodolistsEvent {}
+
+//  Overwrites the state of the Firebase data with the data in the local database
+class AllTodolistsEventSynchronizeAllTodoListsWithBackend
+    extends AllTodolistsEvent {}
+
+class AllTodoListEvenGetAllTodoListsFromBackend extends AllTodolistsEvent {}

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:logger/logger.dart';
 
 import '../../domain/failures/failures.dart';
 import '../../domain/usecases/all_todolists_usecases.dart';
@@ -17,10 +18,10 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
   final AllTodoListsUsecases allTodoListsUsecases;
 
-  AllTodolistsBloc(
-      {required SelectedTodolistBloc selectedTodolistBloc,
-      required this.allTodoListsUsecases})
-      : _selectedTodolistBloc = selectedTodolistBloc,
+  AllTodolistsBloc({
+    required SelectedTodolistBloc selectedTodolistBloc,
+    required this.allTodoListsUsecases,
+  })  : _selectedTodolistBloc = selectedTodolistBloc,
         super(AllTodolistsInitial()) {
     _selectedTodolistBloc.stream.listen((state) {
       if (state is SelectedTodolistStateLoaded) {
@@ -37,6 +38,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
         emit(AllTodoListsStateLoading());
+        // This id is not the uuid of the created TodoList
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
           todoListEntity: TodoListModel(
@@ -54,6 +56,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         });
       },
     );
+
     on<AllTodolistsEventGetAllTodoLists>(
       (event, emit) async {
         emit(AllTodoListsStateLoading());
@@ -71,13 +74,56 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       },
     );
 
+    on<AllTodolistsEventSynchronizeAllTodoListsWithBackend>(
+        (event, emit) async {
+      emit(AllTodoListsStateSynchronizingWithBackend());
+
+      Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
+          await allTodoListsUsecases.getAllTodoLists();
+
+      await failureOrListOfTodoListModels.fold((l) => null, (todolists) async {
+        if (todolists.isEmpty) {
+          emit(AllTodoListsStateListEmpty());
+        } else {
+          Either<Failure, bool> uploadToBackendSuccessful =
+              await allTodoListsUsecases
+                  .synchronizeAllTodoListsWithBackend(todolists);
+          uploadToBackendSuccessful.fold((l) {
+            emit(AllTodoListsStateError());
+          }, (r) {
+            emit(AllTodoListsStateLoaded(listOfAllLists: todolists));
+          });
+        }
+      });
+    });
+
+    on<AllTodoListEvenGetAllTodoListsFromBackend>((event, emit) async {
+      emit(AllTodoListsStateLoading());
+      Either<Failure, Map<String, dynamic>?> data =
+          await allTodoListsUsecases.getAllTodoListsFromBackend();
+      data.fold((l) => emit(AllTodoListsStateListEmpty()), (r) {
+        Logger().i('lists: $r');
+        if (r != null) {
+          final List todolists = r['lists'];
+          todolists.sort((a, b) => a['id'].compareTo(b['id']));
+          for (Map<String, dynamic> todoList in todolists) {
+            add(AllTodolistsEventCreateNewTodoList(
+                listName: todoList['listName'],
+                todoListCategory: TodoListCategoryExtension.deserialize(
+                    todoList['category'])));
+          }
+        }
+        emit(AllTodoListsStateDataPreparationComplete());
+      });
+    });
+
     on<AllTodoListEventUpdateListParameters>((event, emit) async {
       emit(AllTodoListsStateLoading());
 
       Either<Failure, int> failureOrChanges =
           await allTodoListsUsecases.updateSpecificListParameters(
               todoListUpdateModel: TodoListUpdateModel(
-        id: event.id,
+        uuid: event.uuid,
         listName: event.listName,
         todoListCategory: event.todoListCategory,
       ));
@@ -93,7 +139,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
       Either<Failure, int> failureOrChangesMade =
-          await allTodoListsUsecases.deleteSpecifiTodoList(id: event.id);
+          await allTodoListsUsecases.deleteSpecifiTodoList(uuid: event.uuid);
 
       failureOrChangesMade.fold(
           (l) => emit(AllTodoListsStateError()), (r) => null);

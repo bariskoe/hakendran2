@@ -17,7 +17,7 @@ part 'selected_todolist_state.dart';
 
 class SelectedTodolistBloc
     extends Bloc<SelectedTodolistEvent, SelectedTodolistState> {
-  int? selectedTodoList;
+  String? selectedTodoList;
   SelectedTodolistUsecases selectedTodolistUsecases;
   SelectedTodolistBloc({required this.selectedTodolistUsecases})
       : super(SelectedTodolistInitial()) {
@@ -31,7 +31,7 @@ class SelectedTodolistBloc
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
       emit(SelectedTodoListStateLoading());
       Either<Failure, TodoListEntity> model =
-          await selectedTodolistUsecases.getSpecificTodoList(id: event.id);
+          await selectedTodolistUsecases.getSpecificTodoList(uuid: event.uuid);
       model.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
@@ -61,7 +61,7 @@ class SelectedTodolistBloc
         didSave.fold(
             (l) => emit(SelectedTodolistStateError()),
             (r) => add(SelectedTodolistEventLoadSelectedTodolist(
-                id: selectedTodoList!)));
+                uuid: selectedTodoList!)));
       }
     });
 
@@ -70,18 +70,18 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodoListEventSelectSpecificTodoList>((event, emit) async {
-      selectedTodoList = event.id;
+      selectedTodoList = event.uuid;
     });
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(
       (event, emit) async {
         Either<Failure, int> changes =
             await selectedTodolistUsecases.setAccomplishmentStatusOfTodo(
-                id: event.id, accomplished: event.accomplished);
+                uuid: event.uuid, accomplished: event.accomplished);
         changes.fold(
           (l) => emit(SelectedTodolistStateError()),
           (r) => add(
-            SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+            SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
           ),
         );
       },
@@ -95,13 +95,13 @@ class SelectedTodolistBloc
       changes.fold(
         (l) => emit(SelectedTodolistStateError()),
         (r) => add(
-          SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+          SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
         ),
       );
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
-      await DatabaseHelper.deleteSpecificTodo(id: event.id);
+      await DatabaseHelper.deleteSpecificTodo(uuid: event.uuid);
 //No need to reload the list here. The Dismissible Listview takes care of the ui.
     });
 
@@ -109,12 +109,12 @@ class SelectedTodolistBloc
       emit(SelectedTodoListStateLoading());
 
       Either<Failure, int> failureOrChanges = await selectedTodolistUsecases
-          .resetAllTodosOfSpecificList(id: selectedTodoList!);
+          .resetAllTodosOfSpecificList(uuid: selectedTodoList!);
 
       failureOrChanges.fold(
         (l) => emit(SelectedTodolistStateError()),
         (r) => add(
-          SelectedTodolistEventLoadSelectedTodolist(id: selectedTodoList!),
+          SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
         ),
       );
     });

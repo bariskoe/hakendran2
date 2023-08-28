@@ -1,13 +1,13 @@
-import '../models/todolist_model.dart';
-import '../ui/constants/constants.dart';
-
-import '../ui/standard_widgets/standard_ui_widgets.dart';
-import '../ui/standard_widgets/standart_text_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
+import '../dependency_injection.dart';
+import '../models/todolist_model.dart';
+import '../ui/constants/constants.dart';
+import '../ui/standard_widgets/standard_ui_widgets.dart';
+import '../ui/standard_widgets/standart_text_widgets.dart';
 
 int? _selectedCategoryIndexInEditListDialog;
 
@@ -53,21 +53,22 @@ Future<void> editListDialog(
         ),
         actions: <Widget>[
           TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Get.back(),
               child: Text(AppLocalizations.of(context)?.cancel ?? 'null')),
           TextButton(
             child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
-                BlocProvider.of<AllTodolistsBloc>(context)
+                getIt<AllTodolistsBloc>()
                     .add(AllTodoListEventUpdateListParameters(
-                  id: todoListModel.id!,
+                  uuid: todoListModel.uuid!,
                   listName: textEditingController.text,
                   todoListCategory: TodoListCategoryExtension.deserialize(
                       _selectedCategoryIndexInEditListDialog!),
                 ));
-                Navigator.of(context).pop();
+
+                Get.back();
               }
             },
           ),

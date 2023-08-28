@@ -1,3 +1,6 @@
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
+import 'package:logger/logger.dart';
+
 import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
 
@@ -9,8 +12,12 @@ import 'package:dartz/dartz.dart';
 
 class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   final LocalSqliteDataSource localSqliteDataSource;
+  final ApiDatasource apiDatasource;
 
-  AllTodoListsRepositoryImpl({required this.localSqliteDataSource});
+  AllTodoListsRepositoryImpl({
+    required this.localSqliteDataSource,
+    required this.apiDatasource,
+  });
 
   @override
   Future<Either<Failure, int>> createNewTodoList({
@@ -53,9 +60,11 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   }
 
   @override
-  Future<Either<Failure, int>> deleteSpecifiTodoList({required int id}) async {
+  Future<Either<Failure, int>> deleteSpecifiTodoList(
+      {required String uuid}) async {
     try {
-      int changes = await localSqliteDataSource.deleteSpecifiTodoList(id: id);
+      int changes =
+          await localSqliteDataSource.deleteSpecifiTodoList(uuid: uuid);
       if (changes > 0) {
         return Right(changes);
       } else {
@@ -85,6 +94,31 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
       return Right(success);
     } catch (e) {
       return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+      {required List<TodoListModel> todoLists}) async {
+    try {
+      bool success =
+          await apiDatasource.synchronizeAllTodoListsWithBackend(todoLists);
+      return Right(success);
+    } catch (e) {
+      return Left(ApiFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>?>>
+      getAllTodoListsFromBackend() async {
+    try {
+      Map<String, dynamic>? data =
+          await apiDatasource.getAllTodoListsFromBackend();
+      return Right(data);
+    } catch (e) {
+      Logger().i(e);
+      return Left(ApiFailure());
     }
   }
 }

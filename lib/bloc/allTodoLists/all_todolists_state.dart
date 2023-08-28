@@ -9,6 +9,9 @@ abstract class AllTodolistsState extends Equatable {
 
 class AllTodoListsStateLoading extends AllTodolistsState {}
 
+// Can be used during upload to or download from backend
+class AllTodoListsStateSynchronizingWithBackend extends AllTodolistsState {}
+
 class AllTodoListsStateError extends AllTodolistsState {}
 
 class AllTodolistsInitial extends AllTodolistsState {}
@@ -23,3 +26,5 @@ class AllTodoListsStateLoaded extends AllTodolistsState {
 }
 
 class AllTodoListsStateListEmpty extends AllTodolistsState {}
+
+class AllTodoListsStateDataPreparationComplete extends AllTodolistsState {}

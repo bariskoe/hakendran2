@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -90,10 +91,8 @@ _buildError(BuildContext context) {
 _buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
   return StandardPageWidget(
     onPop: () {
-      BlocProvider.of<SelectedTodolistBloc>(context)
-          .add(SelectedTodolistEventUnselect());
-      BlocProvider.of<AllTodolistsBloc>(context)
-          .add(AllTodolistsEventGetAllTodoLists());
+      getIt<SelectedTodolistBloc>().add(SelectedTodolistEventUnselect());
+      getIt<AllTodolistsBloc>().add(AllTodolistsEventGetAllTodoLists());
     },
     appBarTitle: state.todoListModel.listName,
     child: Stack(
@@ -158,7 +157,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //so that an invisible container with a height of 100 can be added.
     List<TodoModel> reversedList = List.from(list.reversed)
       ..add(const TodoModel(
-          id: null, task: '', accomplished: false, parentTodoListId: 1234567));
+          id: null, task: '', accomplished: false, parentTodoListId: 'Test'));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),
@@ -194,7 +193,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                             .removeWhere((element) => element.id == model.id);
                         BlocProvider.of<SelectedTodolistBloc>(context).add(
                             SelectedTodolistEventDeleteSpecificTodo(
-                                id: model.id!));
+                                uuid: model.uuid!));
                       },
                       key: UniqueKey(),
                       background: const SwipeToDeleteBackgroundWidget(),
@@ -251,7 +250,7 @@ class ListElement extends StatelessWidget {
                   onTap: () {
                     BlocProvider.of<SelectedTodolistBloc>(context).add(
                       SelectedTodolistEventUpdateAccomplishedOfTodo(
-                        id: model.id!,
+                        uuid: model.uuid!,
                         accomplished: !model.accomplished,
                       ),
                     );
@@ -347,7 +346,7 @@ class FABrowOfDetailPage extends StatelessWidget {
                       heroTag: const Text('button3'),
                       child: const Icon(Icons.refresh),
                       onPressed: () {
-                        BlocProvider.of<SelectedTodolistBloc>(context).add(
+                        getIt<SelectedTodolistBloc>().add(
                           const SelectedTodoListEventResetAll(),
                         );
                       }),

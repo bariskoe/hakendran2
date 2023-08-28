@@ -1,12 +1,12 @@
 import '../../models/todolist_model.dart';
 
 class TodoListUpdateEntity {
-  int id;
+  String uuid;
   String listName;
   TodoListCategory todoListCategory;
 
   TodoListUpdateEntity({
-    required this.id,
+    required this.uuid,
     required this.listName,
     required this.todoListCategory,
   });

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
+import '../database/databse_helper.dart';
+import '../dependency_injection.dart';
 import '../dialogs/add_list_dialog.dart';
 import '../dialogs/edit_todolist_dialog.dart';
 import '../drawers/main_page_drawer.dart';
@@ -38,6 +41,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    getIt<AllTodolistsBloc>().add(AllTodolistsEventGetAllTodoLists());
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -68,7 +72,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             onTap: () => Scaffold.of(context).openEndDrawer(),
           );
-        })
+        }),
+        GestureDetector(
+          child: const Padding(
+            padding: EdgeInsets.only(right: UiConstantsPadding.xlarge),
+            child: Icon(Icons.account_tree_rounded),
+          ),
+          onTap: () {
+            DatabaseHelper.getAllTodos();
+          },
+        )
       ],
       drawer: const MainPageDrawer(),
       willPop: false,
@@ -224,7 +237,7 @@ class DismissibleListElement extends StatelessWidget {
       onDismissed: (dismissdirection) {
         MainPage.justDismissedList = true;
         BlocProvider.of<AllTodolistsBloc>(context).add(
-          AllTodolistsEventDeleteSpecificTodolist(id: model.id!),
+          AllTodolistsEventDeleteSpecificTodolist(uuid: model.uuid!),
         );
       },
       child: Container(
@@ -236,19 +249,15 @@ class DismissibleListElement extends StatelessWidget {
             todoListModel: model,
           ),
           onTap: () {
-            BlocProvider.of<SelectedTodolistBloc>(context).add(
-              SelectedTodoListEventSelectSpecificTodoList(id: model.id!),
+            getIt<SelectedTodolistBloc>().add(
+              SelectedTodoListEventSelectSpecificTodoList(uuid: model.uuid!),
             );
 
-            BlocProvider.of<SelectedTodolistBloc>(context).add(
-              SelectedTodolistEventLoadSelectedTodolist(id: model.id!),
+            getIt<SelectedTodolistBloc>().add(
+              SelectedTodolistEventLoadSelectedTodolist(uuid: model.uuid!),
             );
 
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const TodoListDetailPage(),
-                ));
+            Get.to(const TodoListDetailPage());
           },
           onLongPress: () => editListDialog(
             context,
@@ -273,19 +282,7 @@ class MainPageListItemWidget extends StatelessWidget {
           context,
           todoListModel.allAccomplished
               ? UiConstantsColors.allAccomplishedGradientColors
-              :
-              // [
-              //     Color.fromRGBO(230, 244, 245, 1),
-              //     Color.fromRGBO(187, 234, 223, 1),
-              //     Color.fromRGBO(139, 244, 167, 1),
-              //   ]
-              [
-                  Color.fromRGBO(
-                      230, 250, 245, 1), // Fast weiß (sehr helle Grüntönung)
-                  Color.fromRGBO(165, 211, 204, 1), // Helle Grüntönung
-                  Color.fromRGBO(115, 190, 180, 1), // Mittlere Grüntönung
-                  // Hauptfarbe (dunkle Grüntönung)
-                ]),
+              : UiConstantsColors.listElementBrightColors),
       child: Row(
         children: [
           Expanded(

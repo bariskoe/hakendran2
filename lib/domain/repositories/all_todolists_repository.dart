@@ -17,6 +17,11 @@ abstract class AllTodoListsRepository {
   /// in the database
   Future<Either<Failure, List<TodoListModel>>> getAllTodoLists();
 
+  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+      {required List<TodoListModel> todoLists});
+
+  Future<Either<Failure, Map<String, dynamic>?>> getAllTodoListsFromBackend();
+
   // Updates the fields of a specific TodoList. Returns a [DatabaseFailure]
   // if anything goes wrong
   Future<Either<Failure, int>> updateSpecificListParameters(
@@ -24,7 +29,7 @@ abstract class AllTodoListsRepository {
 
   // Deletes the TodoList which has the provided id. Returns a [DatabaseFailure]
   // if anything goes wrong
-  Future<Either<Failure, int>> deleteSpecifiTodoList({required int id});
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uuid});
 
   /// Loops through all Todos and checks sets the field "accomplished" to false
   /// if the reset period has passed.

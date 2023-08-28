@@ -1,12 +1,16 @@
-import 'package:baristodolistapp/ui/constants/constants.dart';
-import 'package:baristodolistapp/ui/standard_widgets/loading_widget.dart';
-import 'package:baristodolistapp/ui/standard_widgets/standard_page_widget.dart';
-import 'package:baristodolistapp/ui/standard_widgets/standard_ui_widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
+import '../bloc/authentication/authentication_bloc.dart';
+import '../dependency_injection.dart';
+import '../routing.dart';
+import '../ui/constants/constants.dart';
+import '../ui/standard_widgets/loading_widget.dart';
+import '../ui/standard_widgets/standard_page_widget.dart';
+import '../ui/standard_widgets/standard_ui_widgets.dart';
+
 class LoginPage extends StatefulWidget {
+  static String id = RoutingService.loginPage;
   const LoginPage({super.key});
 
   @override
@@ -79,33 +83,10 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               loading = true;
                             });
-                            try {
-                              var credential = await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: usernameController.text,
-                                      password: passwordController.text);
-                              // No need to push to MainPage here. FirebaseAuth.instance.authStateChanges() on
-                              // DataPreparationPage listens for auth changes and pushes to MainPage.
-                              if (credential.user != null) {
-                                Logger().i('Credentials are: $credential');
-                                final idToken = await FirebaseAuth
-                                    .instance.currentUser
-                                    ?.getIdToken(true);
-                                Logger().i('idtoken is $idToken');
-                                logger.i("The credentials are $credential");
-                                loading = false;
-                              }
-                            } on FirebaseAuthException catch (e) {
-                              setState(() {
-                                loading = false;
-                              });
-                              if (e.code == 'user-not-found') {
-                                logger.d('No user found for that email.');
-                              } else if (e.code == 'wrong-password') {
-                                logger.d(
-                                    'Wrong password provided for that user.');
-                              }
-                            }
+                            getIt<AuthenticationBloc>().add(
+                                AuthenticationEventSignInWithEmailAndPassword(
+                                    email: usernameController.text,
+                                    password: passwordController.text));
                           },
                           child: const Text('Login'))
                     ] else ...[
@@ -114,29 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                           setState(() {
                             loading = true;
                           });
-                          try {
-                            final credential = await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                                    email: usernameController.text,
-                                    password: passwordController.text);
-                            if (credential.user != null) {
-                              loading = false;
-                            }
-
-                            logger.i("The credentials are $credential");
-                          } on FirebaseAuthException catch (e) {
-                            setState(() {
-                              loading = false;
-                            });
-                            if (e.code == 'weak-password') {
-                              logger.e('The password provided is too weak.');
-                            } else if (e.code == 'email-already-in-use') {
-                              logger.e(
-                                  'The account already exists for that email.');
-                            }
-                          } catch (e) {
-                            logger.e('Error Message: $e');
-                          }
+                          getIt<AuthenticationBloc>().add(
+                              AuthenticationEventCreateUserWithEmailAndPassword(
+                                  email: usernameController.text,
+                                  password: passwordController.text));
                         },
                         child: const Text('Register'),
                       ),

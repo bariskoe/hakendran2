@@ -49,6 +49,12 @@ class UiConstantsColors {
     Colors.black54.withOpacity(0.1),
     Colors.black54.withOpacity(0.3)
   ];
+  static List<Color> listElementBrightColors = [
+    const Color.fromRGBO(230, 250, 245, 1), // Fast weiß (sehr helle Grüntönung)
+    const Color.fromRGBO(165, 211, 204, 1), // Helle Grüntönung
+    Color.fromRGBO(115, 190, 180, 1), // Mittlere Grüntönung
+    // Hauptfarbe (dunkle Grüntönung)
+  ];
 
   static const Color iconOnDark = Color.fromRGBO(237, 237, 237, 1.0);
 }

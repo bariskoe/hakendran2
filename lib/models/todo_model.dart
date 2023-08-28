@@ -1,13 +1,17 @@
+import 'package:uuid/uuid.dart';
+
 import '../database/databse_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TodoModel extends Equatable {
+  //! I think this field will be obsolete if there is a uuid field
   final int? id;
+  final String? uuid;
   final String task;
   final bool accomplished;
-  final int parentTodoListId;
+  final String parentTodoListId;
   final RepeatPeriod repeatPeriod;
   final DateTime? accomplishedAt;
 
@@ -16,17 +20,20 @@ class TodoModel extends Equatable {
     required this.task,
     required this.accomplished,
     required this.parentTodoListId,
+    this.uuid,
     this.repeatPeriod = RepeatPeriod.none,
     this.accomplishedAt,
   });
 
   factory TodoModel.fromMap(Map<dynamic, dynamic> map) {
     return TodoModel(
+      //! I think this field will be obsolete if there is a uuid field
       id: map[DatabaseHelper.todosTableFieldId],
+      uuid: map[DatabaseHelper.todosTableFieldTodoUuId],
       task: map[DatabaseHelper.todosTableFieldTask],
       accomplished: AccomplishmentStatusExtension.deserialize(
           value: map[DatabaseHelper.todosTableFieldAccomplished]),
-      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListId],
+      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUuId],
       repeatPeriod: RepeatPeriodExtension.deserialize(
         value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
       ),
@@ -38,12 +45,15 @@ class TodoModel extends Equatable {
   }
 
   Map<String, dynamic> toMap() {
+    var uuidLibrary = const Uuid();
     return {
+      //! I think this field will be obsolete if there is a uuid field
       DatabaseHelper.todosTableFieldId: id,
+      DatabaseHelper.todoListsTableFieldUuId: uuid ?? uuidLibrary.v1(),
       DatabaseHelper.todosTableFieldTask: task,
       DatabaseHelper.todosTableFieldAccomplished:
           AccomplishmentStatusExtension.serialize(accomplished: accomplished),
-      DatabaseHelper.todosTableFieldTodoListId: parentTodoListId,
+      DatabaseHelper.todosTableFieldTodoListUuId: parentTodoListId,
       DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod.serialize(),
       DatabaseHelper.todosTableFieldaccomplishedAt:
           accomplishedAt?.millisecondsSinceEpoch
@@ -53,6 +63,7 @@ class TodoModel extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        uuid,
         task,
         accomplished,
         parentTodoListId,

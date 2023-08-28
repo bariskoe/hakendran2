@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
+import 'bloc/authentication/authentication_bloc.dart';
 import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import 'dependency_injection.dart';
 import 'firebase_options.dart';
 import 'lifecycle_manager.dart';
-import 'pages/data_preparation_page.dart';
+import 'pages/initial_routing_page.dart';
 import 'routing.dart';
 import 'ui/themes/themes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await setupDependencyInjectionWithGetIt();
 
   runApp(const BarisToDoListApp());
@@ -28,10 +31,11 @@ class BarisToDoListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => getIt<AuthenticationBloc>()),
         BlocProvider(create: (context) => getIt<AllTodolistsBloc>()),
         BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: Themes.darkGreenTheme(),
         darkTheme: ThemeData(
@@ -39,7 +43,7 @@ class BarisToDoListApp extends StatelessWidget {
           brightness: Brightness.dark,
           useMaterial3: true,
         ),
-        home: const LifeCycleManager(child: DatapreparationPage()),
+        home: const LifeCycleManager(child: InitialRoutingPage()),
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -51,7 +55,7 @@ class BarisToDoListApp extends StatelessWidget {
           Locale('de', ''),
           Locale('tr', ''),
         ],
-        routes: Routing.routes,
+        getPages: RoutingService.getXRoutes,
       ),
     );
   }

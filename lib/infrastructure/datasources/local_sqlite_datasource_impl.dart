@@ -40,10 +40,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> deleteSpecifiTodoList({
-    required int id,
+    required String uuid,
   }) async {
     return await DatabaseHelper.deleteSpecificTodoList(
-      id: id,
+      uuid: uuid,
     );
   }
 
@@ -60,10 +60,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<TodoListEntity> getSpecificTodoList({
-    required int id,
+    required String uuid,
   }) async {
     return await DatabaseHelper.getSpecificTodoList(
-      id: id,
+      uuid: uuid,
     );
   }
 
@@ -78,11 +78,11 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> setAccomplishmentStatusOfTodo({
-    required int id,
+    required String uuid,
     required bool accomplished,
   }) async {
     return await DatabaseHelper.setAccomplishmentStatusOfTodo(
-      id: id,
+      uuid: uuid,
       accomplished: accomplished,
     );
   }
@@ -98,10 +98,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> resetAllTodosOfSpecificList({
-    required int id,
+    required String uuid,
   }) async {
     return await DatabaseHelper.resetAllTodosOfSpecificList(
-      id: id,
+      uuid: uuid,
     );
   }
 }

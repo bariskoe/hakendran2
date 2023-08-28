@@ -22,14 +22,24 @@ class AllTodoListsUsecases {
     return allTodoListsRepository.getAllTodoLists();
   }
 
+  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+      List<TodoListModel> todoLists) async {
+    return allTodoListsRepository.synchronizeAllTodoListsWithBackend(
+        todoLists: todoLists);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>?>> getAllTodoListsFromBackend() {
+    return allTodoListsRepository.getAllTodoListsFromBackend();
+  }
+
   Future<Either<Failure, int>> updateSpecificListParameters(
       {required TodoListUpdateModel todoListUpdateModel}) {
     return allTodoListsRepository.updateSpecificListParameters(
         todoListUpdateModel: todoListUpdateModel);
   }
 
-  Future<Either<Failure, int>> deleteSpecifiTodoList({required int id}) {
-    return allTodoListsRepository.deleteSpecifiTodoList(id: id);
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uuid}) {
+    return allTodoListsRepository.deleteSpecifiTodoList(uuid: uuid);
   }
 
   Future<Either<Failure, bool>>
