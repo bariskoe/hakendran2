@@ -21,7 +21,12 @@ class AuthenticationBloc
 
     // });
 
+    on<AuthenticationEventInitialize>((event, emit) {
+      Logger().d('AuthenticationEventInitialize received');
+    });
+
     on<AuthenticationEventIsSignedIn>((event, emit) {
+      Logger().d('emitting authenticationstateIsLoggedIn');
       emit(AuthenticationStateLoggedIn());
     });
     on<AuthenticationEventEmitSignedOut>((event, emit) {
@@ -29,6 +34,7 @@ class AuthenticationBloc
     });
 
     User? currentuser = getIt<FirebaseAuth>().currentUser;
+    Logger().d('currentuser in AuthenticationBloc: $currentuser');
     if (currentuser == null) {
       add(AuthenticationEventEmitSignedOut());
     } else {
@@ -44,6 +50,7 @@ class AuthenticationBloc
       //! Bei einem Failure muss ein Error emitted werden
       failureOrUserCredential.fold((l) => null, (r) async {
         if (r.user != null) {
+          Logger().i('Right is: $r');
           Logger().i('Credentials are: ${r.credential}');
           final idToken =
               await getIt<FirebaseAuth>().currentUser?.getIdToken(true);
@@ -51,8 +58,9 @@ class AuthenticationBloc
           if (idToken != null) {
             getIt<SharedPreferences>()
                 .setString(StringConstants.spFirebaseIDTokenKey, idToken);
-            getIt<AuthenticationBloc>().add(AuthenticationEventIsSignedIn());
+            add(AuthenticationEventIsSignedIn());
           }
+          Logger().i('idToken is $idToken');
         }
       });
     });

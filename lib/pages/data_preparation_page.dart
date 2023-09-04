@@ -1,10 +1,12 @@
+import 'package:baristodolistapp/dependency_injection.dart';
+import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
+import 'package:logger/logger.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
-import '../dependency_injection.dart';
 import '../routing.dart';
 import '../ui/standard_widgets/loading_widget.dart';
 
@@ -21,7 +23,8 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
   @override
   void initState() {
     super.initState();
-    // getIt<AllTodolistsBloc>().add(AllTodoListEvenGetAllTodoListsFromBackend());
+
+    getIt<AllTodolistsBloc>().add(AllTodoListEvenGetAllTodoListsFromBackend());
     //! Hier muss der Synchrinisierungscheck rein
   }
 
@@ -29,6 +32,7 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AllTodolistsBloc, AllTodolistsState>(
         listener: (context, state) {
+      Logger().d('state in datapage is $state');
       if (state is AllTodoListsStateDataPreparationComplete) {
         Get.toNamed(RoutingService.mainPage);
       }

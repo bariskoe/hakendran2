@@ -1,7 +1,10 @@
+import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '../../domain/failures/failures.dart';
 import '../../domain/usecases/all_todolists_usecases.dart';
@@ -15,11 +18,12 @@ part 'all_todolists_state.dart';
 
 class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
   final SelectedTodolistBloc _selectedTodolistBloc;
-
+  final ConnectivityRepository connectivityRepository;
   final AllTodoListsUsecases allTodoListsUsecases;
 
   AllTodolistsBloc({
     required SelectedTodolistBloc selectedTodolistBloc,
+    required this.connectivityRepository,
     required this.allTodoListsUsecases,
   })  : _selectedTodolistBloc = selectedTodolistBloc,
         super(AllTodolistsInitial()) {
@@ -97,22 +101,42 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       });
     });
 
-    on<AllTodoListEvenGetAllTodoListsFromBackend>((event, emit) async {
+    _allTodoListEvenGetAllTodoListsFromBackend(event, emit) async {
+      Logger().d('AllTodoListEvenGetAllTodoListsFromBackend received');
       emit(AllTodoListsStateLoading());
+      //! Check connectivity in background and retrun connectivityfailure if not connected
       Either<Failure, Map<String, dynamic>?> data =
           await allTodoListsUsecases.getAllTodoListsFromBackend();
-      data.fold((l) => emit(AllTodoListsStateListEmpty()), (r) {
+      data.fold((l) {
+        Logger()
+            .d('Failure in allTodoListsUsecases.getAllTodoListsFromBackend');
+        emit(AllTodoListsStateListEmpty());
+      }, (r) async {
         Logger().i('lists: $r');
-        if (r != null) {
-          final List todolists = r['lists'];
-          todolists.sort((a, b) => a['id'].compareTo(b['id']));
-          for (Map<String, dynamic> todoList in todolists) {
-            add(AllTodolistsEventCreateNewTodoList(
-                listName: todoList['listName'],
-                todoListCategory: TodoListCategoryExtension.deserialize(
-                    todoList['category'])));
-          }
+
+        final List todolists = r?['lists'];
+        // todolists.sort((a, b) => a['id'].compareTo(b['id']));
+
+        Future<void> saveListOfTodolistsLocally(List<dynamic> todoLists) async {
+          Future.wait(todolists.map((todoList) async =>
+              await allTodoListsUsecases.createNewTodoList(
+                  todoListEntity: TodoListModel(
+                      id: todoList['id'],
+                      listName: todoList['listName'],
+                      todoListCategory: TodoListCategoryExtension.deserialize(
+                          todoList['category']),
+                      todoModels: []))));
         }
+
+        await saveListOfTodolistsLocally(todolists);
+      });
+    }
+
+    on<AllTodoListEvenGetAllTodoListsFromBackend>((event, emit) async {
+      await _allTodoListEvenGetAllTodoListsFromBackend(event, emit)
+          .whenComplete(() {
+        Logger().d('emitting AllTodoListsStateDataPreparationComplete');
+
         emit(AllTodoListsStateDataPreparationComplete());
       });
     });

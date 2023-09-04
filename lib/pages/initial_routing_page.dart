@@ -1,14 +1,13 @@
-import 'package:baristodolistapp/bloc/authentication/authentication_bloc.dart';
-import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:baristodolistapp/pages/data_preparation_page.dart';
-import 'package:baristodolistapp/pages/login_page.dart';
-import 'package:baristodolistapp/pages/main_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
+import '../bloc/authentication/authentication_bloc.dart';
 import '../routing.dart';
+import 'login_page.dart';
+import 'main_page.dart';
 
 class InitialRoutingPage extends StatefulWidget {
   static String id = RoutingService.initialRoutingPage;
@@ -27,17 +26,22 @@ class _InitialRoutingPageState extends State<InitialRoutingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state) {
-        if (state is AuthenticationStateLoggedOut) {
-          return const LoginPage();
-        }
-        if (state is AuthenticationStateLoggedIn) {
-          return const MainPage();
-          //const DatapreparationPage();
-        }
-        return const LoginPage();
-      }),
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is AuthenticationStateLoggedOut) {
+            Logger()
+                .d('state in AuthBloc is AuthenticationStateLoggedOut $state');
+            Get.to(const LoginPage());
+          }
+          if (state is AuthenticationStateLoggedIn) {
+            Logger()
+                .d('state in AuthBloc is AuthenticationStateLoggedIn $state');
+            Get.to(DatapreparationPage());
+            // Get.to(() => const MainPage());
+          }
+        },
+        child: const LoginPage(),
+      ),
     );
   }
 }

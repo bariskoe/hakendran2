@@ -22,6 +22,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       return right(userCredential);
     } catch (e) {
       //Implement custom Firebase Failures here
+      Logger().e('Error in Login: $e');
       return Left(ApiFailure());
     }
   }

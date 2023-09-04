@@ -31,7 +31,9 @@ class BarisToDoListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => getIt<AuthenticationBloc>()),
+        BlocProvider(
+            create: (context) => getIt<AuthenticationBloc>()
+              ..add(AuthenticationEventInitialize())),
         BlocProvider(create: (context) => getIt<AllTodolistsBloc>()),
         BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
       ],

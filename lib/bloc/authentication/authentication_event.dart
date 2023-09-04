@@ -38,3 +38,5 @@ class AuthenticationEventIsSignedIn extends AuthenticationEvent {}
 class AuthenticationEventIsSignedOut extends AuthenticationEvent {}
 
 class AuthenticationEventEmitSignedOut extends AuthenticationEvent {}
+
+class AuthenticationEventInitialize extends AuthenticationEvent {}

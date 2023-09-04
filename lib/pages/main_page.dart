@@ -79,7 +79,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             child: Icon(Icons.account_tree_rounded),
           ),
           onTap: () {
-            DatabaseHelper.getAllTodos();
+            DatabaseHelper.deleteAllTodoLists();
           },
         )
       ],
@@ -236,7 +236,7 @@ class DismissibleListElement extends StatelessWidget {
       background: const SwipeToDeleteBackgroundWidget(),
       onDismissed: (dismissdirection) {
         MainPage.justDismissedList = true;
-        BlocProvider.of<AllTodolistsBloc>(context).add(
+        getIt<AllTodolistsBloc>().add(
           AllTodolistsEventDeleteSpecificTodolist(uuid: model.uuid!),
         );
       },

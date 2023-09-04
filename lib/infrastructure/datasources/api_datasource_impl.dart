@@ -3,6 +3,7 @@ import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
 import 'package:baristodolistapp/models/todolist_model.dart';
 import 'package:baristodolistapp/strings/string_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,12 +40,16 @@ class ApiDatasourceImpl implements ApiDatasource {
   }
 
   Future<Map<String, dynamic>> sendGetRequest(String url) async {
-    final String? token = getIt<SharedPreferences>()
-        .getString(StringConstants.spFirebaseIDTokenKey);
+    final String? token =
+        // getIt<SharedPreferences>().getString(StringConstants.spFirebaseIDTokenKey);
+        await getIt<FirebaseAuth>()
+            .currentUser
+            ?.getIdTokenResult(true)
+            .then((value) => value.token);
 
     if (token == null || token.isEmpty) {
       throw Exception(
-          'Failed to send POST request. No Firebase id token available in SharedPreferences');
+          'Failed to send GET request. No Firebase id token available in SharedPreferences');
     } else {
       print('token is $token');
       final headers = {
@@ -61,7 +66,8 @@ class ApiDatasourceImpl implements ApiDatasource {
         final responseBody = jsonDecode(response.body);
         return responseBody;
       } else {
-        throw Exception('Failed to send POST request');
+        throw Exception(
+            'Failed to send request. Statuscode ${response.statusCode}');
       }
     }
   }
@@ -86,7 +92,7 @@ class ApiDatasourceImpl implements ApiDatasource {
 
   @override
   Future<Map<String, dynamic>?> getAllTodoListsFromBackend() async {
-    final String url =
+    const String url =
         'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction/getalllists';
 
     try {
