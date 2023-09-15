@@ -3,11 +3,13 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../database/databse_helper.dart';
 import '../../../domain/entities/todolist_entity.dart';
 import '../../../domain/failures/failures.dart';
 import '../../../domain/usecases/selected_todolist_usecases.dart';
+import '../../../infrastructure/datasources/api_datasource_impl.dart';
 import '../../../models/todo_model.dart';
 import '../../../models/todolist_model.dart';
 import '../../../pages/todo_detail_page.dart';
@@ -38,7 +40,7 @@ class SelectedTodolistBloc
             todoListModel: r.toModel(),
           ),
         );
-        Logger().d(r.toModel().toString());
+        Logger().d('selected TodoList: ${r.toModel().toString()}');
       });
       Logger().d('selected list loaded');
     });
@@ -46,14 +48,30 @@ class SelectedTodolistBloc
     on<SelectedTodolistEventAddNewTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
 
+      const uuidPackage = Uuid();
+      final uuid = uuidPackage.v1();
+
       TodoModel adjustbleTodoModel;
       if (selectedTodoList != null) {
         final eventModel = event.todoModel;
         adjustbleTodoModel = TodoModel(
+            uuid: uuid,
             id: eventModel.id,
             task: eventModel.task,
             accomplished: eventModel.accomplished,
-            parentTodoListId: selectedTodoList!);
+            parentTodoListId: selectedTodoList!,
+            repeatPeriod: eventModel.repeatPeriod);
+
+        //ApiDatasourceImpl apiDatasource = ApiDatasourceImpl();
+        //apiDatasource.addTodoToSpecificList(
+        //    todoModel: TodoModel(
+        //        uuid: uuid,
+        //        id: eventModel.id,
+        //        task: eventModel.task,
+        //        accomplished: eventModel.accomplished,
+        //        parentTodoListId: selectedTodoList!,
+        //        repeatPeriod: eventModel.repeatPeriod));
+
         TodoListDetailPage.justAddedTodo = true;
 
         Either<Failure, int> didSave = await selectedTodolistUsecases
@@ -71,6 +89,7 @@ class SelectedTodolistBloc
 
     on<SelectedTodoListEventSelectSpecificTodoList>((event, emit) async {
       selectedTodoList = event.uuid;
+      Logger().d('Selected todolist uuid: $selectedTodoList');
     });
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(

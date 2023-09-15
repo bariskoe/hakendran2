@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logger/logger.dart';
 
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
+import '../dependency_injection.dart';
 import '../models/todo_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
@@ -48,9 +49,13 @@ Future<void> addTodoDialog({
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
-                BlocProvider.of<SelectedTodolistBloc>(context).add(
+                final deserialized = RepeatPeriodExtension.deserialize(
+                    value: _selectedRepeatPeriodIndex);
+                Logger().d('Repeatperiod: $deserialized');
+                getIt<SelectedTodolistBloc>().add(
                   SelectedTodolistEventAddNewTodo(
                     todoModel: TodoModel(
+                      //! Is an id still neccessary if we have a uid?
                       id: null,
                       accomplished: false,
                       task: textEditingController.text,

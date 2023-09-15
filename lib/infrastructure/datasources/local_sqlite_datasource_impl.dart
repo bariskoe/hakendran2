@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
 
 import '../../models/todo_list_update_model.dart';
@@ -15,12 +17,13 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }) async {
     int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
       TodoListModel(
-        id: null,
-        todoModels: const [],
-        listName: todoListEntity.listName,
-        todoListCategory: todoListEntity.todoListCategory,
-      ),
+          id: null,
+          todoModels: const [],
+          listName: todoListEntity.listName,
+          todoListCategory: todoListEntity.todoListCategory,
+          uuid: todoListEntity.uuid),
     );
+
     return idOflastCreatedRow;
   }
 

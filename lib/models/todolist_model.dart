@@ -9,12 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class TodoListModel extends TodoListEntity with EquatableMixin {
+  // TODO: uuid in uid umbenennen. Dabei die Firebase namen beachten
   TodoListModel({
     int? id,
     String? uuid,
     required String listName,
     required List<TodoModel> todoModels,
-    required todoListCategory,
+    required TodoListCategory todoListCategory,
   }) : super(
           id: id,
           uuid: uuid,
@@ -93,6 +94,24 @@ enum TodoListCategory {
   cleanup,
   paperwork,
   friends
+}
+
+enum SynchronizationStatus {
+  // No timestamp on Firestore + No timestamp in local database
+  newUser,
+
+  // Timestamp on Firestore exists + No Timestamp on local database
+  // This can i.e. happen if the user deinstalls and reinstalls the app or if
+  // he deletes the app data
+  localDataDeleted,
+
+  // Timestamp exists on Firestore and on local database + both are equal
+  //! There is a better way to check the sychronization: An extra table with the uuids of the objects that
+  //! need to be synchronized: https://medium.com/@sridhar_suresh/efficient-data-synchronization-strategies-for-handling-internet-connection-disruptions-31dd7b977672
+  dataIsSynchronized,
+
+  //Firestore Timestamp and local Timestamp exist + Firestore Timestamp older than local data timestamp
+  localDateIsNewer,
 }
 
 extension TodoListCategoryExtension on TodoListCategory {

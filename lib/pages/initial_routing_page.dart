@@ -31,13 +31,13 @@ class _InitialRoutingPageState extends State<InitialRoutingPage> {
           if (state is AuthenticationStateLoggedOut) {
             Logger()
                 .d('state in AuthBloc is AuthenticationStateLoggedOut $state');
-            Get.to(const LoginPage());
+            Get.to(() => const LoginPage());
           }
           if (state is AuthenticationStateLoggedIn) {
             Logger()
                 .d('state in AuthBloc is AuthenticationStateLoggedIn $state');
-            Get.to(DatapreparationPage());
-            // Get.to(() => const MainPage());
+            //Get.to(() => const DatapreparationPage());
+            Get.to(() => const MainPage());
           }
         },
         child: const LoginPage(),

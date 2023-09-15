@@ -65,6 +65,16 @@ class AuthenticationBloc
       });
     });
 
+    on<AuthenticationEventRefreshToken>((event, emit) async {
+      final idToken = await getIt<FirebaseAuth>().currentUser?.getIdToken(true);
+
+      if (idToken != null) {
+        getIt<SharedPreferences>()
+            .setString(StringConstants.spFirebaseIDTokenKey, idToken);
+      }
+      Logger().i('idToken is $idToken');
+    });
+
     on<AuthenticationEventCreateUserWithEmailAndPassword>((event, emit) async {
       final failureOrUserCredential =
           await authenticationRepository.createUserWithEmailAndPassword(

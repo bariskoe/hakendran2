@@ -1,13 +1,17 @@
 import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
+import 'package:baristodolistapp/domain/usecases/api_usecases.dart';
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../domain/failures/failures.dart';
 import '../../domain/usecases/all_todolists_usecases.dart';
+import '../../infrastructure/datasources/api_datasource.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
 import '../../pages/main_page.dart';
@@ -20,11 +24,13 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
   final SelectedTodolistBloc _selectedTodolistBloc;
   final ConnectivityRepository connectivityRepository;
   final AllTodoListsUsecases allTodoListsUsecases;
+  final ApiUsecases apiUsecases;
 
   AllTodolistsBloc({
     required SelectedTodolistBloc selectedTodolistBloc,
     required this.connectivityRepository,
     required this.allTodoListsUsecases,
+    required this.apiUsecases,
   })  : _selectedTodolistBloc = selectedTodolistBloc,
         super(AllTodolistsInitial()) {
     _selectedTodolistBloc.stream.listen((state) {
@@ -42,6 +48,19 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     on<AllTodolistsEventCreateNewTodoList>(
       (event, emit) async {
         emit(AllTodoListsStateLoading());
+        var uuidLibrary = const Uuid();
+        String uuid = uuidLibrary.v1();
+        Logger().d('uuid on create in bloc is $uuid');
+
+        //! Save the data locally, check the sync list, get the Todolist and upload it
+        final success = apiUsecases.createTodoList(
+            todoListModel: TodoListModel(
+          listName: event.listName,
+          todoModels: [],
+          todoListCategory: event.todoListCategory,
+          uuid: uuid,
+        ));
+
         // This id is not the uuid of the created TodoList
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
@@ -49,6 +68,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
             todoModels: const [],
             listName: event.listName,
             todoListCategory: event.todoListCategory,
+            uuid: uuid,
           ),
         );
 
@@ -85,6 +105,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
           await allTodoListsUsecases.getAllTodoLists();
 
+      //! Emit an error state if Failure is returned
       await failureOrListOfTodoListModels.fold((l) => null, (todolists) async {
         if (todolists.isEmpty) {
           emit(AllTodoListsStateListEmpty());
@@ -116,6 +137,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
         final List todolists = r?['lists'];
         // todolists.sort((a, b) => a['id'].compareTo(b['id']));
+        Logger().d('todolists vom Backend sind: $todolists');
 
         Future<void> saveListOfTodolistsLocally(List<dynamic> todoLists) async {
           Future.wait(todolists.map((todoList) async =>

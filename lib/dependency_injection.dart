@@ -1,5 +1,12 @@
+import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
+import 'package:baristodolistapp/domain/repositories/api_repository.dart';
 import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
+import 'package:baristodolistapp/domain/repositories/data_preparation_repository.dart';
+import 'package:baristodolistapp/domain/usecases/api_usecases.dart';
+import 'package:baristodolistapp/domain/usecases/data_preparation_usecases.dart';
+import 'package:baristodolistapp/infrastructure/repositories/api_repository_impl.dart';
 import 'package:baristodolistapp/infrastructure/repositories/connectivity_repository_impl.dart';
+import 'package:baristodolistapp/infrastructure/repositories/data_preparation_repository_impl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
@@ -28,17 +35,24 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt.registerLazySingleton<AuthenticationBloc>(() => AuthenticationBloc(
         authenticationRepository: getIt(),
       ));
+  getIt.registerLazySingleton<DataPreparationBloc>(() => DataPreparationBloc(
+        dataPreparationUsecases: getIt(),
+        allTodoListsUsecases: getIt(),
+      ));
 
   getIt.registerLazySingleton<AllTodolistsBloc>(() => AllTodolistsBloc(
         allTodoListsUsecases: getIt(),
         connectivityRepository: getIt(),
         selectedTodolistBloc: getIt(),
+        apiUsecases: getIt(),
       ));
   getIt.registerLazySingleton<SelectedTodolistBloc>(() => SelectedTodolistBloc(
         selectedTodolistUsecases: getIt(),
       ));
 
 //! Usecases
+  getIt.registerLazySingleton<DataPreparationUsecases>(
+      () => DataPreparationUsecases(dataPreparationRepository: getIt()));
   getIt.registerLazySingleton<AllTodoListsUsecases>(() => AllTodoListsUsecases(
         allTodoListsRepository: getIt(),
       ));
@@ -46,8 +60,16 @@ Future<void> setupDependencyInjectionWithGetIt() async {
       () => SelectedTodolistUsecases(
             selectedTodolistRepository: getIt(),
           ));
+  getIt.registerLazySingleton<ApiUsecases>(() => ApiUsecases(
+        apiRepository: getIt(),
+      ));
 
 //! repos
+  getIt.registerLazySingleton<DataPreparationRepository>(
+      () => DataPreparationRepositoryImpl(
+            apiDatasource: getIt(),
+            localSqliteDataSource: getIt(),
+          ));
   getIt.registerLazySingleton<AllTodoListsRepository>(
       () => AllTodoListsRepositoryImpl(
             localSqliteDataSource: getIt(),
@@ -63,7 +85,9 @@ Future<void> setupDependencyInjectionWithGetIt() async {
       () => ConnectivityRepositoryImpl(
             connectivity: getIt(),
           ));
-
+  getIt.registerLazySingleton<ApiRepository>(() => ApiRepositoryImpl(
+        apiDatasource: getIt(),
+      ));
 //! Datasources
   getIt.registerLazySingleton<LocalSqliteDataSource>(
       () => LocalSqliteDataSourceImpl());

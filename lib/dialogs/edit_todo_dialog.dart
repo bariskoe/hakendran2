@@ -17,7 +17,7 @@ Future<void> editTodoDialog(
   TextEditingController textEditingController =
       TextEditingController(text: todoModel.task);
   _selectedRepetitionPeriodIndexInEditTodoDialog =
-      todoModel.repeatPeriod.serialize();
+      todoModel.repeatPeriod?.serialize();
   return showDialog<void>(
     context: context,
     barrierDismissible: false,

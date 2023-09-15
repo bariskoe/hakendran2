@@ -12,7 +12,7 @@ class TodoModel extends Equatable {
   final String task;
   final bool accomplished;
   final String parentTodoListId;
-  final RepeatPeriod repeatPeriod;
+  final RepeatPeriod? repeatPeriod;
   final DateTime? accomplishedAt;
 
   const TodoModel({
@@ -21,8 +21,8 @@ class TodoModel extends Equatable {
     required this.accomplished,
     required this.parentTodoListId,
     this.uuid,
-    this.repeatPeriod = RepeatPeriod.none,
     this.accomplishedAt,
+    this.repeatPeriod = RepeatPeriod.none,
   });
 
   factory TodoModel.fromMap(Map<dynamic, dynamic> map) {
@@ -54,7 +54,7 @@ class TodoModel extends Equatable {
       DatabaseHelper.todosTableFieldAccomplished:
           AccomplishmentStatusExtension.serialize(accomplished: accomplished),
       DatabaseHelper.todosTableFieldTodoListUuId: parentTodoListId,
-      DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod.serialize(),
+      DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod?.serialize(),
       DatabaseHelper.todosTableFieldaccomplishedAt:
           accomplishedAt?.millisecondsSinceEpoch
     };
@@ -128,7 +128,6 @@ extension AccomplishmentStatusExtension on TodoModel {
       case true:
         return 1;
     }
-    return 0;
   }
 }
 

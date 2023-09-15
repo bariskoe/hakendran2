@@ -1,14 +1,13 @@
-import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
-import 'package:logger/logger.dart';
-import 'package:synchronized/synchronized.dart';
 
+import '../bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
+import '../dependency_injection.dart';
 import '../routing.dart';
 import '../ui/standard_widgets/loading_widget.dart';
+import 'main_page.dart';
 
 class DatapreparationPage extends StatefulWidget {
   const DatapreparationPage({super.key});
@@ -18,38 +17,44 @@ class DatapreparationPage extends StatefulWidget {
 }
 
 class _DatapreparationPageState extends State<DatapreparationPage> {
-  var lock = Lock();
-
   @override
   void initState() {
     super.initState();
 
-    getIt<AllTodolistsBloc>().add(AllTodoListEvenGetAllTodoListsFromBackend());
-    //! Hier muss der Synchrinisierungscheck rein
+    getIt<DataPreparationBloc>()
+        .add(const DataPreparationEventSynchronizeIfNecessary());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AllTodolistsBloc, AllTodolistsState>(
-        listener: (context, state) {
-      Logger().d('state in datapage is $state');
-      if (state is AllTodoListsStateDataPreparationComplete) {
-        Get.toNamed(RoutingService.mainPage);
-      }
-    }, builder: (context, state) {
-      return Scaffold(
-        body: Stack(
-          children: [
-            const Center(
-              child: Text('Preparing data...'),
-            ),
-            if (state is AllTodoListsStateLoading) ...[
-              const Center(child: LoadingWidget()),
-              const Text('Loading...')
-            ]
-          ],
-        ),
-      );
-    });
+    return MultiBlocListener(
+        listeners: [
+          BlocListener<DataPreparationBloc, DataPreparationState>(
+            listener: (context, state) {
+              if (state is DataPreparationStateDataPreparationComplete) {
+                Get.to(() => const MainPage());
+              }
+            },
+          ),
+          BlocListener<AllTodolistsBloc, AllTodolistsState>(
+            listener: (context, state) {
+              if (state is AllTodoListsStateDataPreparationComplete) {
+                Get.to(() => RoutingService.mainPage);
+                //Get.to(() => const MainPage());
+              }
+            },
+          ),
+        ],
+        child: const Scaffold(
+          body: Stack(
+            children: [
+              Center(
+                child: Text('Preparing data...'),
+              ),
+              Center(child: LoadingWidget()),
+              Text('Loading...')
+            ],
+          ),
+        ));
   }
 }

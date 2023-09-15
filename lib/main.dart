@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +35,7 @@ class BarisToDoListApp extends StatelessWidget {
         BlocProvider(
             create: (context) => getIt<AuthenticationBloc>()
               ..add(AuthenticationEventInitialize())),
+        BlocProvider(create: (context) => getIt<DataPreparationBloc>()),
         BlocProvider(create: (context) => getIt<AllTodolistsBloc>()),
         BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
       ],

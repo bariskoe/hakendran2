@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/todo_list_update_model.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronized/synchronized.dart';
 
+import '../dependency_injection.dart';
+import '../models/todo_list_update_model.dart';
 import '../models/todo_model.dart';
 import '../models/todolist_model.dart';
+import '../strings/string_constants.dart';
 
 class DatabaseHelper {
   DatabaseHelper._privateConstructor();
@@ -38,7 +38,7 @@ class DatabaseHelper {
   static const String todosTableFieldAccomplished = 'accomplished';
   static const String todosTableFieldRepetitionPeriod = 'repetitionperiod';
   static const String todosTableFieldTodoListId =
-      'todolistid'; //!Will be unneccessary if toolistuuid exists
+      'todolistid'; //!Will be unneccessary if todolistuuid exists
   static const String todosTableFieldTodoListUuId =
       'todolistUuid'; //Foreign key
   static const String todosTableFieldaccomplishedAt = 'accomplishedAt';
@@ -124,8 +124,9 @@ class DatabaseHelper {
   ) async {
     Database db = await instance.database;
     saveTimestamp();
-    return await db.insert(
-        todoListsTableName, todoListModel.toMapForInsertNewListIntoDatabase());
+    final mapToInsert = todoListModel.toMapForInsertNewListIntoDatabase();
+    Logger().d('Todolist being saved in localdatabase: $mapToInsert');
+    return await db.insert(todoListsTableName, mapToInsert);
   }
 
   static Future<int> deleteAllTodoLists() async {
@@ -188,7 +189,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     final nameQuery = await db.rawQuery(
         'SELECT $todoListsTableFieldListName FROM $todoListsTableName WHERE $todoListsTableFieldUuId=?',
-        ['$listUuId']);
+        [listUuId]);
     return nameQuery.first[todoListsTableFieldListName].toString();
   }
 
@@ -197,7 +198,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     final categoryQuery = await db.rawQuery(
         'SELECT $todoListsTableFieldCategory FROM $todoListsTableName WHERE $todoListsTableFieldUuId=?',
-        ['$listUuId']);
+        [listUuId]);
     int categoryInt =
         int.parse(categoryQuery.first[todoListsTableFieldCategory].toString());
     TodoListCategory category =
@@ -228,7 +229,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     final update = await db.rawUpdate(
         'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ? WHERE $todosTableFieldId = ?',
-        [model.task, model.repeatPeriod.serialize(), model.id]);
+        [model.task, model.repeatPeriod?.serialize(), model.id]);
     saveTimestamp();
     return update;
   }
@@ -301,9 +302,10 @@ class DatabaseHelper {
 
 Future<bool> saveTimestamp() async {
   final now = DateTime.now().millisecondsSinceEpoch;
-  return await getIt<SharedPreferences>().setInt('DbTimestamp', now);
+  return await getIt<SharedPreferences>()
+      .setInt(StringConstants.spDBTimestamp, now);
 }
 
-Future<int> getTimestampOfLastDBTransaction() async {
-  return getIt<SharedPreferences>().getInt('DbTimestamp') ?? 0;
+Future<int?> getTimestampOfLastDBTransaction() async {
+  return getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
 }
