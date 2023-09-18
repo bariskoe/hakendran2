@@ -16,4 +16,8 @@ abstract class ApiDatasource {
   // Gets relevant information from Backend about the saved Todolists like timeStamp and listLength
   // Returns null if an error occurs or if there is no internet connection.
   Future<Map<String, dynamic>?> getDataInfo();
+
+  /// Loops through the table [syncPendingTodoLists], takes every uid and uploads
+  /// the respective Todolist to the cloud
+  Future<bool> uploadSyncPendingTodoLists();
 }

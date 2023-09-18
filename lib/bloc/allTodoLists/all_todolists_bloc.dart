@@ -1,3 +1,6 @@
+import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
+import 'package:baristodolistapp/database/databse_helper.dart';
+import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
 import 'package:baristodolistapp/domain/usecases/api_usecases.dart';
 import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
@@ -53,13 +56,13 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         Logger().d('uuid on create in bloc is $uuid');
 
         //! Save the data locally, check the sync list, get the Todolist and upload it
-        final success = apiUsecases.createTodoList(
-            todoListModel: TodoListModel(
-          listName: event.listName,
-          todoModels: [],
-          todoListCategory: event.todoListCategory,
-          uuid: uuid,
-        ));
+        // final success = apiUsecases.createTodoList(
+        //     todoListModel: TodoListModel(
+        //   listName: event.listName,
+        //   todoModels: [],
+        //   todoListCategory: event.todoListCategory,
+        //   uuid: uuid,
+        // ));
 
         // This id is not the uuid of the created TodoList
         Either<Failure, int> idOflastCreatedRowOrFailure =
@@ -76,7 +79,10 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
           emit(AllTodoListsStateError());
         }, (r) {
           MainPage.justAddedList = true;
+          DatabaseHelper.addTodoListUidToSyncPendingTodoLists(uid: uuid);
           add(AllTodolistsEventGetAllTodoLists());
+          getIt<DataPreparationBloc>()
+              .add(const DataPreparationEventSynchronizeIfNecessary());
         });
       },
     );
@@ -135,7 +141,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       }, (r) async {
         Logger().i('lists: $r');
 
-        final List todolists = r?['lists'];
+        final List todolists = r?['todoLists'];
         // todolists.sort((a, b) => a['id'].compareTo(b['id']));
         Logger().d('todolists vom Backend sind: $todolists');
 

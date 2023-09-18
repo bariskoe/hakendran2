@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
+import 'package:logger/logger.dart';
 
 import '../bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
@@ -31,16 +32,19 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
         listeners: [
           BlocListener<DataPreparationBloc, DataPreparationState>(
             listener: (context, state) {
+              Logger().d('state is $state');
               if (state is DataPreparationStateDataPreparationComplete) {
                 Get.to(() => const MainPage());
+                //Get.to(() => RoutingService.mainPage);
               }
             },
           ),
           BlocListener<AllTodolistsBloc, AllTodolistsState>(
             listener: (context, state) {
+              Logger().d('state is $state');
               if (state is AllTodoListsStateDataPreparationComplete) {
-                Get.to(() => RoutingService.mainPage);
-                //Get.to(() => const MainPage());
+                //Get.to(() => RoutingService.mainPage);
+                Get.to(() => const MainPage());
               }
             },
           ),

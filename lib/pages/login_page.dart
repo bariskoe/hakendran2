@@ -11,6 +11,7 @@ import '../ui/standard_widgets/standard_ui_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   static String id = RoutingService.loginPage;
+
   const LoginPage({super.key});
 
   @override

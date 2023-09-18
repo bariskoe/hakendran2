@@ -1,9 +1,11 @@
 import 'package:baristodolistapp/bloc/allTodoLists/all_todolists_bloc.dart';
 import 'package:baristodolistapp/dependency_injection.dart';
+import 'package:baristodolistapp/domain/failures/failures.dart';
 import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';
 import 'package:baristodolistapp/domain/usecases/data_preparation_usecases.dart';
 import 'package:baristodolistapp/models/todolist_model.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -40,9 +42,12 @@ class DataPreparationBloc
     //   failureOrSynchronizationStatus.fold((l) => null, (r) => null);
     // });
 
-    on<DataPreparationEvent>((event, emit) {});
+    //on<DataPreparationEvent>((event, emit) {
+    //
+    //});
 
     on<DataPreparationEventSynchronizeIfNecessary>((event, emit) async {
+      emit(DataPreparationStateLoading());
       final failureOrSynchronizationStatus =
           await dataPreparationUsecases.checkSynchronizationStatus();
       failureOrSynchronizationStatus.fold(
@@ -60,9 +65,9 @@ class DataPreparationBloc
               getIt<AllTodolistsBloc>()
                   .add(AllTodoListEvenGetAllTodoListsFromBackend());
             }
-          case SynchronizationStatus.localDateIsNewer:
+          case SynchronizationStatus.localDataIsNewer:
             {
-              emit(DataPreparationStateDataPreparationComplete());
+              add(DataPreparationEventUploadSyncPendingTodoLists());
             }
           case SynchronizationStatus.dataIsSynchronized:
             {
@@ -70,6 +75,15 @@ class DataPreparationBloc
             }
         }
       });
+    });
+
+    on<DataPreparationEventUploadSyncPendingTodoLists>((event, emit) async {
+      emit(DataPreparationStateLoading());
+      Either<Failure, bool> success =
+          await dataPreparationUsecases.uploadSyncPendingTodoLists();
+
+      success.fold((l) => emit(DataPreparationStateUploadFailed()),
+          (r) => emit(DataPreparationStateDataPreparationComplete()));
     });
   }
 }

@@ -111,7 +111,7 @@ enum SynchronizationStatus {
   dataIsSynchronized,
 
   //Firestore Timestamp and local Timestamp exist + Firestore Timestamp older than local data timestamp
-  localDateIsNewer,
+  localDataIsNewer,
 }
 
 extension TodoListCategoryExtension on TodoListCategory {

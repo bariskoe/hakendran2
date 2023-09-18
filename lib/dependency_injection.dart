@@ -7,9 +7,11 @@ import 'package:baristodolistapp/domain/usecases/data_preparation_usecases.dart'
 import 'package:baristodolistapp/infrastructure/repositories/api_repository_impl.dart';
 import 'package:baristodolistapp/infrastructure/repositories/connectivity_repository_impl.dart';
 import 'package:baristodolistapp/infrastructure/repositories/data_preparation_repository_impl.dart';
+import 'package:baristodolistapp/services/connectivity_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
@@ -105,5 +107,7 @@ Future<void> setupDependencyInjectionWithGetIt() async {
 
   //! Connectivity
   final connectivity = Connectivity();
-  getIt.registerLazySingleton<Connectivity>(() => connectivity);
+  getIt.registerSingleton<Connectivity>(connectivity);
+  getIt.registerSingleton<ConnectivityService>(
+      ConnectivityService.forDi(getIt()));
 }

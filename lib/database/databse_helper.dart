@@ -48,6 +48,24 @@ class DatabaseHelper {
   static const String numberOfAccomplishedTodos = 'numberOfAccomplishedTodos';
   static const String todos = 'todos';
 
+  ///---------------------------------------------------------------------------
+  static const String syncPendigTodolistsName = 'syncPendigTodolists';
+
+  /// Fields of the syncPendigTodolists list.
+
+  /// This uid represents the uid of a TodoList that has not been synched with the
+  /// backend yet.
+  static const String syncPendigTodolistsFieldUid = 'uid';
+
+  ///---------------------------------------------------------------------------
+  static const String syncPendigTodosName = 'syncPendigTodos';
+
+  /// Fields of the syncPendigTodos list.
+  /// This uid represents the uid of a Todo that has not been synched with the
+  /// backend yet.
+  static const syncPendigTodosFieldUid = 'uid';
+
+  ///---------------------------------------------------------------------------
   Future onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }
@@ -62,11 +80,11 @@ class DatabaseHelper {
           $todoListsTableFieldCategory INTEGER
       );
       ''');
-
+// An integer primary key might be unnecessary if we have a uuid
     await db.execute('''
       CREATE TABLE $todosTableName(
-          $todosTableFieldId INTEGER PRIMARY KEY AUTOINCREMENT,
-          $todosTableFieldTodoUuId TEXT,
+          $todosTableFieldId INTEGER ,
+          $todosTableFieldTodoUuId TEXT PRIMARY KEY,
           $todosTableFieldTask TEXT,
           $todosTableFieldAccomplished INTEGER,
           $todosTableFieldRepetitionPeriod INTEGER,
@@ -74,6 +92,20 @@ class DatabaseHelper {
           $todosTableFieldTodoListId INTEGER,
           $todosTableFieldTodoListUuId TEXT,
           FOREIGN KEY ($todosTableFieldTodoListUuId) REFERENCES $todoListsTableName($todoListsTableFieldUuId) ON DELETE CASCADE
+      );
+      ''');
+
+    await db.execute('''
+      CREATE TABLE $syncPendigTodolistsName (
+          $syncPendigTodolistsFieldUid TEXT,
+          FOREIGN KEY ($syncPendigTodolistsFieldUid) REFERENCES $todoListsTableName($todoListsTableFieldUuId) ON DELETE CASCADE
+      );
+      ''');
+
+    await db.execute('''
+      CREATE TABLE $syncPendigTodosName (
+          $syncPendigTodosFieldUid TEXT,
+          FOREIGN KEY ($syncPendigTodosFieldUid) REFERENCES $todosTableName($todosTableFieldTodoUuId) ON DELETE CASCADE
       );
       ''');
   }
@@ -126,7 +158,9 @@ class DatabaseHelper {
     saveTimestamp();
     final mapToInsert = todoListModel.toMapForInsertNewListIntoDatabase();
     Logger().d('Todolist being saved in localdatabase: $mapToInsert');
-    return await db.insert(todoListsTableName, mapToInsert);
+    int insertedRow = await db.insert(todoListsTableName, mapToInsert);
+
+    return insertedRow;
   }
 
   static Future<int> deleteAllTodoLists() async {
@@ -180,7 +214,9 @@ class DatabaseHelper {
   }) async {
     Database db = await instance.database;
     saveTimestamp();
-    return await db.insert(todosTableName, todoModel.toMap());
+    int insertedRow = await db.insert(todosTableName, todoModel.toMap());
+    addTodoTosyncPendigTodos(todoModel);
+    return insertedRow;
   }
 
   static getNameOfTodoListById({
@@ -297,6 +333,72 @@ class DatabaseHelper {
       todoModels: todoModelList,
       todoListCategory: category,
     );
+  }
+
+  /// Regarding syncPendigTodolists table --------------------------------------
+  static Future<int> addTodoListUidToSyncPendingTodoLists({
+    required String uid,
+  }) async {
+    Database db = await instance.database;
+
+    final mapToInsert = {syncPendigTodolistsFieldUid: uid};
+    Logger().d('TodolistUid being saved in syncPendigTodolists: $mapToInsert');
+    return await db.insert(syncPendigTodolistsName, mapToInsert);
+  }
+
+  static Future<int> deleteFromsyncPendigTodolists(
+      {required TodoListModel todoListModel}) async {
+    Database db = await instance.database;
+
+    return await db.rawDelete(
+        'DELETE FROM $syncPendigTodolistsName WHERE $syncPendigTodolistsFieldUid = ?',
+        [todoListModel.uuid]);
+  }
+
+  static Future<Map<String, dynamic>>
+      getAllEntriesOfsyncPendigTodolists() async {
+    Database db = await instance.database;
+
+    List<Map> list =
+        await db.rawQuery('SELECT * FROM $syncPendigTodolistsName');
+    final mapToReturn = {
+      'syncPendigTodoLists': list.isNotEmpty ? list : [],
+      'numberOfEntries': list.isNotEmpty ? list.length : 0
+    };
+    Logger().d('TodolistUids in syncPendigTodolists: $list');
+    return mapToReturn;
+  }
+
+  /// Regarding syncPendigTodos table ------------------------------------------
+  static Future<int> addTodoTosyncPendigTodos(
+    TodoModel todoModel,
+  ) async {
+    Database db = await instance.database;
+
+    final mapToInsert = {syncPendigTodosFieldUid: todoModel.uuid};
+    Logger().d('TodoUid being saved in syncPendigTodos: $mapToInsert');
+    return await db.insert(syncPendigTodosName, mapToInsert);
+  }
+
+  static Future<int> deleteFromsyncPendigTodos(
+      {required TodoModel todoModel}) async {
+    Database db = await instance.database;
+
+    return await db.rawDelete(
+        'DELETE FROM $syncPendigTodosName WHERE $syncPendigTodosFieldUid = ?',
+        [todoModel.uuid]);
+  }
+
+  static Future<Map<String, dynamic>> getAllEntriesOfsyncPendigTodos() async {
+    Database db = await instance.database;
+
+    List<Map> list = await db.rawQuery('SELECT * FROM $syncPendigTodosName');
+    Logger().d('TodoUids  saved in syncPendigTodos: $list');
+    final mapToReturn = {
+      'syncPendigTodos': list.isNotEmpty ? list : [],
+      'numberOfEntries': list.isNotEmpty ? list.length : 0
+    };
+    return mapToReturn;
   }
 }
 

@@ -62,3 +62,14 @@ class SelectedTodolistEventDeleteSpecificTodo extends SelectedTodolistEvent {
 class SelectedTodoListEventResetAll extends SelectedTodolistEvent {
   const SelectedTodoListEventResetAll();
 }
+
+class SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists
+    extends SelectedTodolistEvent {
+  final String uid;
+  const SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists(
+    this.uid,
+  );
+
+  @override
+  List<Object> get props => [uid];
+}

@@ -1,14 +1,9 @@
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
-
-import '../../models/todo_list_update_model.dart';
-
-import '../../domain/entities/todolist_entity.dart';
-import 'local_sqlite_datasource.dart';
-
 import '../../database/databse_helper.dart';
+import '../../domain/entities/todolist_entity.dart';
+import '../../models/todo_list_update_model.dart';
+import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
+import 'local_sqlite_datasource.dart';
 
 class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   @override
@@ -105,6 +100,15 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }) async {
     return await DatabaseHelper.resetAllTodosOfSpecificList(
       uuid: uuid,
+    );
+  }
+
+  @override
+  Future<int> addTodoListUidToSyncPendingTodoLists({
+    required String uid,
+  }) async {
+    return await DatabaseHelper.addTodoListUidToSyncPendingTodoLists(
+      uid: uid,
     );
   }
 }

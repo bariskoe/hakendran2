@@ -1,12 +1,14 @@
+import 'package:baristodolistapp/database/databse_helper.dart';
+import 'package:baristodolistapp/pages/initial_routing_page.dart';
+import 'package:baristodolistapp/routing.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/authentication/authentication_bloc.dart';
 import '../dependency_injection.dart';
-import '../routing.dart';
 import '../strings/string_constants.dart';
 import '../ui/constants/constants.dart';
 
@@ -39,6 +41,11 @@ class MainPageDrawer extends Drawer {
 
                   getIt<SharedPreferences>()
                       .setString(StringConstants.spFirebaseIDTokenKey, '');
+                  Get.offUntil(
+                    MaterialPageRoute(
+                        builder: (context) => const InitialRoutingPage()),
+                    (route) => false,
+                  );
                 },
                 child: const Row(
                   children: [Icon(Icons.logout), Text('Logout')],
@@ -48,8 +55,10 @@ class MainPageDrawer extends Drawer {
             ),
             GestureDetector(
                 onTap: () async {
-                  getIt<AllTodolistsBloc>().add(
-                      AllTodolistsEventSynchronizeAllTodoListsWithBackend());
+                  DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
+                  DatabaseHelper.getAllEntriesOfsyncPendigTodos();
+                  // getIt<AllTodolistsBloc>().add(
+                  //     AllTodolistsEventSynchronizeAllTodoListsWithBackend());
                 },
                 child: const Row(
                   children: [Icon(Icons.upload), Text('Synchronize')],

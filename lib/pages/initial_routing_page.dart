@@ -36,8 +36,8 @@ class _InitialRoutingPageState extends State<InitialRoutingPage> {
           if (state is AuthenticationStateLoggedIn) {
             Logger()
                 .d('state in AuthBloc is AuthenticationStateLoggedIn $state');
-            //Get.to(() => const DatapreparationPage());
-            Get.to(() => const MainPage());
+            Get.to(() => const DatapreparationPage());
+            //Get.to(() => const MainPage());
           }
         },
         child: const LoginPage(),

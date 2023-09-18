@@ -1,15 +1,18 @@
 import 'dart:convert';
-import 'package:baristodolistapp/bloc/authentication/authentication_bloc.dart';
-import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
-import 'package:baristodolistapp/strings/string_constants.dart';
+
+import 'package:baristodolistapp/database/databse_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+
+import '../../dependency_injection.dart';
+import '../../models/todo_model.dart';
+import '../../models/todolist_model.dart';
+import '../../strings/string_constants.dart';
+import 'api_datasource.dart';
 
 class ApiDatasourceImpl implements ApiDatasource {
   final String apiUrl =
@@ -56,6 +59,9 @@ class ApiDatasourceImpl implements ApiDatasource {
         'Content-Type': 'application/json',
       };
 
+      body[StringConstants.spDBTimestamp] =
+          getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
+
       final response = await http.post(Uri.parse(url),
           headers: headers, body: jsonEncode(body));
 
@@ -71,18 +77,15 @@ class ApiDatasourceImpl implements ApiDatasource {
   }
 
   Future<Map<String, dynamic>> sendGetRequest(String url) async {
-    final String? token =
-        // getIt<SharedPreferences>().getString(StringConstants.spFirebaseIDTokenKey);
-        await getIt<FirebaseAuth>()
-            .currentUser
-            ?.getIdTokenResult(true)
-            .then((value) => value.token);
+    final String? token = await getIt<FirebaseAuth>()
+        .currentUser
+        ?.getIdTokenResult(true)
+        .then((value) => value.token);
 
     if (token == null || token.isEmpty) {
       throw Exception(
           'Failed to send GET request. No Firebase id token available in SharedPreferences');
     } else {
-      print('token is $token');
       final headers = {
         'Authorization': 'Bearer $token',
         //'Content-Type': 'application/json',
@@ -190,5 +193,24 @@ class ApiDatasourceImpl implements ApiDatasource {
       Logger().i("Error syncing todo list: $e");
       return false;
     }
+  }
+
+  @override
+  Future<bool> uploadSyncPendingTodoLists() async {
+    final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
+
+    for (Map entry in data['syncPendigTodoLists']) {
+      final TodoListModel todoListModel =
+          await DatabaseHelper.getSpecificTodoList(
+              uuid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
+      final uploadSuccessful =
+          await createTodoList(todoListModel: todoListModel);
+
+      if (uploadSuccessful) {
+        await DatabaseHelper.deleteFromsyncPendigTodolists(
+            todoListModel: todoListModel);
+      }
+    }
+    return true;
   }
 }

@@ -20,3 +20,6 @@ class DataPreparationEventSynchronizeIfNecessary extends DataPreparationEvent {
   @override
   List<Object> get props => [];
 }
+
+class DataPreparationEventUploadSyncPendingTodoLists
+    extends DataPreparationEvent {}

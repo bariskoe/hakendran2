@@ -25,4 +25,7 @@ abstract class SelectedTodolistRepository {
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
     required String uuid,
   });
+  Future<Either<Failure, int>> addTodoListUidToSyncPendingTodoLists({
+    required String uid,
+  });
 }

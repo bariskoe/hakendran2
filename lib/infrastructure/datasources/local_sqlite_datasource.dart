@@ -30,4 +30,7 @@ abstract class LocalSqliteDataSource {
   Future<int> resetAllTodosOfSpecificList({
     required String uuid,
   });
+  Future<int> addTodoListUidToSyncPendingTodoLists({
+    required String uid,
+  });
 }

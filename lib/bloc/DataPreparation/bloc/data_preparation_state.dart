@@ -13,3 +13,5 @@ class DataPreparationStateDataPreparationComplete
     extends DataPreparationState {}
 
 class DataPreparationStateLoading extends DataPreparationState {}
+
+class DataPreparationStateUploadFailed extends DataPreparationState {}

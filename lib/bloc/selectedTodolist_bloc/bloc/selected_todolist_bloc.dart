@@ -62,15 +62,15 @@ class SelectedTodolistBloc
             parentTodoListId: selectedTodoList!,
             repeatPeriod: eventModel.repeatPeriod);
 
-        //ApiDatasourceImpl apiDatasource = ApiDatasourceImpl();
-        //apiDatasource.addTodoToSpecificList(
-        //    todoModel: TodoModel(
-        //        uuid: uuid,
-        //        id: eventModel.id,
-        //        task: eventModel.task,
-        //        accomplished: eventModel.accomplished,
-        //        parentTodoListId: selectedTodoList!,
-        //        repeatPeriod: eventModel.repeatPeriod));
+        // ApiDatasourceImpl apiDatasource = ApiDatasourceImpl();
+        // apiDatasource.addTodoToSpecificList(
+        //     todoModel: TodoModel(
+        //         uuid: uuid,
+        //         id: eventModel.id,
+        //         task: eventModel.task,
+        //         accomplished: eventModel.accomplished,
+        //         parentTodoListId: selectedTodoList!,
+        //         repeatPeriod: eventModel.repeatPeriod));
 
         TodoListDetailPage.justAddedTodo = true;
 
@@ -135,6 +135,14 @@ class SelectedTodolistBloc
         (r) => add(
           SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
         ),
+      );
+    });
+
+    on<SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists>(
+        (event, emit) async {
+      Either<Failure, int> idOfInsertedRow =
+          await selectedTodolistUsecases.addTodoListUidToSyncPendingTodoLists(
+        uid: event.uid,
       );
     });
   }
