@@ -1,4 +1,3 @@
-import 'package:baristodolistapp/pages/data_preparation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -6,8 +5,8 @@ import 'package:logger/logger.dart';
 
 import '../bloc/authentication/authentication_bloc.dart';
 import '../routing.dart';
+import 'data_preparation_page.dart';
 import 'login_page.dart';
-import 'main_page.dart';
 
 class InitialRoutingPage extends StatefulWidget {
   static String id = RoutingService.initialRoutingPage;

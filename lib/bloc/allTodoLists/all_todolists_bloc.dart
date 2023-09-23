@@ -1,23 +1,19 @@
-import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
-import 'package:baristodolistapp/database/databse_helper.dart';
-import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
-import 'package:baristodolistapp/domain/usecases/api_usecases.dart';
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl.dart';
 import 'package:bloc/bloc.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
-import 'package:synchronized/synchronized.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../database/databse_helper.dart';
+import '../../dependency_injection.dart';
 import '../../domain/failures/failures.dart';
+import '../../domain/repositories/connectivity_repository.dart';
 import '../../domain/usecases/all_todolists_usecases.dart';
-import '../../infrastructure/datasources/api_datasource.dart';
+import '../../domain/usecases/api_usecases.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
 import '../../pages/main_page.dart';
+import '../DataPreparation/bloc/data_preparation_bloc.dart';
 import '../selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 
 part 'all_todolists_event.dart';
@@ -131,7 +127,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
     _allTodoListEvenGetAllTodoListsFromBackend(event, emit) async {
       Logger().d('AllTodoListEvenGetAllTodoListsFromBackend received');
       emit(AllTodoListsStateLoading());
-      //! Check connectivity in background and retrun connectivityfailure if not connected
+
       Either<Failure, Map<String, dynamic>?> data =
           await allTodoListsUsecases.getAllTodoListsFromBackend();
       data.fold((l) {

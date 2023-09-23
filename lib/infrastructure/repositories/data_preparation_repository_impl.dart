@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/database/databse_helper.dart';
+import 'package:baristodolistapp/models/firestore_data_info_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
     try {
       final Map<String, dynamic>? remoteData =
           await apiDatasource.getDataInfo();
-      Logger().d('dataInfo is $remoteData');
+      Logger().d('dataInfo is ${remoteData?["dataInfo"]}');
       final syncPendingTodoLists =
           await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
       final syncPendingTodos =
@@ -40,45 +41,60 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
           : false;
       Logger().d('hasSyncPending = $hasSyncPending');
 
-      if (remoteData == null && !hasSyncPending) {
-        return const Right(SynchronizationStatus.newUser);
-      }
-      if (remoteData?[StringConstants.spDBTimestamp] == null &&
-          !hasSyncPending) {
-        return const Right(SynchronizationStatus.newUser);
-      }
-      if (remoteData?[StringConstants.spDBTimestamp] == null &&
-          hasSyncPending) {
-        return const Right(SynchronizationStatus.localDataIsNewer);
-      }
+      if (remoteData == null) {
+        return const Right(SynchronizationStatus.unknown);
+      } else {
+        final FirestoreDataInfoModel firestoreDataInfoModel =
+            remoteData["dataInfo"];
+        if (firestoreDataInfoModel.dataIsAcessible == false) {
+          return const Right(SynchronizationStatus.unknown);
+        }
 
-      if (remoteData?[StringConstants.spDBTimestamp] != null &&
-          remoteData?[StringConstants.firestoreFieldNumberOfLists] != null) {
-        final localTimestamp =
-            getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
-        if (localTimestamp == null) {
-          return const Right(SynchronizationStatus.localDataDeleted);
-        } else {
+        if (firestoreDataInfoModel.userDocExists == false && !hasSyncPending) {
+          Logger().d(
+              'firestoreDataInfoModel.userDocExists != true && !hasSyncPending');
+          return const Right(SynchronizationStatus.newUser);
+        }
+
+        if (firestoreDataInfoModel.timestamp == null && !hasSyncPending) {
+          Logger()
+              .d('firestoreDataInfoModel.timestamp == null && !hasSyncPending');
+          return const Right(SynchronizationStatus.newUser);
+        }
+        if (firestoreDataInfoModel.dataIsAcessible != false &&
+            firestoreDataInfoModel.timestamp == null &&
+            hasSyncPending) {
+          return const Right(SynchronizationStatus.localDataIsNewer);
+        }
+
+        if (firestoreDataInfoModel.timestamp != null &&
+            firestoreDataInfoModel.count != null) {
+          final localTimestamp =
+              getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
+          if (localTimestamp == null) {
+            return const Right(SynchronizationStatus.localDataDeleted);
+          } else {
+            if (hasSyncPending) {
+              return const Right(SynchronizationStatus.localDataIsNewer);
+            }
+            if (!hasSyncPending) {
+              return const Right(SynchronizationStatus.dataIsSynchronized);
+            }
+          }
+        }
+        if (firestoreDataInfoModel.timestamp != null &&
+            firestoreDataInfoModel.count == null) {
           if (hasSyncPending) {
             return const Right(SynchronizationStatus.localDataIsNewer);
           }
           if (!hasSyncPending) {
             return const Right(SynchronizationStatus.dataIsSynchronized);
           }
+        } else {
+          Logger()
+              .d('returning api failure because fs timestamp or lists is null');
+          return Left(ApiFailure());
         }
-      }
-      if (remoteData?[StringConstants.spDBTimestamp] != null &&
-          remoteData?[StringConstants.firestoreFieldNumberOfLists] == null) {
-        if (hasSyncPending) {
-          return const Right(SynchronizationStatus.localDataIsNewer);
-        }
-        if (!hasSyncPending) {
-          return const Right(SynchronizationStatus.dataIsSynchronized);
-        }
-      } else {
-        Logger()
-            .d('returning api failure because fs timestamp or lists is null');
-        return Left(ApiFailure());
       }
     } catch (e) {
       Logger().d('returning api failure due to error');

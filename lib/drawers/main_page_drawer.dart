@@ -1,14 +1,12 @@
-import 'package:baristodolistapp/database/databse_helper.dart';
-import 'package:baristodolistapp/pages/initial_routing_page.dart';
-import 'package:baristodolistapp/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../assets.dart';
-import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/authentication/authentication_bloc.dart';
+import '../database/databse_helper.dart';
 import '../dependency_injection.dart';
+import '../pages/initial_routing_page.dart';
 import '../strings/string_constants.dart';
 import '../ui/constants/constants.dart';
 
@@ -57,8 +55,6 @@ class MainPageDrawer extends Drawer {
                 onTap: () async {
                   DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
                   DatabaseHelper.getAllEntriesOfsyncPendigTodos();
-                  // getIt<AllTodolistsBloc>().add(
-                  //     AllTodolistsEventSynchronizeAllTodoListsWithBackend());
                 },
                 child: const Row(
                   children: [Icon(Icons.upload), Text('Synchronize')],

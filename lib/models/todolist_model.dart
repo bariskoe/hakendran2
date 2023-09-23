@@ -106,12 +106,13 @@ enum SynchronizationStatus {
   localDataDeleted,
 
   // Timestamp exists on Firestore and on local database + both are equal
-  //! There is a better way to check the sychronization: An extra table with the uuids of the objects that
-  //! need to be synchronized: https://medium.com/@sridhar_suresh/efficient-data-synchronization-strategies-for-handling-internet-connection-disruptions-31dd7b977672
   dataIsSynchronized,
 
   //Firestore Timestamp and local Timestamp exist + Firestore Timestamp older than local data timestamp
   localDataIsNewer,
+
+  // If the remote data is not accessible i.e. due to connection failure
+  unknown,
 }
 
 extension TodoListCategoryExtension on TodoListCategory {

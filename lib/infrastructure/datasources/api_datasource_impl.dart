@@ -1,7 +1,11 @@
 import 'dart:convert';
 
 import 'package:baristodolistapp/database/databse_helper.dart';
+import 'package:baristodolistapp/domain/errors/errors.dart';
+import 'package:baristodolistapp/models/firestore_data_info_model.dart';
+import 'package:baristodolistapp/services/connectivity_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
@@ -15,9 +19,6 @@ import '../../strings/string_constants.dart';
 import 'api_datasource.dart';
 
 class ApiDatasourceImpl implements ApiDatasource {
-  final String apiUrl =
-      'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction/synchronizelists';
-
   final baseUrl =
       'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction';
 
@@ -35,7 +36,7 @@ class ApiDatasourceImpl implements ApiDatasource {
   }
 
 //Checken, ob Future<String die beste Lösung ist>
-  Future<Response> sendPostRequest({
+  Future<http.Response> sendPostRequest({
     required Map<String, dynamic> body,
     required List<String> pathParts,
   }) async {
@@ -77,6 +78,13 @@ class ApiDatasourceImpl implements ApiDatasource {
   }
 
   Future<Map<String, dynamic>> sendGetRequest(String url) async {
+    bool? isConnected = await getIt<ConnectivityService>().getConnectivity;
+    Logger().d('isConnected in sendGetRequest is $isConnected');
+    //! Diese Stelle macht Ärger
+    if (isConnected == null || isConnected == false) {
+      throw NotConnectedToTheInternetError();
+    }
+
     final String? token = await getIt<FirebaseAuth>()
         .currentUser
         ?.getIdTokenResult(true)
@@ -99,9 +107,10 @@ class ApiDatasourceImpl implements ApiDatasource {
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         return responseBody;
+      } else if (response.statusCode == 404) {
+        throw NoSuchUserError();
       } else {
-        throw Exception(
-            'Failed to send request. Statuscode ${response.statusCode}');
+        throw Exception('Exception in get request ${response.statusCode},');
       }
     }
   }
@@ -146,9 +155,20 @@ class ApiDatasourceImpl implements ApiDatasource {
 
     try {
       final dataFromBackend = await sendGetRequest(url);
-      return dataFromBackend;
+      return {
+        "dataInfo": FirestoreDataInfoModel(
+            timestamp: dataFromBackend[StringConstants.spDBTimestamp],
+            count:
+                dataFromBackend[StringConstants.firestoreFieldNumberOfLists]),
+      };
+    } on NotConnectedToTheInternetError catch (e) {
+      Logger().e("Not connected to internet error $e");
+      return {"dataInfo": FirestoreDataInfoModel(dataIsAcessible: false)};
+    } on NoSuchUserError catch (e) {
+      Logger().e(e);
+      return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
     } catch (e) {
-      Logger().i("Error getting data info: $e");
+      Logger().e("Error getting data info: $e");
       return null;
     }
   }

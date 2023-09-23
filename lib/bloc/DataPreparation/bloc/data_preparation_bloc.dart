@@ -1,14 +1,14 @@
-import 'package:baristodolistapp/bloc/allTodoLists/all_todolists_bloc.dart';
-import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:baristodolistapp/domain/failures/failures.dart';
-import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';
-import 'package:baristodolistapp/domain/usecases/data_preparation_usecases.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+
+import '../../../dependency_injection.dart';
+import '../../../domain/failures/failures.dart';
+import '../../../domain/usecases/all_todolists_usecases.dart';
+import '../../../domain/usecases/data_preparation_usecases.dart';
+import '../../../models/todolist_model.dart';
+import '../../allTodoLists/all_todolists_bloc.dart';
 
 part 'data_preparation_event.dart';
 part 'data_preparation_state.dart';
@@ -36,16 +36,6 @@ class DataPreparationBloc
 
     // });
 
-    // on<DataPreparationEventCheckSynchronizationStatus>((event, emit) async {
-    //   final failureOrSynchronizationStatus =
-    //       await dataPreparationUsecases.checkSynchronizationStatus();
-    //   failureOrSynchronizationStatus.fold((l) => null, (r) => null);
-    // });
-
-    //on<DataPreparationEvent>((event, emit) {
-    //
-    //});
-
     on<DataPreparationEventSynchronizeIfNecessary>((event, emit) async {
       emit(DataPreparationStateLoading());
       final failureOrSynchronizationStatus =
@@ -56,8 +46,6 @@ class DataPreparationBloc
         switch (r) {
           case SynchronizationStatus.newUser:
             {
-              Logger().d(
-                  'SynchronizationStatus.newUser: Emitting DataPreparationStateDataPreparationComplete ');
               emit(DataPreparationStateDataPreparationComplete());
             }
           case SynchronizationStatus.localDataDeleted:
@@ -70,6 +58,10 @@ class DataPreparationBloc
               add(DataPreparationEventUploadSyncPendingTodoLists());
             }
           case SynchronizationStatus.dataIsSynchronized:
+            {
+              emit(DataPreparationStateDataPreparationComplete());
+            }
+          case SynchronizationStatus.unknown:
             {
               emit(DataPreparationStateDataPreparationComplete());
             }
