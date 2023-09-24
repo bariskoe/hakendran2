@@ -6,6 +6,7 @@ import 'package:baristodolistapp/domain/repositories/connectivity_repository.dar
 import 'package:baristodolistapp/domain/repositories/data_preparation_repository.dart';
 import 'package:baristodolistapp/domain/usecases/api_usecases.dart';
 import 'package:baristodolistapp/domain/usecases/data_preparation_usecases.dart';
+import 'package:baristodolistapp/infrastructure/datasources/api_datasource_impl_new.dart';
 import 'package:baristodolistapp/infrastructure/repositories/api_repository_impl.dart';
 import 'package:baristodolistapp/infrastructure/repositories/connectivity_repository_impl.dart';
 import 'package:baristodolistapp/infrastructure/repositories/data_preparation_repository_impl.dart';
@@ -96,7 +97,7 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt.registerLazySingleton<LocalSqliteDataSource>(
       () => LocalSqliteDataSourceImpl());
   getIt.registerLazySingleton<ApiDatasource>(
-    () => ApiDatasourceImpl(),
+    () => ApiDataSourceImplNew(),
   );
 
   getIt.registerSingleton(await SharedPreferences.getInstance());

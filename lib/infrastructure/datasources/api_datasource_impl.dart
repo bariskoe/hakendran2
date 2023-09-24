@@ -1,3 +1,5 @@
+//!This is the old version of the ApiDatasource. It was replaced by the new ApiDatasource whicch works with the Dio package
+/*
 import 'dart:convert';
 
 import 'package:baristodolistapp/database/databse_helper.dart';
@@ -5,12 +7,11 @@ import 'package:baristodolistapp/domain/errors/errors.dart';
 import 'package:baristodolistapp/models/firestore_data_info_model.dart';
 import 'package:baristodolistapp/services/connectivity_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../dependency_injection.dart';
 import '../../models/todo_model.dart';
@@ -35,7 +36,6 @@ class ApiDatasourceImpl implements ApiDatasource {
     return url;
   }
 
-//Checken, ob Future<String die beste Lösung ist>
   Future<http.Response> sendPostRequest({
     required Map<String, dynamic> body,
     required List<String> pathParts,
@@ -67,20 +67,13 @@ class ApiDatasourceImpl implements ApiDatasource {
           headers: headers, body: jsonEncode(body));
 
       return response;
-
-      // if (response.statusCode == 200) {
-      //   final responseBody = response.body;
-      //   return responseBody;
-      // } else {
-      //   throw Exception('Failed to send POST request');
-      // }
     }
   }
 
-  Future<Map<String, dynamic>> sendGetRequest(String url) async {
+  Future<http.Response> sendGetRequest(String url) async {
     bool? isConnected = await getIt<ConnectivityService>().getConnectivity;
     Logger().d('isConnected in sendGetRequest is $isConnected');
-    //! Diese Stelle macht Ärger
+
     if (isConnected == null || isConnected == false) {
       throw NotConnectedToTheInternetError();
     }
@@ -104,36 +97,37 @@ class ApiDatasourceImpl implements ApiDatasource {
         headers: headers,
       );
 
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        return responseBody;
-      } else if (response.statusCode == 404) {
-        throw NoSuchUserError();
-      } else {
-        throw Exception('Exception in get request ${response.statusCode},');
-      }
+      // if (response.statusCode == 200) {
+      //   final responseBody = jsonDecode(response.body);
+      //   return responseBody;
+      // } else if (response.statusCode == 404) {
+      //   throw NoSuchUserError();
+      // } else {
+      //   throw Exception('Exception in get request ${response.statusCode},');
+      // }
+      return response;
     }
   }
 
-  @override
-  Future<bool> synchronizeAllTodoListsWithBackend(
-      List<TodoListModel> todoLists) async {
-    try {
-      Map<String, dynamic> mapToSend = {"lists": []};
-      List listWithTodoListsAsMap = [];
-      for (var list in todoLists) {
-        listWithTodoListsAsMap.add(list.toMap());
-      }
-      mapToSend["lists"] = listWithTodoListsAsMap;
-      mapToSend[StringConstants.spDBTimestamp] =
-          getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
-      await sendPostRequest(body: mapToSend, pathParts: [synchronizelists]);
-      return true;
-    } catch (e) {
-      Logger().i("Error syncing todo list: $e");
-      return false;
-    }
-  }
+  // @override
+  // Future<bool> synchronizeAllTodoListsWithBackend(
+  //     List<TodoListModel> todoLists) async {
+  //   try {
+  //     Map<String, dynamic> mapToSend = {"lists": []};
+  //     List listWithTodoListsAsMap = [];
+  //     for (var list in todoLists) {
+  //       listWithTodoListsAsMap.add(list.toMap());
+  //     }
+  //     mapToSend["lists"] = listWithTodoListsAsMap;
+  //     mapToSend[StringConstants.spDBTimestamp] =
+  //         getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
+  //     await sendPostRequest(body: mapToSend, pathParts: [synchronizelists]);
+  //     return true;
+  //   } catch (e) {
+  //     Logger().i("Error syncing todo list: $e");
+  //     return false;
+  //   }
+  // }
 
   @override
   Future<Map<String, dynamic>?> getAllTodoListsFromBackend() async {
@@ -141,8 +135,12 @@ class ApiDatasourceImpl implements ApiDatasource {
         'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction/getalllists';
 
     try {
-      final dataFromBackend = await sendGetRequest(url);
-      return dataFromBackend;
+      final response = await sendGetRequest(url);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+
+        return responseBody;
+      }
     } catch (e) {
       Logger().i("Error getting all lists: $e");
       return null;
@@ -154,19 +152,20 @@ class ApiDatasourceImpl implements ApiDatasource {
     final String url = buildUrlString([dataInfoEndpoint]);
 
     try {
-      final dataFromBackend = await sendGetRequest(url);
-      return {
-        "dataInfo": FirestoreDataInfoModel(
-            timestamp: dataFromBackend[StringConstants.spDBTimestamp],
-            count:
-                dataFromBackend[StringConstants.firestoreFieldNumberOfLists]),
-      };
+      final response = await sendGetRequest(url);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        return {
+          "dataInfo": FirestoreDataInfoModel(
+              timestamp: responseBody[StringConstants.spDBTimestamp],
+              count: responseBody[StringConstants.firestoreFieldNumberOfLists]),
+        };
+      } else if (response.statusCode == 404) {
+        return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
+      }
     } on NotConnectedToTheInternetError catch (e) {
       Logger().e("Not connected to internet error $e");
       return {"dataInfo": FirestoreDataInfoModel(dataIsAcessible: false)};
-    } on NoSuchUserError catch (e) {
-      Logger().e(e);
-      return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
     } catch (e) {
       Logger().e("Error getting data info: $e");
       return null;
@@ -234,3 +233,5 @@ class ApiDatasourceImpl implements ApiDatasource {
     return true;
   }
 }
+
+*/

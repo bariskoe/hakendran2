@@ -100,29 +100,29 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       },
     );
 
-    on<AllTodolistsEventSynchronizeAllTodoListsWithBackend>(
-        (event, emit) async {
-      emit(AllTodoListsStateSynchronizingWithBackend());
+    // on<AllTodolistsEventSynchronizeAllTodoListsWithBackend>(
+    //     (event, emit) async {
+    //   emit(AllTodoListsStateSynchronizingWithBackend());
 
-      Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
-          await allTodoListsUsecases.getAllTodoLists();
+    //   Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
+    //       await allTodoListsUsecases.getAllTodoLists();
 
-      //! Emit an error state if Failure is returned
-      await failureOrListOfTodoListModels.fold((l) => null, (todolists) async {
-        if (todolists.isEmpty) {
-          emit(AllTodoListsStateListEmpty());
-        } else {
-          Either<Failure, bool> uploadToBackendSuccessful =
-              await allTodoListsUsecases
-                  .synchronizeAllTodoListsWithBackend(todolists);
-          uploadToBackendSuccessful.fold((l) {
-            emit(AllTodoListsStateError());
-          }, (r) {
-            emit(AllTodoListsStateLoaded(listOfAllLists: todolists));
-          });
-        }
-      });
-    });
+    //   //! Emit an error state if Failure is returned
+    //   await failureOrListOfTodoListModels.fold((l) => null, (todolists) async {
+    //     if (todolists.isEmpty) {
+    //       emit(AllTodoListsStateListEmpty());
+    //     } else {
+    //       Either<Failure, bool> uploadToBackendSuccessful =
+    //           await allTodoListsUsecases
+    //               .synchronizeAllTodoListsWithBackend(todolists);
+    //       uploadToBackendSuccessful.fold((l) {
+    //         emit(AllTodoListsStateError());
+    //       }, (r) {
+    //         emit(AllTodoListsStateLoaded(listOfAllLists: todolists));
+    //       });
+    //     }
+    //   });
+    // });
 
     _allTodoListEvenGetAllTodoListsFromBackend(event, emit) async {
       Logger().d('AllTodoListEvenGetAllTodoListsFromBackend received');

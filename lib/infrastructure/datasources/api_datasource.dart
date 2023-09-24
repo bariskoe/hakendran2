@@ -2,8 +2,8 @@ import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:baristodolistapp/models/todolist_model.dart';
 
 abstract class ApiDatasource {
-  Future<bool> synchronizeAllTodoListsWithBackend(
-      List<TodoListModel> todoLists);
+  // Future<bool> synchronizeAllTodoListsWithBackend(
+  //     List<TodoListModel> todoLists);
 
   Future<bool> createTodoList({
     required TodoListModel todoListModel,

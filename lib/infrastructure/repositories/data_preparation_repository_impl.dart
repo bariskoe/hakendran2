@@ -97,7 +97,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
         }
       }
     } catch (e) {
-      Logger().d('returning api failure due to error');
+      Logger().d('returning api failure due to error: $e');
       return Left(ApiFailure());
     }
     Logger().d('returning api failure as default');

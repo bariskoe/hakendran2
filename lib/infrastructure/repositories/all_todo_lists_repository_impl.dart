@@ -97,17 +97,17 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
-      {required List<TodoListModel> todoLists}) async {
-    try {
-      bool success =
-          await apiDatasource.synchronizeAllTodoListsWithBackend(todoLists);
-      return Right(success);
-    } catch (e) {
-      return Left(ApiFailure());
-    }
-  }
+  // @override
+  // Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+  //     {required List<TodoListModel> todoLists}) async {
+  //   try {
+  //     bool success =
+  //         await apiDatasource.synchronizeAllTodoListsWithBackend(todoLists);
+  //     return Right(success);
+  //   } catch (e) {
+  //     return Left(ApiFailure());
+  //   }
+  // }
 
   @override
   Future<Either<Failure, Map<String, dynamic>?>>

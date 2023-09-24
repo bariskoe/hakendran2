@@ -22,11 +22,11 @@ class AllTodoListsUsecases {
     return allTodoListsRepository.getAllTodoLists();
   }
 
-  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
-      List<TodoListModel> todoLists) async {
-    return allTodoListsRepository.synchronizeAllTodoListsWithBackend(
-        todoLists: todoLists);
-  }
+  // Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+  //     List<TodoListModel> todoLists) async {
+  //   return allTodoListsRepository.synchronizeAllTodoListsWithBackend(
+  //       todoLists: todoLists);
+  // }
 
   Future<Either<Failure, Map<String, dynamic>?>> getAllTodoListsFromBackend() {
     return allTodoListsRepository.getAllTodoListsFromBackend();

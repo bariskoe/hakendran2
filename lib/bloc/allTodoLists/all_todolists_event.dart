@@ -56,7 +56,7 @@ class AllTodoListEventCheckRepeatPeriodsAndResetAccomplishedIfNeccessary
     extends AllTodolistsEvent {}
 
 //  Overwrites the state of the Firebase data with the data in the local database
-class AllTodolistsEventSynchronizeAllTodoListsWithBackend
-    extends AllTodolistsEvent {}
+// class AllTodolistsEventSynchronizeAllTodoListsWithBackend
+//     extends AllTodolistsEvent {}
 
 class AllTodoListEvenGetAllTodoListsFromBackend extends AllTodolistsEvent {}

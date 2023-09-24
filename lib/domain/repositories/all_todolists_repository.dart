@@ -17,8 +17,8 @@ abstract class AllTodoListsRepository {
   /// in the database
   Future<Either<Failure, List<TodoListModel>>> getAllTodoLists();
 
-  Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
-      {required List<TodoListModel> todoLists});
+  // Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
+  //     {required List<TodoListModel> todoLists});
 
   Future<Either<Failure, Map<String, dynamic>?>> getAllTodoListsFromBackend();
 
