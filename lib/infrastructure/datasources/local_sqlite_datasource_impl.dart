@@ -111,4 +111,13 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
       uid: uid,
     );
   }
+
+  @override
+  Future<int> addTodoUidToSyncPendingTodos({
+    required TodoModel todoModel,
+  }) async {
+    return await DatabaseHelper.addTodoUidToSyncPendingTodos(
+      todoModel: todoModel,
+    );
+  }
 }

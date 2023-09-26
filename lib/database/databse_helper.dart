@@ -65,6 +65,9 @@ class DatabaseHelper {
   /// backend yet.
   static const syncPendigTodosFieldUid = 'uid';
 
+  /// This is the uid of the TodoList which the todo belongs to.
+  static const syncPendigTodosFieldParentTodoListUid = 'parentTodoListUid';
+
   ///---------------------------------------------------------------------------
   Future onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
@@ -104,6 +107,7 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE $syncPendigTodosName (
+          $syncPendigTodosFieldParentTodoListUid TEXT,
           $syncPendigTodosFieldUid TEXT,
           FOREIGN KEY ($syncPendigTodosFieldUid) REFERENCES $todosTableName($todosTableFieldTodoUuId) ON DELETE CASCADE
       );
@@ -215,7 +219,6 @@ class DatabaseHelper {
     Database db = await instance.database;
     saveTimestamp();
     int insertedRow = await db.insert(todosTableName, todoModel.toMap());
-    addTodoTosyncPendigTodos(todoModel);
     return insertedRow;
   }
 
@@ -319,6 +322,20 @@ class DatabaseHelper {
     return true;
   }
 
+  static Future<TodoModel?> getSpecificTodo({
+    required String uid,
+  }) async {
+    Database db = await instance.database;
+    List<Map> list = await db.rawQuery(
+        'SELECT * FROM $todosTableName WHERE $todosTableFieldTodoUuId=?',
+        [uid]);
+    if (list.isNotEmpty) {
+      return TodoModel.fromMap(list.first);
+    } else {
+      return null;
+    }
+  }
+
   static Future<TodoListModel> getSpecificTodoList({
     required String uuid,
   }) async {
@@ -370,12 +387,15 @@ class DatabaseHelper {
   }
 
   /// Regarding syncPendigTodos table ------------------------------------------
-  static Future<int> addTodoTosyncPendigTodos(
-    TodoModel todoModel,
-  ) async {
+  static Future<int> addTodoUidToSyncPendingTodos({
+    required TodoModel todoModel,
+  }) async {
     Database db = await instance.database;
 
-    final mapToInsert = {syncPendigTodosFieldUid: todoModel.uuid};
+    final mapToInsert = {
+      syncPendigTodosFieldUid: todoModel.uuid,
+      syncPendigTodosFieldParentTodoListUid: todoModel.parentTodoListId
+    };
     Logger().d('TodoUid being saved in syncPendigTodos: $mapToInsert');
     return await db.insert(syncPendigTodosName, mapToInsert);
   }

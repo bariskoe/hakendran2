@@ -30,20 +30,16 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
     return MultiBlocListener(
         listeners: [
           BlocListener<DataPreparationBloc, DataPreparationState>(
+            listenWhen: (previous, current) {
+              /// This line makes sure that this listener only listens if this Rpute is
+              /// on top of the widget tree, meaning that it is visible
+              return ModalRoute.of(context)?.isCurrent == true;
+            },
             listener: (context, state) {
               Logger().d('state is $state');
               if (state is DataPreparationStateDataPreparationComplete) {
                 Get.to(() => const MainPage());
                 //Get.to(() => RoutingService.mainPage);
-              }
-            },
-          ),
-          BlocListener<AllTodolistsBloc, AllTodolistsState>(
-            listener: (context, state) {
-              Logger().d('state is $state');
-              if (state is AllTodoListsStateDataPreparationComplete) {
-                //Get.to(() => RoutingService.mainPage);
-                Get.to(() => const MainPage());
               }
             },
           ),

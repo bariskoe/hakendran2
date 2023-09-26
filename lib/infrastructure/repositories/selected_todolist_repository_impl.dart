@@ -96,4 +96,17 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
       return Left(DatabaseFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, int>> addTodoUidToSyncPendingTodos(
+      {required TodoModel todoModel}) async {
+    try {
+      int changes = await localSqliteDataSource.addTodoUidToSyncPendingTodos(
+        todoModel: todoModel,
+      );
+      return Right(changes);
+    } catch (e) {
+      return Left(DatabaseFailure());
+    }
+  }
 }

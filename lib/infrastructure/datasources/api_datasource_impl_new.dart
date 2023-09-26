@@ -87,19 +87,17 @@ class ApiDataSourceImplNew implements ApiDatasource {
             getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
       }
 
-      try {
-        final response = await dio.request(
-          buildUrlString(pathParts),
-          data: body,
-          options: Options(
-            method: method.toUpperCase(),
-            headers: headers,
-          ),
-        );
-        return response;
-      } catch (e) {
-        throw Exception('Failed to send request.');
-      }
+      final response = await dio.request(
+        buildUrlString(pathParts),
+        data: body,
+        options: Options(
+          method: method.toUpperCase(),
+          headers: headers,
+        ),
+      );
+
+      Logger().d('Response is $response');
+      return response;
     }
   }
 
@@ -200,6 +198,11 @@ class ApiDataSourceImplNew implements ApiDatasource {
     } on NotConnectedToTheInternetError catch (e) {
       Logger().e("Not connected to internet error $e");
       return {"dataInfo": FirestoreDataInfoModel(dataIsAcessible: false)};
+    } on DioException catch (e) {
+      Logger().e("Catching DioException 404");
+      if (e.response?.statusCode == 404) {
+        return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
+      }
     } catch (e) {
       Logger().e("Error getting data info: $e");
       return null;
@@ -220,6 +223,27 @@ class ApiDataSourceImplNew implements ApiDatasource {
       if (uploadSuccessful) {
         await DatabaseHelper.deleteFromsyncPendigTodolists(
             todoListModel: todoListModel);
+      }
+    }
+    return true;
+  }
+
+  @override
+  Future<bool> uploadSyncPendingTodos() async {
+    final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodos();
+    Logger().d('Uploading Todos in syncPendigTodos');
+
+    for (Map entry in data['syncPendigTodos']) {
+      final TodoModel? todoModel = await DatabaseHelper.getSpecificTodo(
+          uid: entry[DatabaseHelper.syncPendigTodosFieldUid]);
+
+      if (todoModel != null) {
+        final uploadSuccessful =
+            await addTodoToSpecificList(todoModel: todoModel);
+
+        if (uploadSuccessful) {
+          await DatabaseHelper.deleteFromsyncPendigTodos(todoModel: todoModel);
+        }
       }
     }
     return true;

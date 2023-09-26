@@ -57,7 +57,7 @@ class MainPageDrawer extends Drawer {
                   DatabaseHelper.getAllEntriesOfsyncPendigTodos();
                 },
                 child: const Row(
-                  children: [Icon(Icons.upload), Text('Synchronize')],
+                  children: [Icon(Icons.upload), Text('Get lists and todos')],
                 ))
           ],
         ),

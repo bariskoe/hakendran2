@@ -33,4 +33,7 @@ abstract class LocalSqliteDataSource {
   Future<int> addTodoListUidToSyncPendingTodoLists({
     required String uid,
   });
+  Future<int> addTodoUidToSyncPendingTodos({
+    required TodoModel todoModel,
+  });
 }

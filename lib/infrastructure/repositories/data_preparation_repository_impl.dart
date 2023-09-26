@@ -42,6 +42,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
       Logger().d('hasSyncPending = $hasSyncPending');
 
       if (remoteData == null) {
+        Logger().d('remodata = null');
         return const Right(SynchronizationStatus.unknown);
       } else {
         final FirestoreDataInfoModel firestoreDataInfoModel =
@@ -108,6 +109,16 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
   Future<Either<Failure, bool>> uploadSyncPendingTodoLists() async {
     try {
       final success = await apiDatasource.uploadSyncPendingTodoLists();
+      return Right(success);
+    } catch (e) {
+      return Left(ApiFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> uploadSyncPendingTodos() async {
+    try {
+      final success = await apiDatasource.uploadSyncPendingTodos();
       return Right(success);
     } catch (e) {
       return Left(ApiFailure());

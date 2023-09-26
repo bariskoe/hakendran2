@@ -28,4 +28,7 @@ abstract class SelectedTodolistRepository {
   Future<Either<Failure, int>> addTodoListUidToSyncPendingTodoLists({
     required String uid,
   });
+  Future<Either<Failure, int>> addTodoUidToSyncPendingTodos({
+    required TodoModel todoModel,
+  });
 }

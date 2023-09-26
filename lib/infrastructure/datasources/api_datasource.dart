@@ -21,4 +21,8 @@ abstract class ApiDatasource {
   /// Loops through the table [syncPendingTodoLists], takes every uid and uploads
   /// the respective Todolist to the cloud
   Future<bool> uploadSyncPendingTodoLists();
+
+  /// Loops through the table [syncPendingTodos], takes every uid and uploads
+  /// the respective Todo to the cloud
+  Future<bool> uploadSyncPendingTodos();
 }

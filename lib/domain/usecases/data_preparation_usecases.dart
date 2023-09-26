@@ -7,7 +7,9 @@ import '../repositories/data_preparation_repository.dart';
 
 class DataPreparationUsecases {
   final DataPreparationRepository dataPreparationRepository;
-  DataPreparationUsecases({required this.dataPreparationRepository});
+  DataPreparationUsecases({
+    required this.dataPreparationRepository,
+  });
 
   Future<Either<Failure, SynchronizationStatus>>
       checkSynchronizationStatus() async {
@@ -19,6 +21,11 @@ class DataPreparationUsecases {
   Future<Either<Failure, bool>> uploadSyncPendingTodoLists() async {
     final result = await dataPreparationRepository.uploadSyncPendingTodoLists();
 
+    return result;
+  }
+
+  Future<Either<Failure, bool>> uploadSyncPendingTodos() async {
+    final result = await dataPreparationRepository.uploadSyncPendingTodos();
     return result;
   }
 }

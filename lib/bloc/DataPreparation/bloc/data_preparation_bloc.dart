@@ -9,6 +9,7 @@ import '../../../domain/usecases/all_todolists_usecases.dart';
 import '../../../domain/usecases/data_preparation_usecases.dart';
 import '../../../models/todolist_model.dart';
 import '../../allTodoLists/all_todolists_bloc.dart';
+import '../../selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 
 part 'data_preparation_event.dart';
 part 'data_preparation_state.dart';
@@ -17,11 +18,13 @@ class DataPreparationBloc
     extends Bloc<DataPreparationEvent, DataPreparationState> {
   final DataPreparationUsecases dataPreparationUsecases;
   final AllTodoListsUsecases allTodoListsUsecases;
+  final SelectedTodolistBloc selectedTodoListBloc;
   //final AllTodolistsBloc _allTodolistBloc;
 
   DataPreparationBloc({
     required this.dataPreparationUsecases,
     required this.allTodoListsUsecases,
+    required this.selectedTodoListBloc,
     // required AllTodolistsBloc allTodolistBloc,
   }) :
         //_allTodolistBloc = allTodolistBloc,
@@ -35,6 +38,12 @@ class DataPreparationBloc
     // on<DataPreparationEvent>((event, emit) {
 
     // });
+
+    selectedTodoListBloc.stream.listen((state) {
+      if (state is SelectedTodolistStateLoaded) {
+        add(const DataPreparationEventSynchronizeIfNecessary());
+      }
+    });
 
     on<DataPreparationEventSynchronizeIfNecessary>((event, emit) async {
       emit(DataPreparationStateLoading());
@@ -55,7 +64,7 @@ class DataPreparationBloc
             }
           case SynchronizationStatus.localDataIsNewer:
             {
-              add(DataPreparationEventUploadSyncPendingTodoLists());
+              add(DataPreparationEventUploadAllSyncPendingLists());
             }
           case SynchronizationStatus.dataIsSynchronized:
             {
@@ -69,13 +78,19 @@ class DataPreparationBloc
       });
     });
 
-    on<DataPreparationEventUploadSyncPendingTodoLists>((event, emit) async {
+    on<DataPreparationEventUploadAllSyncPendingLists>((event, emit) async {
       emit(DataPreparationStateLoading());
       Either<Failure, bool> success =
           await dataPreparationUsecases.uploadSyncPendingTodoLists();
 
-      success.fold((l) => emit(DataPreparationStateUploadFailed()),
-          (r) => emit(DataPreparationStateDataPreparationComplete()));
+      success.fold((l) => emit(DataPreparationStateUploadFailed()), (r) {});
+
+      Either<Failure, bool> todosUploaded =
+          await dataPreparationUsecases.uploadSyncPendingTodos();
+
+      todosUploaded.fold((l) => emit(DataPreparationStateUploadFailed()), (r) {
+        emit(DataPreparationStateDataPreparationComplete());
+      });
     });
   }
 }

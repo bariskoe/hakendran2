@@ -250,14 +250,14 @@ class DismissibleListElement extends StatelessWidget {
           ),
           onTap: () {
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodoListEventSelectSpecificTodoList(uuid: model.uuid!),
+              SelectedTodoListEventSelectSpecificTodoList(uid: model.uuid!),
             );
 
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodolistEventLoadSelectedTodolist(uuid: model.uuid!),
+              SelectedTodolistEventLoadSelectedTodolist(uid: model.uuid!),
             );
 
-            Get.to(const TodoListDetailPage());
+            Get.to(() => const TodoListDetailPage());
           },
           onLongPress: () => editListDialog(
             context,

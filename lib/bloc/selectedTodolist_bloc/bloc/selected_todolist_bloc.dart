@@ -32,7 +32,7 @@ class SelectedTodolistBloc
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
       emit(SelectedTodoListStateLoading());
       Either<Failure, TodoListEntity> model =
-          await selectedTodolistUsecases.getSpecificTodoList(uuid: event.uuid);
+          await selectedTodolistUsecases.getSpecificTodoList(uuid: event.uid);
       model.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
@@ -61,24 +61,16 @@ class SelectedTodolistBloc
             parentTodoListId: selectedTodoList!,
             repeatPeriod: eventModel.repeatPeriod);
 
-        // ApiDatasourceImpl apiDatasource = ApiDatasourceImpl();
-        // apiDatasource.addTodoToSpecificList(
-        //     todoModel: TodoModel(
-        //         uuid: uuid,
-        //         id: eventModel.id,
-        //         task: eventModel.task,
-        //         accomplished: eventModel.accomplished,
-        //         parentTodoListId: selectedTodoList!,
-        //         repeatPeriod: eventModel.repeatPeriod));
-
         TodoListDetailPage.justAddedTodo = true;
 
         Either<Failure, int> didSave = await selectedTodolistUsecases
             .addTodoToSpecificList(todoModel: adjustbleTodoModel);
-        didSave.fold(
-            (l) => emit(SelectedTodolistStateError()),
-            (r) => add(SelectedTodolistEventLoadSelectedTodolist(
-                uuid: selectedTodoList!)));
+        didSave.fold((l) => emit(SelectedTodolistStateError()), (r) {
+          add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+              todoModel: adjustbleTodoModel));
+          add(SelectedTodolistEventLoadSelectedTodolist(
+              uid: selectedTodoList!));
+        });
       }
     });
 
@@ -87,8 +79,8 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodoListEventSelectSpecificTodoList>((event, emit) async {
-      selectedTodoList = event.uuid;
-      Logger().d('Selected todolist uuid: $selectedTodoList');
+      selectedTodoList = event.uid;
+      Logger().d('Selected todolist uid: $selectedTodoList');
     });
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(
@@ -99,7 +91,7 @@ class SelectedTodolistBloc
         changes.fold(
           (l) => emit(SelectedTodolistStateError()),
           (r) => add(
-            SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
+            SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
           ),
         );
       },
@@ -113,7 +105,7 @@ class SelectedTodolistBloc
       changes.fold(
         (l) => emit(SelectedTodolistStateError()),
         (r) => add(
-          SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
+          SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
         ),
       );
     });
@@ -132,7 +124,7 @@ class SelectedTodolistBloc
       failureOrChanges.fold(
         (l) => emit(SelectedTodolistStateError()),
         (r) => add(
-          SelectedTodolistEventLoadSelectedTodolist(uuid: selectedTodoList!),
+          SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
         ),
       );
     });
@@ -142,6 +134,13 @@ class SelectedTodolistBloc
       Either<Failure, int> idOfInsertedRow =
           await selectedTodolistUsecases.addTodoListUidToSyncPendingTodoLists(
         uid: event.uid,
+      );
+    });
+
+    on<SelectedTodoListEventAddTodoUidToSyncPendingTodos>((event, emit) async {
+      Either<Failure, int> idOfInsertedRow =
+          await selectedTodolistUsecases.addTodoUidToSyncPendingTodos(
+        todoModel: event.todoModel,
       );
     });
   }

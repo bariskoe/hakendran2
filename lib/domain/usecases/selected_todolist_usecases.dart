@@ -61,4 +61,11 @@ class SelectedTodolistUsecases {
       uid: uid,
     );
   }
+
+  Future<Either<Failure, int>> addTodoUidToSyncPendingTodos({
+    required TodoModel todoModel,
+  }) async {
+    return await selectedTodolistRepository.addTodoUidToSyncPendingTodos(
+        todoModel: todoModel);
+  }
 }

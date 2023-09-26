@@ -9,18 +9,18 @@ abstract class SelectedTodolistEvent extends Equatable {
 
 class SelectedTodoListEventSelectSpecificTodoList
     extends SelectedTodolistEvent {
-  final String uuid;
-  const SelectedTodoListEventSelectSpecificTodoList({required this.uuid});
+  final String uid;
+  const SelectedTodoListEventSelectSpecificTodoList({required this.uid});
   @override
-  List<Object> get props => [uuid];
+  List<Object> get props => [uid];
 }
 
 class SelectedTodolistEventUnselect extends SelectedTodolistEvent {}
 
 class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {
-  final String uuid;
+  final String uid;
   const SelectedTodolistEventLoadSelectedTodolist({
-    required this.uuid,
+    required this.uid,
   });
 }
 
@@ -72,4 +72,16 @@ class SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists
 
   @override
   List<Object> get props => [uid];
+}
+
+class SelectedTodoListEventAddTodoUidToSyncPendingTodos
+    extends SelectedTodolistEvent {
+  final TodoModel todoModel;
+
+  const SelectedTodoListEventAddTodoUidToSyncPendingTodos({
+    required this.todoModel,
+  });
+
+  @override
+  List<Object> get props => [todoModel];
 }
