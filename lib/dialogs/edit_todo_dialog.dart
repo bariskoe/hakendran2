@@ -1,6 +1,8 @@
+import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logger/logger.dart';
 
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../models/todo_model.dart';
@@ -53,19 +55,15 @@ Future<void> editTodoDialog(
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
-                TodoModel newModel = TodoModel(
-                    id: todoModel.id,
-                    task: textEditingController.text,
-                    parentTodoListId: todoModel.parentTodoListId,
-                    accomplished: todoModel.accomplished,
-                    repeatPeriod: RepeatPeriodExtension.deserialize(
-                        value: _selectedRepetitionPeriodIndexInEditTodoDialog ??
-                            0));
-
-                BlocProvider.of<SelectedTodolistBloc>(context)
+                getIt<SelectedTodolistBloc>()
                     .add(SelectedTodolistEventUpdateTodo(
-                  todoModel: newModel,
-                ));
+                        todoModel: todoModel.copyWith(
+                            task: textEditingController.text,
+                            repeatPeriod: RepeatPeriodExtension.deserialize(
+                              value:
+                                  _selectedRepetitionPeriodIndexInEditTodoDialog ??
+                                      0,
+                            ))));
                 Navigator.of(context).pop();
               }
             },

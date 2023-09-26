@@ -12,10 +12,10 @@ class SelectedTodolistUsecases {
   });
 
   Future<Either<Failure, TodoListEntity>> getSpecificTodoList({
-    required String uuid,
+    required String uid,
   }) async {
     return await selectedTodolistRepository.getSpecificTodoList(
-      uuid: uuid,
+      uid: uid,
     );
   }
 
@@ -28,11 +28,11 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> setAccomplishmentStatusOfTodo({
-    required String uuid,
+    required String uid,
     required bool accomplished,
   }) async {
     return await selectedTodolistRepository.setAccomplishmentStatusOfTodo(
-      uuid: uuid,
+      uid: uid,
       accomplished: accomplished,
     );
   }
@@ -46,10 +46,10 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   }) async {
     return await selectedTodolistRepository.resetAllTodosOfSpecificList(
-      uuid: uuid,
+      uid: uid,
     );
   }
 

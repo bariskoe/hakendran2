@@ -11,14 +11,12 @@ import 'package:uuid/uuid.dart';
 class TodoListModel extends TodoListEntity with EquatableMixin {
   // TODO: uuid in uid umbenennen. Dabei die Firebase namen beachten
   TodoListModel({
-    int? id,
-    String? uuid,
+    String? uid,
     required String listName,
     required List<TodoModel> todoModels,
     required TodoListCategory todoListCategory,
   }) : super(
-          id: id,
-          uuid: uuid,
+          uid: uid,
           listName: listName,
           todoModels: todoModels,
           todoListCategory: todoListCategory,
@@ -26,16 +24,14 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
 
   @override
   List<Object?> get props => [
-        id,
-        uuid,
+        uid,
         listName,
         todoModels,
         todoListCategory,
       ];
 
   factory TodoListModel.fromMap(Map<dynamic, dynamic> map) => TodoListModel(
-        id: map[DatabaseHelper.todoListsTableFieldId],
-        uuid: map[DatabaseHelper.todoListsTableFieldUuId],
+        uid: map[DatabaseHelper.todoListsTableFieldUid],
         listName: map[DatabaseHelper.todoListsTableFieldListName],
         todoModels:
             map[DatabaseHelper.todos].map((e) => TodoModel.fromMap(e)).toList(),
@@ -46,8 +42,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   Map<String, dynamic> toMap() {
     var uuidLibrary = const Uuid();
     return {
-      DatabaseHelper.todoListsTableFieldId: id,
-      DatabaseHelper.todoListsTableFieldUuId: uuid ?? uuidLibrary.v1(),
+      DatabaseHelper.todoListsTableFieldUid: uid ?? uuidLibrary.v1(),
       DatabaseHelper.todoListsTableFieldListName: listName,
       DatabaseHelper.todos: todoModels.map((e) => e.toMap()).toList(),
       DatabaseHelper.todoListsTableFieldCategory: todoListCategory.serialize(),
@@ -57,8 +52,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   Map<String, dynamic> toMapForInsertNewListIntoDatabase() {
     var uuidLibrary = const Uuid();
     return {
-      DatabaseHelper.todoListsTableFieldId: id,
-      DatabaseHelper.todoListsTableFieldUuId: uuid ?? uuidLibrary.v4(),
+      DatabaseHelper.todoListsTableFieldUid: uid ?? uuidLibrary.v4(),
       DatabaseHelper.todoListsTableFieldListName: listName,
       DatabaseHelper.todoListsTableFieldCategory: todoListCategory.serialize(),
     };

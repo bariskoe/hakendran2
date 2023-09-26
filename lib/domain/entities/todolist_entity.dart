@@ -2,8 +2,7 @@ import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
 
 class TodoListEntity {
-  final int? id;
-  final String? uuid;
+  final String? uid;
 
   final String listName;
   final List<TodoModel> todoModels;
@@ -12,15 +11,13 @@ class TodoListEntity {
   TodoListEntity({
     required this.listName,
     this.todoModels = const [],
-    this.id,
     this.todoListCategory = TodoListCategory.none,
-    this.uuid,
+    this.uid,
   });
 
   TodoListModel toModel() {
     return TodoListModel(
-        uuid: uuid,
-        id: id,
+        uid: uid,
         listName: listName,
         todoModels: todoModels,
         todoListCategory: todoListCategory);

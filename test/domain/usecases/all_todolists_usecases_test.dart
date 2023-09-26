@@ -21,7 +21,6 @@ void main() {
 
   group('createNewTodoList usecase', () {
     final TodoListEntity tTodoListEntity = TodoListEntity(
-      id: null,
       listName: 'Sport',
       todoModels: [],
     );

@@ -221,7 +221,7 @@ class ApiDatasourceImpl implements ApiDatasource {
     for (Map entry in data['syncPendigTodoLists']) {
       final TodoListModel todoListModel =
           await DatabaseHelper.getSpecificTodoList(
-              uuid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
+              uid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
       final uploadSuccessful =
           await createTodoList(todoListModel: todoListModel);
 

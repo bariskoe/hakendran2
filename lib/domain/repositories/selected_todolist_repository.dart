@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 
 abstract class SelectedTodolistRepository {
   Future<Either<Failure, TodoListEntity>> getSpecificTodoList({
-    required String uuid,
+    required String uid,
   });
 
   Future<Either<Failure, int>> addTodoToSpecificList({
@@ -14,7 +14,7 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> setAccomplishmentStatusOfTodo({
-    required String uuid,
+    required String uid,
     required bool accomplished,
   });
 
@@ -23,7 +23,7 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   });
   Future<Either<Failure, int>> addTodoListUidToSyncPendingTodoLists({
     required String uid,

@@ -156,14 +156,13 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //add an empty TodoModel at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
     List<TodoModel> reversedList = List.from(list.reversed)
-      ..add(TodoModel(
-          id: null, task: '', accomplished: false, parentTodoListId: 'Test'));
+      ..add(TodoModel(task: '', accomplished: false, parentTodoListId: 'Test'));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),
       child: AutomaticAnimatedListView<TodoModel>(
         comparator: AnimatedListDiffListComparator<TodoModel>(
-            sameItem: (a, b) => a.id == b.id,
+            sameItem: (a, b) => a.uid == b.uid,
             sameContent: (a, b) => a.accomplished == b.accomplished),
 
         listController: animatedListcontroller,
@@ -190,10 +189,10 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                         //the new reversedList
 
                         reversedList
-                            .removeWhere((element) => element.id == model.id);
+                            .removeWhere((element) => element.uid == model.uid);
                         BlocProvider.of<SelectedTodolistBloc>(context).add(
                             SelectedTodolistEventDeleteSpecificTodo(
-                                uuid: model.uuid!));
+                                uid: model.uid!));
                       },
                       key: UniqueKey(),
                       background: const SwipeToDeleteBackgroundWidget(),
@@ -250,7 +249,7 @@ class ListElement extends StatelessWidget {
                   onTap: () {
                     BlocProvider.of<SelectedTodolistBloc>(context).add(
                       SelectedTodolistEventUpdateAccomplishedOfTodo(
-                        uuid: model.uuid!,
+                        uid: model.uid!,
                         accomplished: !model.accomplished,
                       ),
                     );

@@ -1,10 +1,3 @@
-import 'dart:convert';
-
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
-import 'package:baristodolistapp/services/connectivity_service.dart';
-import 'package:baristodolistapp/strings/string_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
@@ -14,6 +7,11 @@ import '../../database/databse_helper.dart';
 import '../../dependency_injection.dart';
 import '../../domain/errors/errors.dart';
 import '../../models/firestore_data_info_model.dart';
+import '../../models/todo_model.dart';
+import '../../models/todolist_model.dart';
+import '../../services/connectivity_service.dart';
+import '../../strings/string_constants.dart';
+import 'api_datasource.dart';
 
 class ApiDataSourceImplNew implements ApiDatasource {
   final baseUrl =
@@ -190,10 +188,8 @@ class ApiDataSourceImplNew implements ApiDatasource {
               timestamp: responseBody[StringConstants.spDBTimestamp],
               count: responseBody[StringConstants.firestoreFieldNumberOfLists]),
         };
-      } else if (response.statusCode == 404) {
-        return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
-      } else {
-        return null;
+        // } else {
+        //   return null;
       }
     } on NotConnectedToTheInternetError catch (e) {
       Logger().e("Not connected to internet error $e");
@@ -216,7 +212,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
     for (Map entry in data['syncPendigTodoLists']) {
       final TodoListModel todoListModel =
           await DatabaseHelper.getSpecificTodoList(
-              uuid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
+              uid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
       final uploadSuccessful =
           await createTodoList(todoListModel: todoListModel);
 

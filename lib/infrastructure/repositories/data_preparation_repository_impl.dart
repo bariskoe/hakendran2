@@ -24,6 +24,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
   @override
   Future<Either<Failure, SynchronizationStatus>>
       checkSynchronizationStatus() async {
+    // TODO: Hier aufräumen
     try {
       final Map<String, dynamic>? remoteData =
           await apiDatasource.getDataInfo();

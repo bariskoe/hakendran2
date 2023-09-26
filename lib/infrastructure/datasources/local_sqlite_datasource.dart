@@ -10,25 +10,25 @@ abstract class LocalSqliteDataSource {
   Future<int> updateSpecificListParameters(
       {required TodoListUpdateModel todoListUpdateModel});
 
-  Future<int> deleteSpecifiTodoList({required String uuid});
+  Future<int> deleteSpecifiTodoList({required String uid});
 
   Future<bool> checkRepeatPeriodsAndResetAccomplishedIfNeccessary();
 
   Future<int> deleteAllTodoLists();
 
-  Future<TodoListEntity> getSpecificTodoList({required String uuid});
+  Future<TodoListEntity> getSpecificTodoList({required String uid});
 
   Future<int> addTodoToSpecificList({required TodoModel todoModel});
 
   Future<int> setAccomplishmentStatusOfTodo({
-    required String uuid,
+    required String uid,
     required bool accomplished,
   });
 
   Future<int> updateSpecificTodo({required TodoModel todoModel});
 
   Future<int> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   });
   Future<int> addTodoListUidToSyncPendingTodoLists({
     required String uid,

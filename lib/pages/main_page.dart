@@ -237,7 +237,7 @@ class DismissibleListElement extends StatelessWidget {
       onDismissed: (dismissdirection) {
         MainPage.justDismissedList = true;
         getIt<AllTodolistsBloc>().add(
-          AllTodolistsEventDeleteSpecificTodolist(uuid: model.uuid!),
+          AllTodolistsEventDeleteSpecificTodolist(uid: model.uid!),
         );
       },
       child: Container(
@@ -250,11 +250,11 @@ class DismissibleListElement extends StatelessWidget {
           ),
           onTap: () {
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodoListEventSelectSpecificTodoList(uid: model.uuid!),
+              SelectedTodoListEventSelectSpecificTodoList(uid: model.uid!),
             );
 
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodolistEventLoadSelectedTodolist(uid: model.uuid!),
+              SelectedTodolistEventLoadSelectedTodolist(uid: model.uid!),
             );
 
             Get.to(() => const TodoListDetailPage());

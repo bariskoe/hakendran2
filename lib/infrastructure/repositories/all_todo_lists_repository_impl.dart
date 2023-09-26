@@ -61,10 +61,9 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
 
   @override
   Future<Either<Failure, int>> deleteSpecifiTodoList(
-      {required String uuid}) async {
+      {required String uid}) async {
     try {
-      int changes =
-          await localSqliteDataSource.deleteSpecifiTodoList(uuid: uuid);
+      int changes = await localSqliteDataSource.deleteSpecifiTodoList(uid: uid);
       if (changes > 0) {
         return Right(changes);
       } else {

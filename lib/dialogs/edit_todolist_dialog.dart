@@ -62,7 +62,7 @@ Future<void> editListDialog(
               if (canPress) {
                 getIt<AllTodolistsBloc>()
                     .add(AllTodoListEventUpdateListParameters(
-                  uuid: todoListModel.uuid!,
+                  uid: todoListModel.uid!,
                   listName: textEditingController.text,
                   todoListCategory: TodoListCategoryExtension.deserialize(
                       _selectedCategoryIndexInEditListDialog!),

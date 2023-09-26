@@ -48,26 +48,17 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       (event, emit) async {
         emit(AllTodoListsStateLoading());
         var uuidLibrary = const Uuid();
-        String uuid = uuidLibrary.v1();
-        Logger().d('uuid on create in bloc is $uuid');
+        String uid = uuidLibrary.v1();
+        Logger().d('uid on create in bloc is $uid');
 
-        //! Save the data locally, check the sync list, get the Todolist and upload it
-        // final success = apiUsecases.createTodoList(
-        //     todoListModel: TodoListModel(
-        //   listName: event.listName,
-        //   todoModels: [],
-        //   todoListCategory: event.todoListCategory,
-        //   uuid: uuid,
-        // ));
-
-        // This id is not the uuid of the created TodoList
+        // This id is not the uid of the created TodoList
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
           todoListEntity: TodoListModel(
             todoModels: const [],
             listName: event.listName,
             todoListCategory: event.todoListCategory,
-            uuid: uuid,
+            uid: uid,
           ),
         );
 
@@ -75,7 +66,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
           emit(AllTodoListsStateError());
         }, (r) {
           MainPage.justAddedList = true;
-          DatabaseHelper.addTodoListUidToSyncPendingTodoLists(uid: uuid);
+          DatabaseHelper.addTodoListUidToSyncPendingTodoLists(uid: uid);
           add(AllTodolistsEventGetAllTodoLists());
           getIt<DataPreparationBloc>()
               .add(const DataPreparationEventSynchronizeIfNecessary());
@@ -145,7 +136,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
           Future.wait(todolists.map((todoList) async =>
               await allTodoListsUsecases.createNewTodoList(
                   todoListEntity: TodoListModel(
-                      id: todoList['id'],
+                      uid: todoList['uid'],
                       listName: todoList['listName'],
                       todoListCategory: TodoListCategoryExtension.deserialize(
                           todoList['category']),
@@ -171,7 +162,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       Either<Failure, int> failureOrChanges =
           await allTodoListsUsecases.updateSpecificListParameters(
               todoListUpdateModel: TodoListUpdateModel(
-        uuid: event.uuid,
+        uid: event.uid,
         listName: event.listName,
         todoListCategory: event.todoListCategory,
       ));
@@ -187,7 +178,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
     on<AllTodolistsEventDeleteSpecificTodolist>((event, emit) async {
       Either<Failure, int> failureOrChangesMade =
-          await allTodoListsUsecases.deleteSpecifiTodoList(uuid: event.uuid);
+          await allTodoListsUsecases.deleteSpecifiTodoList(uid: event.uid);
 
       failureOrChangesMade.fold(
           (l) => emit(AllTodoListsStateError()), (r) => null);

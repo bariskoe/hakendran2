@@ -12,11 +12,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }) async {
     int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
       TodoListModel(
-          id: null,
           todoModels: const [],
           listName: todoListEntity.listName,
           todoListCategory: todoListEntity.todoListCategory,
-          uuid: todoListEntity.uuid),
+          uid: todoListEntity.uid),
     );
 
     return idOflastCreatedRow;
@@ -38,10 +37,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> deleteSpecifiTodoList({
-    required String uuid,
+    required String uid,
   }) async {
     return await DatabaseHelper.deleteSpecificTodoList(
-      uuid: uuid,
+      uid: uid,
     );
   }
 
@@ -58,10 +57,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<TodoListEntity> getSpecificTodoList({
-    required String uuid,
+    required String uid,
   }) async {
     return await DatabaseHelper.getSpecificTodoList(
-      uuid: uuid,
+      uid: uid,
     );
   }
 
@@ -76,11 +75,11 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> setAccomplishmentStatusOfTodo({
-    required String uuid,
+    required String uid,
     required bool accomplished,
   }) async {
     return await DatabaseHelper.setAccomplishmentStatusOfTodo(
-      uuid: uuid,
+      uid: uid,
       accomplished: accomplished,
     );
   }
@@ -96,10 +95,10 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   }) async {
     return await DatabaseHelper.resetAllTodosOfSpecificList(
-      uuid: uuid,
+      uid: uid,
     );
   }
 

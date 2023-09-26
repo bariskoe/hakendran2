@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TodoModel extends Equatable {
-  //! I think this field will be obsolete if there is a uuid field
-  final int? id;
-  final String? uuid;
+  final String? uid;
   final String task;
   final bool accomplished;
   final String parentTodoListId;
@@ -16,24 +14,39 @@ class TodoModel extends Equatable {
   final DateTime? accomplishedAt;
 
   const TodoModel({
-    required this.id,
     required this.task,
     required this.accomplished,
     required this.parentTodoListId,
-    this.uuid,
+    this.uid,
     this.accomplishedAt,
     this.repeatPeriod = RepeatPeriod.none,
   });
 
+  TodoModel copyWith({
+    String? uid,
+    String? task,
+    bool? accomplished,
+    String? parentTodoListId,
+    RepeatPeriod? repeatPeriod,
+    DateTime? accomplishedAt,
+  }) {
+    return TodoModel(
+      uid: uid ?? this.uid,
+      task: task ?? this.task,
+      accomplished: accomplished ?? this.accomplished,
+      parentTodoListId: parentTodoListId ?? this.parentTodoListId,
+      repeatPeriod: repeatPeriod ?? this.repeatPeriod,
+      accomplishedAt: accomplishedAt ?? this.accomplishedAt,
+    );
+  }
+
   factory TodoModel.fromMap(Map<dynamic, dynamic> map) {
     return TodoModel(
-      //! I think this field will be obsolete if there is a uuid field
-      id: map[DatabaseHelper.todosTableFieldId],
-      uuid: map[DatabaseHelper.todosTableFieldTodoUuId],
+      uid: map[DatabaseHelper.todosTableFieldTodoUid],
       task: map[DatabaseHelper.todosTableFieldTask],
       accomplished: AccomplishmentStatusExtension.deserialize(
           value: map[DatabaseHelper.todosTableFieldAccomplished]),
-      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUuId],
+      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
       repeatPeriod: RepeatPeriodExtension.deserialize(
         value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
       ),
@@ -47,13 +60,11 @@ class TodoModel extends Equatable {
   Map<String, dynamic> toMap() {
     var uuidLibrary = const Uuid();
     return {
-      //! I think this field will be obsolete if there is a uuid field
-      DatabaseHelper.todosTableFieldId: id,
-      DatabaseHelper.todoListsTableFieldUuId: uuid ?? uuidLibrary.v1(),
+      DatabaseHelper.todosTableFieldTodoUid: uid ?? uuidLibrary.v1(),
       DatabaseHelper.todosTableFieldTask: task,
       DatabaseHelper.todosTableFieldAccomplished:
           AccomplishmentStatusExtension.serialize(accomplished: accomplished),
-      DatabaseHelper.todosTableFieldTodoListUuId: parentTodoListId,
+      DatabaseHelper.todosTableFieldTodoListUid: parentTodoListId,
       DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod?.serialize(),
       DatabaseHelper.todosTableFieldaccomplishedAt:
           accomplishedAt?.millisecondsSinceEpoch
@@ -62,8 +73,7 @@ class TodoModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        uuid,
+        uid,
         task,
         accomplished,
         parentTodoListId,

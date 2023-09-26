@@ -27,26 +27,26 @@ class AllTodolistsEventGetAllTodoLists extends AllTodolistsEvent {}
 class AllTodolistsEventDeleteAllTodoLists extends AllTodolistsEvent {}
 
 class AllTodolistsEventDeleteSpecificTodolist extends AllTodolistsEvent {
-  final String uuid;
-  const AllTodolistsEventDeleteSpecificTodolist({required this.uuid});
+  final String uid;
+  const AllTodolistsEventDeleteSpecificTodolist({required this.uid});
 
   @override
   List<Object> get props => [id];
 }
 
 class AllTodoListEventUpdateListParameters extends AllTodolistsEvent {
-  final String uuid;
+  final String uid;
   final String listName;
   final TodoListCategory todoListCategory;
   const AllTodoListEventUpdateListParameters({
-    required this.uuid,
+    required this.uid,
     required this.listName,
     required this.todoListCategory,
   });
 
   @override
   List<Object> get props => [
-        uuid,
+        uid,
         listName,
         todoListCategory,
       ];

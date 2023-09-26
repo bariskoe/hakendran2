@@ -4,15 +4,15 @@ import 'package:equatable/equatable.dart';
 
 class TodoListUpdateModel extends TodoListUpdateEntity with EquatableMixin {
   TodoListUpdateModel(
-      {required String uuid,
+      {required String uid,
       required String listName,
       required TodoListCategory todoListCategory})
       : super(
-          uuid: uuid,
+          uid: uid,
           listName: listName,
           todoListCategory: todoListCategory,
         );
 
   @override
-  List<Object?> get props => [uuid, listName, todoListCategory];
+  List<Object?> get props => [uid, listName, todoListCategory];
 }

@@ -55,8 +55,6 @@ Future<void> addTodoDialog({
                 getIt<SelectedTodolistBloc>().add(
                   SelectedTodolistEventAddNewTodo(
                     todoModel: TodoModel(
-                      //! Is an id still neccessary if we have a uid?
-                      id: null,
                       accomplished: false,
                       task: textEditingController.text,
                       parentTodoListId: 'Test',

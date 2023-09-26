@@ -38,8 +38,8 @@ class AllTodoListsUsecases {
         todoListUpdateModel: todoListUpdateModel);
   }
 
-  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uuid}) {
-    return allTodoListsRepository.deleteSpecifiTodoList(uuid: uuid);
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uid}) {
+    return allTodoListsRepository.deleteSpecifiTodoList(uid: uid);
   }
 
   Future<Either<Failure, bool>>

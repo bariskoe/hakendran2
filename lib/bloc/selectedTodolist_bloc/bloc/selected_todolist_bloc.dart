@@ -32,7 +32,7 @@ class SelectedTodolistBloc
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
       emit(SelectedTodoListStateLoading());
       Either<Failure, TodoListEntity> model =
-          await selectedTodolistUsecases.getSpecificTodoList(uuid: event.uid);
+          await selectedTodolistUsecases.getSpecificTodoList(uid: event.uid);
       model.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
@@ -48,14 +48,13 @@ class SelectedTodolistBloc
       emit(SelectedTodoListStateLoading());
 
       const uuidPackage = Uuid();
-      final uuid = uuidPackage.v1();
+      final uid = uuidPackage.v1();
 
       TodoModel adjustbleTodoModel;
       if (selectedTodoList != null) {
         final eventModel = event.todoModel;
         adjustbleTodoModel = TodoModel(
-            uuid: uuid,
-            id: eventModel.id,
+            uid: uid,
             task: eventModel.task,
             accomplished: eventModel.accomplished,
             parentTodoListId: selectedTodoList!,
@@ -87,7 +86,7 @@ class SelectedTodolistBloc
       (event, emit) async {
         Either<Failure, int> changes =
             await selectedTodolistUsecases.setAccomplishmentStatusOfTodo(
-                uuid: event.uuid, accomplished: event.accomplished);
+                uid: event.uid, accomplished: event.accomplished);
         changes.fold(
           (l) => emit(SelectedTodolistStateError()),
           (r) => add(
@@ -111,7 +110,7 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
-      await DatabaseHelper.deleteSpecificTodo(uuid: event.uuid);
+      await DatabaseHelper.deleteSpecificTodo(uid: event.uid);
 //No need to reload the list here. The Dismissible Listview takes care of the ui.
     });
 
@@ -119,7 +118,7 @@ class SelectedTodolistBloc
       emit(SelectedTodoListStateLoading());
 
       Either<Failure, int> failureOrChanges = await selectedTodolistUsecases
-          .resetAllTodosOfSpecificList(uuid: selectedTodoList!);
+          .resetAllTodosOfSpecificList(uid: selectedTodoList!);
 
       failureOrChanges.fold(
         (l) => emit(SelectedTodolistStateError()),

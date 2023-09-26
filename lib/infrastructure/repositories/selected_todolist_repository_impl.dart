@@ -14,11 +14,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, TodoListEntity>> getSpecificTodoList({
-    required String uuid,
+    required String uid,
   }) async {
     try {
       final todoListModel =
-          await localSqliteDataSource.getSpecificTodoList(uuid: uuid);
+          await localSqliteDataSource.getSpecificTodoList(uid: uid);
       return Right(todoListModel);
     } catch (e) {
       return Left(DatabaseFailure());
@@ -40,12 +40,12 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> setAccomplishmentStatusOfTodo({
-    required String uuid,
+    required String uid,
     required bool accomplished,
   }) async {
     try {
       int changes = await localSqliteDataSource.setAccomplishmentStatusOfTodo(
-        uuid: uuid,
+        uid: uid,
         accomplished: accomplished,
       );
       return Right(changes);
@@ -70,11 +70,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   }) async {
     try {
       int changes = await localSqliteDataSource.resetAllTodosOfSpecificList(
-        uuid: uuid,
+        uid: uid,
       );
       return Right(changes);
     } catch (e) {

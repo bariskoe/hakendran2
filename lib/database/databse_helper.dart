@@ -23,8 +23,8 @@ class DatabaseHelper {
 
   ///Fields of the TodoListsTable ----------------------------------------------
   static const String todoListsTableName = 'todoliststable';
-  static const String todoListsTableFieldId = 'id';
-  static const String todoListsTableFieldUuId = 'uuid';
+
+  static const String todoListsTableFieldUid = 'uid';
   static const String todoListsTableFieldListName =
       'listName'; //i.E. Workout exercises
   static const String todoListsTableFieldCategory =
@@ -32,15 +32,13 @@ class DatabaseHelper {
 
   ///Fields of the TodosTable --------------------------------------------------
   static const String todosTableName = 'todostable';
-  static const String todosTableFieldId = 'id';
-  static const String todosTableFieldTodoUuId = 'uuid';
+
+  static const String todosTableFieldTodoUid = 'uid';
   static const String todosTableFieldTask = 'task'; //i.E. '100 Situps'
   static const String todosTableFieldAccomplished = 'accomplished';
   static const String todosTableFieldRepetitionPeriod = 'repetitionperiod';
-  static const String todosTableFieldTodoListId =
-      'todolistid'; //!Will be unneccessary if todolistuuid exists
-  static const String todosTableFieldTodoListUuId =
-      'todolistUuid'; //Foreign key
+
+  static const String todosTableFieldTodoListUid = 'todolistUid'; //Foreign key
   static const String todosTableFieldaccomplishedAt = 'accomplishedAt';
 
   ///Other TodolistModel variables ---------------------------------------------
@@ -74,34 +72,32 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    // An integer primary key might be unnecessary if we have a uuid
+    // An integer primary key might be unnecessary if we have a uid
     await db.execute('''
       CREATE TABLE $todoListsTableName(
-          $todoListsTableFieldId INTEGER,
-          $todoListsTableFieldUuId TEXT PRIMARY KEY,
+         
+          $todoListsTableFieldUid TEXT PRIMARY KEY,
           $todoListsTableFieldListName TEXT,
           $todoListsTableFieldCategory INTEGER
       );
       ''');
-// An integer primary key might be unnecessary if we have a uuid
+// An integer primary key might be unnecessary if we have a uid
     await db.execute('''
       CREATE TABLE $todosTableName(
-          $todosTableFieldId INTEGER ,
-          $todosTableFieldTodoUuId TEXT PRIMARY KEY,
+          $todosTableFieldTodoUid TEXT PRIMARY KEY,
           $todosTableFieldTask TEXT,
           $todosTableFieldAccomplished INTEGER,
           $todosTableFieldRepetitionPeriod INTEGER,
           $todosTableFieldaccomplishedAt INTEGER,
-          $todosTableFieldTodoListId INTEGER,
-          $todosTableFieldTodoListUuId TEXT,
-          FOREIGN KEY ($todosTableFieldTodoListUuId) REFERENCES $todoListsTableName($todoListsTableFieldUuId) ON DELETE CASCADE
+          $todosTableFieldTodoListUid TEXT,
+          FOREIGN KEY ($todosTableFieldTodoListUid) REFERENCES $todoListsTableName($todoListsTableFieldUid) ON DELETE CASCADE
       );
       ''');
 
     await db.execute('''
       CREATE TABLE $syncPendigTodolistsName (
           $syncPendigTodolistsFieldUid TEXT,
-          FOREIGN KEY ($syncPendigTodolistsFieldUid) REFERENCES $todoListsTableName($todoListsTableFieldUuId) ON DELETE CASCADE
+          FOREIGN KEY ($syncPendigTodolistsFieldUid) REFERENCES $todoListsTableName($todoListsTableFieldUid) ON DELETE CASCADE
       );
       ''');
 
@@ -109,7 +105,7 @@ class DatabaseHelper {
       CREATE TABLE $syncPendigTodosName (
           $syncPendigTodosFieldParentTodoListUid TEXT,
           $syncPendigTodosFieldUid TEXT,
-          FOREIGN KEY ($syncPendigTodosFieldUid) REFERENCES $todosTableName($todosTableFieldTodoUuId) ON DELETE CASCADE
+          FOREIGN KEY ($syncPendigTodosFieldUid) REFERENCES $todosTableName($todosTableFieldTodoUid) ON DELETE CASCADE
       );
       ''');
   }
@@ -146,7 +142,7 @@ class DatabaseHelper {
 
       //finalListOfTodoLists.add(newMap);
       TodoListModel todoListModel =
-          await getSpecificTodoList(uuid: todoListMap[todoListsTableFieldUuId]);
+          await getSpecificTodoList(uid: todoListMap[todoListsTableFieldUid]);
       listOfTodoListModels.add(todoListModel);
     }
 
@@ -175,13 +171,13 @@ class DatabaseHelper {
   }
 
   static Future<int> deleteSpecificTodoList({
-    required String uuid,
+    required String uid,
   }) async {
     Database db = await instance.database;
     saveTimestamp();
     return await db.rawDelete(
-        'DELETE FROM $todoListsTableName WHERE $todoListsTableFieldUuId = ?',
-        [uuid]);
+        'DELETE FROM $todoListsTableName WHERE $todoListsTableFieldUid = ?',
+        [uid]);
   }
 
   static Future<int> updateSpecificListParameters({
@@ -190,23 +186,23 @@ class DatabaseHelper {
     Database db = await instance.database;
     saveTimestamp();
     return await db.rawUpdate(
-        'UPDATE $todoListsTableName SET $todoListsTableFieldListName = ?, $todoListsTableFieldCategory = ? WHERE $todoListsTableFieldUuId = ?',
+        'UPDATE $todoListsTableName SET $todoListsTableFieldListName = ?, $todoListsTableFieldCategory = ? WHERE $todoListsTableFieldUid = ?',
         [
           todoListUpdateModel.listName,
           todoListUpdateModel.todoListCategory.serialize(),
-          todoListUpdateModel.uuid
+          todoListUpdateModel.uid
         ]);
   }
 
   ///Regarding TodosTable ---------------------------------------------------------
   static Future<List<TodoModel>> getTodosOfSpecificList({
-    required String listUuId,
+    required String listUid,
   }) async {
     Database db = await instance.database;
 
     List<Map> list = await db.rawQuery(
-        'SELECT * FROM $todosTableName WHERE $todosTableFieldTodoListUuId=?',
-        [listUuId]);
+        'SELECT * FROM $todosTableName WHERE $todosTableFieldTodoListUid=?',
+        [listUid]);
 
     List<TodoModel> listOfTodoModels =
         list.map((e) => TodoModel.fromMap(e)).toList();
@@ -223,21 +219,21 @@ class DatabaseHelper {
   }
 
   static getNameOfTodoListById({
-    required String listUuId,
+    required String listUid,
   }) async {
     Database db = await instance.database;
     final nameQuery = await db.rawQuery(
-        'SELECT $todoListsTableFieldListName FROM $todoListsTableName WHERE $todoListsTableFieldUuId=?',
-        [listUuId]);
+        'SELECT $todoListsTableFieldListName FROM $todoListsTableName WHERE $todoListsTableFieldUid=?',
+        [listUid]);
     return nameQuery.first[todoListsTableFieldListName].toString();
   }
 
   static Future<TodoListCategory> getCategoryOfTodoListById(
-      {required String listUuId}) async {
+      {required String listUid}) async {
     Database db = await instance.database;
     final categoryQuery = await db.rawQuery(
-        'SELECT $todoListsTableFieldCategory FROM $todoListsTableName WHERE $todoListsTableFieldUuId=?',
-        [listUuId]);
+        'SELECT $todoListsTableFieldCategory FROM $todoListsTableName WHERE $todoListsTableFieldUid=?',
+        [listUid]);
     int categoryInt =
         int.parse(categoryQuery.first[todoListsTableFieldCategory].toString());
     TodoListCategory category =
@@ -247,7 +243,7 @@ class DatabaseHelper {
   }
 
   static Future<int> setAccomplishmentStatusOfTodo(
-      {required String uuid, required bool accomplished}) async {
+      {required String uid, required bool accomplished}) async {
     Database db = await instance.database;
     int status =
         AccomplishmentStatusExtension.serialize(accomplished: accomplished);
@@ -256,8 +252,8 @@ class DatabaseHelper {
         accomplished ? DateTime.now().millisecondsSinceEpoch : null;
 
     final update = await db.rawUpdate(
-        'UPDATE $todosTableName SET $todosTableFieldAccomplished = ?, $todosTableFieldaccomplishedAt = ? WHERE $todosTableFieldTodoUuId = ?',
-        [status, timeOfAccomplishement, uuid]);
+        'UPDATE $todosTableName SET $todosTableFieldAccomplished = ?, $todosTableFieldaccomplishedAt = ? WHERE $todosTableFieldTodoUid = ?',
+        [status, timeOfAccomplishement, uid]);
     saveTimestamp();
     return update;
   }
@@ -266,32 +262,32 @@ class DatabaseHelper {
     required TodoModel model,
   }) async {
     Database db = await instance.database;
+    Logger().d('Das model ist $model');
     final update = await db.rawUpdate(
-        'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ? WHERE $todosTableFieldId = ?',
-        [model.task, model.repeatPeriod?.serialize(), model.id]);
+        'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ? WHERE $todosTableFieldTodoUid = ?',
+        [model.task, model.repeatPeriod?.serialize(), model.uid]);
     saveTimestamp();
     return update;
   }
 
   static Future<int> deleteSpecificTodo({
-    required String uuid,
+    required String uid,
   }) async {
     Database db = await instance.database;
     final delete = await db.rawDelete(
-        'DELETE FROM $todosTableName WHERE $todosTableFieldTodoUuId = ?',
-        [uuid]);
+        'DELETE FROM $todosTableName WHERE $todosTableFieldTodoUid = ?', [uid]);
     saveTimestamp();
     return delete;
   }
 
   static Future<int> resetAllTodosOfSpecificList({
-    required String uuid,
+    required String uid,
   }) async {
     Database db = await instance.database;
     saveTimestamp();
     return await db.rawUpdate(
-        'UPDATE $todosTableName SET $todosTableFieldAccomplished = ? WHERE $todosTableFieldTodoListUuId = ?',
-        [AccomplishmentStatusExtension.serialize(accomplished: false), uuid]);
+        'UPDATE $todosTableName SET $todosTableFieldAccomplished = ? WHERE $todosTableFieldTodoListUid = ?',
+        [AccomplishmentStatusExtension.serialize(accomplished: false), uid]);
   }
 
   // Just for debugging puposes
@@ -315,7 +311,7 @@ class DatabaseHelper {
       if (model.shouldResetAccomplishmentStatus()) {
         lock.synchronized(() async {
           await setAccomplishmentStatusOfTodo(
-              uuid: model.uuid!, accomplished: false);
+              uid: model.uid!, accomplished: false);
         });
       }
     }
@@ -327,8 +323,7 @@ class DatabaseHelper {
   }) async {
     Database db = await instance.database;
     List<Map> list = await db.rawQuery(
-        'SELECT * FROM $todosTableName WHERE $todosTableFieldTodoUuId=?',
-        [uid]);
+        'SELECT * FROM $todosTableName WHERE $todosTableFieldTodoUid=?', [uid]);
     if (list.isNotEmpty) {
       return TodoModel.fromMap(list.first);
     } else {
@@ -337,15 +332,14 @@ class DatabaseHelper {
   }
 
   static Future<TodoListModel> getSpecificTodoList({
-    required String uuid,
+    required String uid,
   }) async {
-    String listName = await getNameOfTodoListById(listUuId: uuid);
-    List<TodoModel> todoModelList =
-        await getTodosOfSpecificList(listUuId: uuid);
-    TodoListCategory category = await getCategoryOfTodoListById(listUuId: uuid);
+    String listName = await getNameOfTodoListById(listUid: uid);
+    List<TodoModel> todoModelList = await getTodosOfSpecificList(listUid: uid);
+    TodoListCategory category = await getCategoryOfTodoListById(listUid: uid);
 
     return TodoListModel(
-      uuid: uuid,
+      uid: uid,
       listName: listName,
       todoModels: todoModelList,
       todoListCategory: category,
@@ -369,7 +363,7 @@ class DatabaseHelper {
 
     return await db.rawDelete(
         'DELETE FROM $syncPendigTodolistsName WHERE $syncPendigTodolistsFieldUid = ?',
-        [todoListModel.uuid]);
+        [todoListModel.uid]);
   }
 
   static Future<Map<String, dynamic>>
@@ -393,7 +387,7 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     final mapToInsert = {
-      syncPendigTodosFieldUid: todoModel.uuid,
+      syncPendigTodosFieldUid: todoModel.uid,
       syncPendigTodosFieldParentTodoListUid: todoModel.parentTodoListId
     };
     Logger().d('TodoUid being saved in syncPendigTodos: $mapToInsert');
@@ -406,7 +400,7 @@ class DatabaseHelper {
 
     return await db.rawDelete(
         'DELETE FROM $syncPendigTodosName WHERE $syncPendigTodosFieldUid = ?',
-        [todoModel.uuid]);
+        [todoModel.uid]);
   }
 
   static Future<Map<String, dynamic>> getAllEntriesOfsyncPendigTodos() async {

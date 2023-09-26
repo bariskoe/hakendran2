@@ -29,7 +29,7 @@ abstract class AllTodoListsRepository {
 
   // Deletes the TodoList which has the provided id. Returns a [DatabaseFailure]
   // if anything goes wrong
-  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uuid});
+  Future<Either<Failure, int>> deleteSpecifiTodoList({required String uid});
 
   /// Loops through all Todos and checks sets the field "accomplished" to false
   /// if the reset period has passed.

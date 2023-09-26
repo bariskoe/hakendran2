@@ -35,12 +35,12 @@ class SelectedTodolistEventAddNewTodo extends SelectedTodolistEvent {
 class SelectedTodolistEventUpdateAccomplishedOfTodo
     extends SelectedTodolistEvent {
   const SelectedTodolistEventUpdateAccomplishedOfTodo(
-      {required this.uuid, required this.accomplished});
-  final String uuid;
+      {required this.uid, required this.accomplished});
+  final String uid;
   final bool accomplished;
 
   @override
-  List<Object> get props => [uuid, accomplished];
+  List<Object> get props => [uid, accomplished];
 }
 
 class SelectedTodolistEventUpdateTodo extends SelectedTodolistEvent {
@@ -52,11 +52,11 @@ class SelectedTodolistEventUpdateTodo extends SelectedTodolistEvent {
 }
 
 class SelectedTodolistEventDeleteSpecificTodo extends SelectedTodolistEvent {
-  final String uuid;
-  const SelectedTodolistEventDeleteSpecificTodo({required this.uuid});
+  final String uid;
+  const SelectedTodolistEventDeleteSpecificTodo({required this.uid});
 
   @override
-  List<Object> get props => [uuid];
+  List<Object> get props => [uid];
 }
 
 class SelectedTodoListEventResetAll extends SelectedTodolistEvent {
