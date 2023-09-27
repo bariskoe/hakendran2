@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -6,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../database/databse_helper.dart';
+import '../../../dependency_injection.dart';
 import '../../../domain/entities/todolist_entity.dart';
 import '../../../domain/failures/failures.dart';
 import '../../../domain/usecases/selected_todolist_usecases.dart';
@@ -50,23 +52,19 @@ class SelectedTodolistBloc
       const uuidPackage = Uuid();
       final uid = uuidPackage.v1();
 
-      TodoModel adjustbleTodoModel;
       if (selectedTodoList != null) {
-        final eventModel = event.todoModel;
-        adjustbleTodoModel = TodoModel(
-            uid: uid,
-            task: eventModel.task,
-            accomplished: eventModel.accomplished,
-            parentTodoListId: selectedTodoList!,
-            repeatPeriod: eventModel.repeatPeriod);
+        final todoModelToAdd = event.todoModel.copyWith(
+          uid: uid,
+          parentTodoListId: selectedTodoList!,
+        );
 
         TodoListDetailPage.justAddedTodo = true;
 
         Either<Failure, int> didSave = await selectedTodolistUsecases
-            .addTodoToSpecificList(todoModel: adjustbleTodoModel);
+            .addTodoToSpecificList(todoModel: todoModelToAdd);
         didSave.fold((l) => emit(SelectedTodolistStateError()), (r) {
           add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-              todoModel: adjustbleTodoModel));
+              todoModel: todoModelToAdd));
           add(SelectedTodolistEventLoadSelectedTodolist(
               uid: selectedTodoList!));
         });
@@ -87,12 +85,19 @@ class SelectedTodolistBloc
         Either<Failure, int> changes =
             await selectedTodolistUsecases.setAccomplishmentStatusOfTodo(
                 uid: event.uid, accomplished: event.accomplished);
-        changes.fold(
-          (l) => emit(SelectedTodolistStateError()),
-          (r) => add(
+        changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
+          getIt<SelectedTodolistBloc>()
+              .add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+                  todoModel: TodoModel(
+            parentTodoListId: selectedTodoList!,
+            uid: event.uid,
+            task: '',
+            accomplished: event.accomplished,
+          )));
+          add(
             SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
-          ),
-        );
+          );
+        });
       },
     );
 
@@ -101,12 +106,14 @@ class SelectedTodolistBloc
       Either<Failure, int> changes = await selectedTodolistUsecases
           .updateSpecificTodo(todoModel: event.todoModel);
       Logger().d('changes sind $changes');
-      changes.fold(
-        (l) => emit(SelectedTodolistStateError()),
-        (r) => add(
+      changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
+        getIt<SelectedTodolistBloc>().add(
+            SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+                todoModel: event.todoModel));
+        add(
           SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
-        ),
-      );
+        );
+      });
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
