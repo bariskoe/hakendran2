@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/usecases/selected_todolist_usecases.dart';
+import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -23,12 +25,14 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
   final SelectedTodolistBloc _selectedTodolistBloc;
   final ConnectivityRepository connectivityRepository;
   final AllTodoListsUsecases allTodoListsUsecases;
+  final SelectedTodolistUsecases selectedTodolistUsecases;
   final ApiUsecases apiUsecases;
 
   AllTodolistsBloc({
     required SelectedTodolistBloc selectedTodolistBloc,
     required this.connectivityRepository,
     required this.allTodoListsUsecases,
+    required this.selectedTodolistUsecases,
     required this.apiUsecases,
   })  : _selectedTodolistBloc = selectedTodolistBloc,
         super(AllTodolistsInitial()) {
@@ -129,6 +133,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         Logger().i('lists: $r');
 
         final List todolists = r?['todoLists'];
+        final List todos = r?['todos'];
         // todolists.sort((a, b) => a['id'].compareTo(b['id']));
         Logger().d('todolists vom Backend sind: $todolists');
 
@@ -143,7 +148,13 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
                       todoModels: []))));
         }
 
+        Future<void> saveListOfTodosLocally(List<dynamic> todos) async {
+          Future.wait(todos.map((todo) async => await selectedTodolistUsecases
+              .addTodoToSpecificList(todoModel: TodoModel.fromMap(todo))));
+        }
+
         await saveListOfTodolistsLocally(todolists);
+        await saveListOfTodosLocally(todos);
       });
     }
 

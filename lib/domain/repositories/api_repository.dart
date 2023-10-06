@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/models/api_action_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/todo_model.dart';
@@ -11,5 +12,9 @@ abstract class ApiRepository {
 
   Future<Either<Failure, bool>> addTodoToSpecificList({
     required TodoModel todoModel,
+  });
+
+  Future<Either<Failure, bool>> performApiAction({
+    required ApiActionModel apiActionModel,
   });
 }

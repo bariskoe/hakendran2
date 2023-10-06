@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/models/api_action_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
@@ -18,7 +19,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
       'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction';
 
   final dataInfoEndpoint = 'getdatainfo';
-  final synchronizelists = 'synchronizelists';
+
   final createtodolist = 'createtodolist';
   final createtodo = 'createtodo';
   final getalllists = 'getalllists';
@@ -90,6 +91,51 @@ class ApiDataSourceImplNew implements ApiDatasource {
         data: body,
         options: Options(
           method: method.toUpperCase(),
+          headers: headers,
+        ),
+      );
+
+      Logger().d('Response is $response');
+      return response;
+    }
+  }
+
+  Future<Response> makeActionRequest({
+    required ApiActionModel apiActionModel,
+    Map<String, String>? headers,
+  }) async {
+    bool? isConnected = await getIt<ConnectivityService>().getConnectivity;
+    Logger().d('isConnected in makeRequest is $isConnected');
+
+    if (isConnected == null || isConnected == false) {
+      throw NotConnectedToTheInternetError();
+    }
+
+//! Den Token zu bekommen dauert ewig. Liegt es an dieser methode oder daran, dass ich vorher den token von den sharedpreferences genommen hab?
+    final String? token = await getIt<FirebaseAuth>()
+        .currentUser
+        ?.getIdTokenResult(true)
+        .then((value) => value.token);
+    Logger().d('Firebase token is $token');
+
+    if (token == null || token.isEmpty) {
+      throw Exception(
+          'Failed to send request. No Firebase id token available in SharedPreferences');
+    } else {
+      headers ??= {};
+      headers['Authorization'] = 'Bearer $token';
+      headers['Content-Type'] = 'application/json';
+
+      if (apiActionModel.body != null) {
+        apiActionModel.body[StringConstants.spDBTimestamp] =
+            getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
+      }
+
+      final response = await dio.request(
+        apiActionModel.fullUrl,
+        data: apiActionModel.body,
+        options: Options(
+          method: apiActionModel.method.toUpperCase(),
           headers: headers,
         ),
       );
@@ -244,8 +290,26 @@ class ApiDataSourceImplNew implements ApiDatasource {
     }
     return true;
   }
-}
 
+  @override
+  Future<bool> performApiAction(
+      {required ApiActionModel apiActionModel}) async {
+    try {
+      final response = await makeActionRequest(apiActionModel: apiActionModel);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } on DioException catch (e) {
+      Logger().e('performApiAction DioExcetion: $e');
+      return false;
+    } catch (e) {
+      Logger().e('performApiAction error $e');
+      return false;
+    }
+  }
+}
 // @override
 // Future<bool> synchronizeAllTodoListsWithBackend(
 //     List<TodoListModel> todoLists) {

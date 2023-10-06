@@ -4,6 +4,7 @@ import 'package:get/route_manager.dart';
 import 'package:logger/logger.dart';
 
 import '../bloc/DataPreparation/bloc/data_preparation_bloc.dart';
+import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../dependency_injection.dart';
 import '../ui/standard_widgets/loading_widget.dart';
 import 'main_page.dart';
@@ -39,6 +40,15 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
               if (state is DataPreparationStateDataPreparationComplete) {
                 Get.to(() => const MainPage());
                 //Get.to(() => RoutingService.mainPage);
+              }
+            },
+          ),
+          BlocListener<AllTodolistsBloc, AllTodolistsState>(
+            listener: (context, state) {
+              Logger().d('state is $state');
+              if (state is AllTodoListsStateDataPreparationComplete) {
+                //Get.to(() => RoutingService.mainPage);
+                Get.to(() => const MainPage());
               }
             },
           ),

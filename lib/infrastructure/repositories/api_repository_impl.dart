@@ -5,6 +5,8 @@ import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:baristodolistapp/models/todolist_model.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../models/api_action_model.dart';
+
 class ApiRepositoryImpl implements ApiRepository {
   final ApiDatasource apiDatasource;
 
@@ -34,6 +36,22 @@ class ApiRepositoryImpl implements ApiRepository {
         todoListModel: todoListModel,
       );
       if (uploadSuccessful) {
+        return const Right(true);
+      } else {
+        return Left(ApiFailure());
+      }
+    } catch (e) {
+      return Left(ApiFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> performApiAction(
+      {required ApiActionModel apiActionModel}) async {
+    try {
+      final actionSuccessful =
+          await apiDatasource.performApiAction(apiActionModel: apiActionModel);
+      if (actionSuccessful) {
         return const Right(true);
       } else {
         return Left(ApiFailure());

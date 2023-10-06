@@ -48,6 +48,7 @@ Future<void> setupDependencyInjectionWithGetIt() async {
         connectivityRepository: getIt(),
         selectedTodolistBloc: getIt(),
         apiUsecases: getIt(),
+        selectedTodolistUsecases: getIt(),
       ));
   getIt.registerLazySingleton<SelectedTodolistBloc>(() => SelectedTodolistBloc(
         selectedTodolistUsecases: getIt(),

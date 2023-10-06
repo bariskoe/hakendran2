@@ -38,6 +38,9 @@ class DataPreparationBloc
     // on<DataPreparationEvent>((event, emit) {
 
     // });
+    stream.listen((state) {
+      Logger().d('State in DatapreparationBloc is $state');
+    });
 
     selectedTodoListBloc.stream.listen((state) {
       if (state is SelectedTodolistStateLoaded) {

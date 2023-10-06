@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/models/api_action_model.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:baristodolistapp/models/todolist_model.dart';
 
@@ -25,4 +26,10 @@ abstract class ApiDatasource {
   /// Loops through the table [syncPendingTodos], takes every uid and uploads
   /// the respective Todo to the cloud
   Future<bool> uploadSyncPendingTodos();
+
+  /// This method executes an api action that comes from the backend. It is designed
+  /// to make an app scalable
+  Future<bool> performApiAction({
+    required ApiActionModel apiActionModel,
+  });
 }
