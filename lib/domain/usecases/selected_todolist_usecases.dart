@@ -45,6 +45,14 @@ class SelectedTodolistUsecases {
     );
   }
 
+  Future<Either<Failure, int>> deleteSpecificTodo({
+    required TodoModel todoModel,
+  }) async {
+    return await selectedTodolistRepository.deleteSpecificTodo(
+      todoModel: todoModel,
+    );
+  }
+
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
     required String uid,
   }) async {

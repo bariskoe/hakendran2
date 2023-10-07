@@ -12,6 +12,9 @@ abstract class ApiDatasource {
 
   Future addTodoToSpecificList({required TodoModel todoModel});
 
+  // Makes an Api request to delete a specific Todo from a specific TodoList
+  Future deleteTodoFromSpecificList({required Map<String, dynamic> map});
+
   Future<Map<String, dynamic>?> getAllTodoListsFromBackend();
 
   // Gets relevant information from Backend about the saved Todolists like timeStamp and listLength
@@ -25,7 +28,7 @@ abstract class ApiDatasource {
 
   /// Loops through the table [syncPendingTodos], takes every uid and uploads
   /// the respective Todo to the cloud
-  Future<bool> uploadSyncPendingTodos();
+  Future<bool> syncSyncPendingTodos();
 
   /// This method executes an api action that comes from the backend. It is designed
   /// to make an app scalable

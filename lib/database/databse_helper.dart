@@ -104,8 +104,8 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE $syncPendigTodosName (
           $syncPendigTodosFieldParentTodoListUid TEXT,
-          $syncPendigTodosFieldUid TEXT,
-          FOREIGN KEY ($syncPendigTodosFieldUid) REFERENCES $todosTableName($todosTableFieldTodoUid) ON DELETE CASCADE
+          $syncPendigTodosFieldUid TEXT
+          
       );
       ''');
   }
@@ -271,11 +271,12 @@ class DatabaseHelper {
   }
 
   static Future<int> deleteSpecificTodo({
-    required String uid,
+    required TodoModel todoModel,
   }) async {
     Database db = await instance.database;
     final delete = await db.rawDelete(
-        'DELETE FROM $todosTableName WHERE $todosTableFieldTodoUid = ?', [uid]);
+        'DELETE FROM $todosTableName WHERE $todosTableFieldTodoUid = ?',
+        [todoModel.uid]);
     saveTimestamp();
     return delete;
   }
@@ -390,17 +391,22 @@ class DatabaseHelper {
       syncPendigTodosFieldUid: todoModel.uid,
       syncPendigTodosFieldParentTodoListUid: todoModel.parentTodoListId
     };
-    Logger().d('TodoUid being saved in syncPendigTodos: $mapToInsert');
-    return await db.insert(syncPendigTodosName, mapToInsert);
+    try {
+      final success = await db.insert(syncPendigTodosName, mapToInsert);
+
+      return success;
+    } catch (e) {
+      Logger().e('Error in addTodoUidToSyncPendingTodos: $e');
+      return 0;
+    }
   }
 
-  static Future<int> deleteFromsyncPendigTodos(
-      {required TodoModel todoModel}) async {
+  static Future<int> deleteFromsyncPendigTodos({required String uid}) async {
     Database db = await instance.database;
 
     return await db.rawDelete(
         'DELETE FROM $syncPendigTodosName WHERE $syncPendigTodosFieldUid = ?',
-        [todoModel.uid]);
+        [uid]);
   }
 
   static Future<Map<String, dynamic>> getAllEntriesOfsyncPendigTodos() async {

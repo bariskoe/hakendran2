@@ -1,5 +1,6 @@
 import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:dartz/dartz.dart';
+import 'package:logger/logger.dart';
 
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/failures/failures.dart';
@@ -106,6 +107,21 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
       );
       return Right(changes);
     } catch (e) {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> deleteSpecificTodo({
+    required TodoModel todoModel,
+  }) async {
+    try {
+      int changes = await localSqliteDataSource.deleteSpecificTodo(
+        todoModel: todoModel,
+      );
+      return Right(changes);
+    } catch (e) {
+      Logger().e(e);
       return Left(DatabaseFailure());
     }
   }

@@ -119,7 +119,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
   @override
   Future<Either<Failure, bool>> uploadSyncPendingTodos() async {
     try {
-      final success = await apiDatasource.uploadSyncPendingTodos();
+      final success = await apiDatasource.syncSyncPendingTodos();
       return Right(success);
     } catch (e) {
       return Left(ApiFailure());

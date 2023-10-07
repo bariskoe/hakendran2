@@ -20,9 +20,8 @@ class ApiDataSourceImplNew implements ApiDatasource {
 
   final dataInfoEndpoint = 'getdatainfo';
 
-  final createtodolist = 'createtodolist';
-  final createtodo = 'createtodo';
-  final getalllists = 'getalllists';
+  final todolists = 'todolists';
+  final todos = 'todos';
 
   String buildUrlString(List<String> paths) {
     String url = baseUrl;
@@ -85,7 +84,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
         body[StringConstants.spDBTimestamp] =
             getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
       }
-
+      Logger().d('Request body is $body');
       final response = await dio.request(
         buildUrlString(pathParts),
         data: body,
@@ -153,7 +152,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
       // mapToSend[StringConstants.spDBTimestamp] =
       //     getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
       final response = await makeRequest(
-          method: 'POST', body: mapToSend, pathParts: [createtodo]);
+          method: 'POST', body: mapToSend, pathParts: [todos]);
 
       if (response.statusCode == 200) {
         return true;
@@ -175,7 +174,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
       // mapToSend[StringConstants.spDBTimestamp] =
       //     getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
       final response = await makeRequest(
-          method: 'POST', body: mapToSend, pathParts: [createtodolist]);
+          method: 'POST', body: mapToSend, pathParts: [todolists]);
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -192,7 +191,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
     try {
       final response = await makeRequest(
         method: 'GET',
-        pathParts: [getalllists],
+        pathParts: [todolists],
       );
       Logger().i("Response in getAllTodoListsFromBackend is $response");
       Logger().i(
@@ -271,9 +270,9 @@ class ApiDataSourceImplNew implements ApiDatasource {
   }
 
   @override
-  Future<bool> uploadSyncPendingTodos() async {
+  Future<bool> syncSyncPendingTodos() async {
     final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodos();
-    Logger().d('Uploading Todos in syncPendigTodos');
+    Logger().d('Syncing Todos in syncPendigTodos');
 
     for (Map entry in data['syncPendigTodos']) {
       final TodoModel? todoModel = await DatabaseHelper.getSpecificTodo(
@@ -284,7 +283,17 @@ class ApiDataSourceImplNew implements ApiDatasource {
             await addTodoToSpecificList(todoModel: todoModel);
 
         if (uploadSuccessful) {
-          await DatabaseHelper.deleteFromsyncPendigTodos(todoModel: todoModel);
+          await DatabaseHelper.deleteFromsyncPendigTodos(uid: todoModel.uid!);
+        }
+      } else {
+        final deleteSuccessful = await deleteTodoFromSpecificList(map: {
+          "todolistUid":
+              entry[DatabaseHelper.syncPendigTodosFieldParentTodoListUid],
+          "uid": entry[DatabaseHelper.syncPendigTodosFieldUid]
+        });
+        if (deleteSuccessful) {
+          await DatabaseHelper.deleteFromsyncPendigTodos(
+              uid: entry[DatabaseHelper.syncPendigTodosFieldUid]);
         }
       }
     }
@@ -306,6 +315,22 @@ class ApiDataSourceImplNew implements ApiDatasource {
       return false;
     } catch (e) {
       Logger().e('performApiAction error $e');
+      return false;
+    }
+  }
+
+  @override
+  Future deleteTodoFromSpecificList({required Map<String, dynamic> map}) async {
+    try {
+      final response =
+          await makeRequest(method: 'DELETE', body: map, pathParts: [todos]);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      Logger().e("Error in deleteTodoFromSpecificList: $e");
       return false;
     }
   }

@@ -21,6 +21,9 @@ abstract class SelectedTodolistRepository {
   Future<Either<Failure, int>> updateSpecificTodo({
     required TodoModel todoModel,
   });
+  Future<Either<Failure, int>> deleteSpecificTodo({
+    required TodoModel todoModel,
+  });
 
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
     required String uid,

@@ -52,11 +52,11 @@ class SelectedTodolistEventUpdateTodo extends SelectedTodolistEvent {
 }
 
 class SelectedTodolistEventDeleteSpecificTodo extends SelectedTodolistEvent {
-  final String uid;
-  const SelectedTodolistEventDeleteSpecificTodo({required this.uid});
+  final TodoModel todoModel;
+  const SelectedTodolistEventDeleteSpecificTodo({required this.todoModel});
 
   @override
-  List<Object> get props => [uid];
+  List<Object> get props => [todoModel];
 }
 
 class SelectedTodoListEventResetAll extends SelectedTodolistEvent {

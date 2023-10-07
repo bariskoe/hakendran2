@@ -119,4 +119,9 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
       todoModel: todoModel,
     );
   }
+
+  @override
+  Future<int> deleteSpecificTodo({required TodoModel todoModel}) async {
+    return await DatabaseHelper.deleteSpecificTodo(todoModel: todoModel);
+  }
 }

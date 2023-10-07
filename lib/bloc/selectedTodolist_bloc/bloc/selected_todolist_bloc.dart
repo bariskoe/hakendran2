@@ -117,7 +117,13 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
-      await DatabaseHelper.deleteSpecificTodo(uid: event.uid);
+      Either<Failure, int> changes = await selectedTodolistUsecases
+          .deleteSpecificTodo(todoModel: event.todoModel);
+
+      changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
+        add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+            todoModel: event.todoModel));
+      });
 //No need to reload the list here. The Dismissible Listview takes care of the ui.
     });
 
@@ -144,10 +150,14 @@ class SelectedTodolistBloc
     });
 
     on<SelectedTodoListEventAddTodoUidToSyncPendingTodos>((event, emit) async {
-      Either<Failure, int> idOfInsertedRow =
+      Either<Failure, int> failureOridOfInsertedRow =
           await selectedTodolistUsecases.addTodoUidToSyncPendingTodos(
         todoModel: event.todoModel,
       );
+      failureOridOfInsertedRow.fold((l) => null, (r) {
+        getIt<DataPreparationBloc>()
+            .add(const DataPreparationEventSynchronizeIfNecessary());
+      });
     });
   }
 }

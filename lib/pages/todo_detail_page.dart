@@ -190,9 +190,9 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
 
                         reversedList
                             .removeWhere((element) => element.uid == model.uid);
-                        BlocProvider.of<SelectedTodolistBloc>(context).add(
+                        getIt<SelectedTodolistBloc>().add(
                             SelectedTodolistEventDeleteSpecificTodo(
-                                uid: model.uid!));
+                                todoModel: model));
                       },
                       key: UniqueKey(),
                       background: const SwipeToDeleteBackgroundWidget(),
