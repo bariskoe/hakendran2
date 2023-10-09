@@ -181,6 +181,9 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       failureOrChanges.fold((l) => emit(AllTodoListsStateError()), (r) {
         if (r > 0) {
           add(AllTodolistsEventGetAllTodoLists());
+          selectedTodolistBloc.add(
+              SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists(
+                  event.uid));
         } else {
           emit(AllTodoListsStateError());
         }
