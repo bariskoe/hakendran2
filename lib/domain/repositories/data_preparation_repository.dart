@@ -5,6 +5,6 @@ import '../failures/failures.dart';
 
 abstract class DataPreparationRepository {
   Future<Either<Failure, SynchronizationStatus>> checkSynchronizationStatus();
-  Future<Either<Failure, bool>> uploadSyncPendingTodoLists();
-  Future<Either<Failure, bool>> uploadSyncPendingTodos();
+  Future<Either<Failure, bool>> syncPendingTodoLists();
+  Future<Either<Failure, bool>> syncPendingTodos();
 }

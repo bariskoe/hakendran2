@@ -20,7 +20,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
     try {
       final todoListModel =
           await localSqliteDataSource.getSpecificTodoList(uid: uid);
-      return Right(todoListModel);
+      if (todoListModel != null) {
+        return Right(todoListModel);
+      } else {
+        return Left(DatabaseFailure());
+      }
     } catch (e) {
       return Left(DatabaseFailure());
     }

@@ -18,14 +18,14 @@ class DataPreparationUsecases {
     return result;
   }
 
-  Future<Either<Failure, bool>> uploadSyncPendingTodoLists() async {
-    final result = await dataPreparationRepository.uploadSyncPendingTodoLists();
+  Future<Either<Failure, bool>> syncPendingTodoLists() async {
+    final result = await dataPreparationRepository.syncPendingTodoLists();
 
     return result;
   }
 
-  Future<Either<Failure, bool>> uploadSyncPendingTodos() async {
-    final result = await dataPreparationRepository.uploadSyncPendingTodos();
+  Future<Either<Failure, bool>> syncPendingTodos() async {
+    final result = await dataPreparationRepository.syncPendingTodos();
     return result;
   }
 }

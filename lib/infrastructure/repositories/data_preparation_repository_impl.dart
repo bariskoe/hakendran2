@@ -107,9 +107,9 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> uploadSyncPendingTodoLists() async {
+  Future<Either<Failure, bool>> syncPendingTodoLists() async {
     try {
-      final success = await apiDatasource.uploadSyncPendingTodoLists();
+      final success = await apiDatasource.syncPendingTodoLists();
       return Right(success);
     } catch (e) {
       return Left(ApiFailure());
@@ -117,9 +117,9 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> uploadSyncPendingTodos() async {
+  Future<Either<Failure, bool>> syncPendingTodos() async {
     try {
-      final success = await apiDatasource.syncSyncPendingTodos();
+      final success = await apiDatasource.syncPendingTodos();
       return Right(success);
     } catch (e) {
       return Left(ApiFailure());

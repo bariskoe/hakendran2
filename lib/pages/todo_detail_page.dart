@@ -247,7 +247,7 @@ class ListElement extends StatelessWidget {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () {
-                    BlocProvider.of<SelectedTodolistBloc>(context).add(
+                    getIt<SelectedTodolistBloc>().add(
                       SelectedTodolistEventUpdateAccomplishedOfTodo(
                         uid: model.uid!,
                         accomplished: !model.accomplished,

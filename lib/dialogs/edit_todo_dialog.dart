@@ -1,10 +1,8 @@
-import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:logger/logger.dart';
 
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
+import '../dependency_injection.dart';
 import '../models/todo_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';

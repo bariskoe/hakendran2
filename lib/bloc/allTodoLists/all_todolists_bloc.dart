@@ -191,8 +191,11 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       Either<Failure, int> failureOrChangesMade =
           await allTodoListsUsecases.deleteSpecifiTodoList(uid: event.uid);
 
-      failureOrChangesMade.fold(
-          (l) => emit(AllTodoListsStateError()), (r) => null);
+      failureOrChangesMade.fold((l) => emit(AllTodoListsStateError()), (r) {
+        getIt<SelectedTodolistBloc>().add(
+            SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists(
+                event.uid));
+      });
     });
 
     on<AllTodoListEventCheckRepeatPeriodsAndResetAccomplishedIfNeccessary>(

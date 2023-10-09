@@ -67,7 +67,7 @@ class DataPreparationBloc
             }
           case SynchronizationStatus.localDataIsNewer:
             {
-              add(DataPreparationEventUploadAllSyncPendingLists());
+              add(DataPreparationEventSyncAllSyncPendingLists());
             }
           case SynchronizationStatus.dataIsSynchronized:
             {
@@ -81,15 +81,15 @@ class DataPreparationBloc
       });
     });
 
-    on<DataPreparationEventUploadAllSyncPendingLists>((event, emit) async {
+    on<DataPreparationEventSyncAllSyncPendingLists>((event, emit) async {
       emit(DataPreparationStateLoading());
       Either<Failure, bool> success =
-          await dataPreparationUsecases.uploadSyncPendingTodoLists();
+          await dataPreparationUsecases.syncPendingTodoLists();
 
       success.fold((l) => emit(DataPreparationStateUploadFailed()), (r) {});
 
       Either<Failure, bool> todosUploaded =
-          await dataPreparationUsecases.uploadSyncPendingTodos();
+          await dataPreparationUsecases.syncPendingTodos();
 
       todosUploaded.fold((l) => emit(DataPreparationStateUploadFailed()), (r) {
         emit(DataPreparationStateDataPreparationComplete());

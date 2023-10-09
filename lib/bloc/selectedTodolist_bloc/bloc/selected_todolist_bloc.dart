@@ -143,10 +143,15 @@ class SelectedTodolistBloc
 
     on<SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists>(
         (event, emit) async {
-      Either<Failure, int> idOfInsertedRow =
+      Either<Failure, int> failureOridOfInsertedRow =
           await selectedTodolistUsecases.addTodoListUidToSyncPendingTodoLists(
         uid: event.uid,
       );
+
+      failureOridOfInsertedRow.fold((l) => null, (r) {
+        getIt<DataPreparationBloc>()
+            .add(const DataPreparationEventSynchronizeIfNecessary());
+      });
     });
 
     on<SelectedTodoListEventAddTodoUidToSyncPendingTodos>((event, emit) async {

@@ -251,26 +251,36 @@ class ApiDataSourceImplNew implements ApiDatasource {
   }
 
   @override
-  Future<bool> uploadSyncPendingTodoLists() async {
+  Future<bool> syncPendingTodoLists() async {
     final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
     Logger().d('Uploading Todolists in syncPendigTodoLists');
     for (Map entry in data['syncPendigTodoLists']) {
-      final TodoListModel todoListModel =
+      final TodoListModel? todoListModel =
           await DatabaseHelper.getSpecificTodoList(
               uid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
-      final uploadSuccessful =
-          await createTodoList(todoListModel: todoListModel);
 
-      if (uploadSuccessful) {
-        await DatabaseHelper.deleteFromsyncPendigTodolists(
-            todoListModel: todoListModel);
+      if (todoListModel != null) {
+        final uploadSuccessful =
+            await createTodoList(todoListModel: todoListModel);
+
+        if (uploadSuccessful) {
+          await DatabaseHelper.deleteFromsyncPendigTodolists(
+              uid: todoListModel.uid!);
+        }
+      } else {
+        final deleteSuccessful = await deleteTodoList(
+            uid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
+        if (deleteSuccessful) {
+          await DatabaseHelper.deleteFromsyncPendigTodolists(
+              uid: entry[DatabaseHelper.syncPendigTodolistsFieldUid]);
+        }
       }
     }
     return true;
   }
 
   @override
-  Future<bool> syncSyncPendingTodos() async {
+  Future<bool> syncPendingTodos() async {
     final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodos();
     Logger().d('Syncing Todos in syncPendigTodos');
 
@@ -324,6 +334,22 @@ class ApiDataSourceImplNew implements ApiDatasource {
     try {
       final response =
           await makeRequest(method: 'DELETE', body: map, pathParts: [todos]);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      Logger().e("Error in deleteTodoFromSpecificList: $e");
+      return false;
+    }
+  }
+
+  @override
+  Future deleteTodoList({required String uid}) async {
+    try {
+      final response = await makeRequest(
+          method: 'DELETE', body: {"uid": uid}, pathParts: [todolists]);
       if (response.statusCode == 200) {
         return true;
       } else {

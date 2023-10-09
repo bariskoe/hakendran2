@@ -16,7 +16,7 @@ abstract class LocalSqliteDataSource {
 
   Future<int> deleteAllTodoLists();
 
-  Future<TodoListEntity> getSpecificTodoList({required String uid});
+  Future<TodoListEntity?> getSpecificTodoList({required String uid});
 
   Future<int> addTodoToSpecificList({required TodoModel todoModel});
 

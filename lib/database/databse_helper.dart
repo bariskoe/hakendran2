@@ -96,8 +96,7 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE $syncPendigTodolistsName (
-          $syncPendigTodolistsFieldUid TEXT,
-          FOREIGN KEY ($syncPendigTodolistsFieldUid) REFERENCES $todoListsTableName($todoListsTableFieldUid) ON DELETE CASCADE
+          $syncPendigTodolistsFieldUid TEXT
       );
       ''');
 
@@ -141,9 +140,9 @@ class DatabaseHelper {
       //final newMap = Map.of(todoListMap);
 
       //finalListOfTodoLists.add(newMap);
-      TodoListModel todoListModel =
+      TodoListModel? todoListModel =
           await getSpecificTodoList(uid: todoListMap[todoListsTableFieldUid]);
-      listOfTodoListModels.add(todoListModel);
+      listOfTodoListModels.add(todoListModel!);
     }
 
     // finalListOfTodoLists.map((e) => TodoListModel.fromMap(e)).toList();
@@ -332,19 +331,27 @@ class DatabaseHelper {
     }
   }
 
-  static Future<TodoListModel> getSpecificTodoList({
+  static Future<TodoListModel?> getSpecificTodoList({
     required String uid,
   }) async {
-    String listName = await getNameOfTodoListById(listUid: uid);
-    List<TodoModel> todoModelList = await getTodosOfSpecificList(listUid: uid);
-    TodoListCategory category = await getCategoryOfTodoListById(listUid: uid);
+    try {
+      String listName = await getNameOfTodoListById(listUid: uid);
+      List<TodoModel> todoModelList =
+          await getTodosOfSpecificList(listUid: uid);
+      TodoListCategory category = await getCategoryOfTodoListById(listUid: uid);
 
-    return TodoListModel(
-      uid: uid,
-      listName: listName,
-      todoModels: todoModelList,
-      todoListCategory: category,
-    );
+      return TodoListModel(
+        uid: uid,
+        listName: listName,
+        todoModels: todoModelList,
+        todoListCategory: category,
+      );
+    } catch (e) {
+      Logger().e(
+          "Error getting Todolist from database: $e , this is normal after a delete operation.");
+
+      return null;
+    }
   }
 
   /// Regarding syncPendigTodolists table --------------------------------------
@@ -359,12 +366,12 @@ class DatabaseHelper {
   }
 
   static Future<int> deleteFromsyncPendigTodolists(
-      {required TodoListModel todoListModel}) async {
+      {required String uid}) async {
     Database db = await instance.database;
 
     return await db.rawDelete(
         'DELETE FROM $syncPendigTodolistsName WHERE $syncPendigTodolistsFieldUid = ?',
-        [todoListModel.uid]);
+        [uid]);
   }
 
   static Future<Map<String, dynamic>>

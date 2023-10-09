@@ -56,7 +56,7 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }
 
   @override
-  Future<TodoListEntity> getSpecificTodoList({
+  Future<TodoListEntity?> getSpecificTodoList({
     required String uid,
   }) async {
     return await DatabaseHelper.getSpecificTodoList(
