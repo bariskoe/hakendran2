@@ -56,11 +56,10 @@ class _DatapreparationPageState extends State<DatapreparationPage> {
         child: const Scaffold(
           body: Stack(
             children: [
-              Center(
-                child: Text('Preparing data...'),
-              ),
+              // Center(
+              //   child: Text('Preparing data...'),
+              // ),
               Center(child: LoadingWidget()),
-              Text('Loading...')
             ],
           ),
         ));

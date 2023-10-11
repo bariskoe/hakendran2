@@ -43,7 +43,7 @@ class DataPreparationBloc
     });
 
     selectedTodoListBloc.stream.listen((state) {
-      if (state is SelectedTodolistStateLoaded) {
+      if (state is SelectedTodolistStateLoaded && state.synchronize) {
         add(const DataPreparationEventSynchronizeIfNecessary());
       }
     });

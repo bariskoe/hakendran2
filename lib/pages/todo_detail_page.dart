@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:great_list_view/great_list_view.dart';
+import 'package:logger/logger.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
@@ -51,15 +52,16 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
         BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
           // Don't build if a List Element has just been dismissed. That part is taken
           // care of by the dismissibe Widget
-          // buildWhen: (previous, current) =>
-          //     ((((current is SelectedTodolistStateLoaded) &&
-          //             (previous is SelectedTodolistStateLoaded)) &&
-          //         !(current.todoListModel.numberOfTodos <
-          //             previous.todoListModel.numberOfTodos))),
-          //         &&
-          // (current != SelectedTodoListStateLoading()),
+          buildWhen: (previous, current) =>
+              //     ((((current is SelectedTodolistStateLoaded) &&
+              //             (previous is SelectedTodolistStateLoaded)) &&
+              //         !(current.todoListModel.numberOfTodos <
+              //             previous.todoListModel.numberOfTodos))),
+              //         &&
+              (current != SelectedTodoListStateLoading()),
 
           builder: (context, state) {
+            Logger().d('state in TodoListDetailPage ist $state');
             if (state is SelectedTodolistStateError) {
               return _buildError(context);
             }
@@ -67,18 +69,19 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
             if (state is SelectedTodolistStateLoaded) {
               return _buildListLoaded(state, context);
             }
-            return const ErrorBoxWidget();
+
+            return Container();
           },
         ),
-        BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
-          builder: (context, state) {
-            if (state is SelectedTodoListStateLoading) {
-              return const LoadingWidget();
-            } else {
-              return Container();
-            }
-          },
-        )
+        // BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
+        //   builder: (context, state) {
+        //     if (state is SelectedTodoListStateLoading) {
+        //       return const LoadingWidget();
+        //     } else {
+        //       return Container();
+        //     }
+        //   },
+        // )
       ],
     );
   }

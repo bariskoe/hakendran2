@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/bloc/DataPreparation/bloc/data_preparation_bloc.dart';
+import 'package:baristodolistapp/pages/todo_detail_page.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +14,6 @@ import '../../../domain/failures/failures.dart';
 import '../../../domain/usecases/selected_todolist_usecases.dart';
 import '../../../models/todo_model.dart';
 import '../../../models/todolist_model.dart';
-import '../../../pages/todo_detail_page.dart';
 
 part 'selected_todolist_event.dart';
 part 'selected_todolist_state.dart';
@@ -38,8 +38,7 @@ class SelectedTodolistBloc
       model.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
-            todoListModel: r.toModel(),
-          ),
+              todoListModel: r.toModel(), synchronize: event.synchronize),
         );
         Logger().d('selected TodoList: ${r.toModel().toString()}');
       });

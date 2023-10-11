@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/pages/todo_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,7 +20,6 @@ import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
 import '../ui/widgets/page_background_image_widget.dart';
-import 'todo_detail_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({
@@ -254,7 +254,8 @@ class DismissibleListElement extends StatelessWidget {
             );
 
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodolistEventLoadSelectedTodolist(uid: model.uid!),
+              SelectedTodolistEventLoadSelectedTodolist(
+                  uid: model.uid!, synchronize: false),
             );
 
             Get.to(() => const TodoListDetailPage());

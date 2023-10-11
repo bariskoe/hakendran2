@@ -19,9 +19,9 @@ class SelectedTodolistEventUnselect extends SelectedTodolistEvent {}
 
 class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {
   final String uid;
-  const SelectedTodolistEventLoadSelectedTodolist({
-    required this.uid,
-  });
+  final bool synchronize;
+  const SelectedTodolistEventLoadSelectedTodolist(
+      {required this.uid, this.synchronize = true});
 }
 
 class SelectedTodolistEventAddNewTodo extends SelectedTodolistEvent {
