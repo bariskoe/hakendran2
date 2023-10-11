@@ -159,10 +159,25 @@ class _CategoryListWidgetState extends State<CategoryListWidget> {
               fillList();
             });
           },
-          child: CategorySymbol(
-              name: element.getName(context),
-              icon: element.getIcon(),
-              selected: element.serialize() == selected),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              //! //! This Element makes sure the elements don't move when selecting a
+              //! a [categorySymbol] Any better idea?
+              ColorFiltered(
+                colorFilter:
+                    const ColorFilter.mode(Colors.transparent, BlendMode.clear),
+                child: CategorySymbol(
+                    name: element.getName(context),
+                    icon: element.getIcon(),
+                    selected: true),
+              ),
+              CategorySymbol(
+                  name: element.getName(context),
+                  icon: element.getIcon(),
+                  selected: element.serialize() == selected),
+            ],
+          ),
         ),
       );
       //Create the new list only when the categorySymbolList is filled for the first

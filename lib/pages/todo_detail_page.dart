@@ -45,6 +45,7 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
     super.didChangeDependencies();
   }
 
+  Widget? oldWidget;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -52,13 +53,13 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
         BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
           // Don't build if a List Element has just been dismissed. That part is taken
           // care of by the dismissibe Widget
-          buildWhen: (previous, current) =>
-              //     ((((current is SelectedTodolistStateLoaded) &&
-              //             (previous is SelectedTodolistStateLoaded)) &&
-              //         !(current.todoListModel.numberOfTodos <
-              //             previous.todoListModel.numberOfTodos))),
-              //         &&
-              (current != SelectedTodoListStateLoading()),
+          // buildWhen: (previous, current) =>
+          //     ((((current is SelectedTodolistStateLoaded) &&
+          //             (previous is SelectedTodolistStateLoaded)) &&
+          //         !(current.todoListModel.numberOfTodos <
+          //             previous.todoListModel.numberOfTodos))),
+          //         &&
+          // (current != SelectedTodoListStateLoading()),
 
           builder: (context, state) {
             Logger().d('state in TodoListDetailPage ist $state');
@@ -67,10 +68,15 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
             }
 
             if (state is SelectedTodolistStateLoaded) {
+              oldWidget = _buildListLoaded(state, context);
               return _buildListLoaded(state, context);
             }
 
-            return Container();
+            return Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.white,
+            );
           },
         ),
         // BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(

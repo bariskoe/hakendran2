@@ -123,26 +123,50 @@ class CategorySymbol extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(UiConstantsPadding.regular),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
-        border: Border.all(
-            width: selected ? 4 : 1,
-            color: selected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.secondary),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RegularDialogListElementText(
-              text: name, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: UiConstantsPadding.small),
-          Icon(icon)
-        ],
-      ),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        //! This Container makes sure the elements don't move when selecting a
+        //! a [categorySymbol] Any better idea?
+        Container(
+          padding: const EdgeInsets.all(UiConstantsPadding.regular),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
+            border: Border.all(width: 4, color: Colors.transparent),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RegularDialogListElementText(
+                  text: name, color: Colors.transparent),
+              const SizedBox(width: UiConstantsPadding.small),
+              Icon(icon)
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(UiConstantsPadding.regular),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(UiConstantsRadius.regular),
+            border: Border.all(
+                width: selected ? 4 : 1,
+                color: selected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.secondary),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RegularDialogListElementText(
+                  text: name, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: UiConstantsPadding.small),
+              Icon(icon)
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

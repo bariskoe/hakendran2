@@ -81,13 +81,13 @@ class SelectedTodolistBloc
 
     on<SelectedTodolistEventUpdateAccomplishedOfTodo>(
       (event, emit) async {
+        emit(SelectedTodoListStateLoading());
         Either<Failure, int> changes =
             await selectedTodolistUsecases.setAccomplishmentStatusOfTodo(
                 uid: event.uid, accomplished: event.accomplished);
         changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
-          getIt<SelectedTodolistBloc>()
-              .add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-                  todoModel: TodoModel(
+          add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+              todoModel: TodoModel(
             parentTodoListId: selectedTodoList!,
             uid: event.uid,
             task: '',
