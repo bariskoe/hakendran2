@@ -116,8 +116,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 return _buildListEmpty(context);
               }
 
-              return BigListElementText(
-                  text: AppLocalizations.of(context)!.somethingWentWrong);
+              return Container();
             },
           ),
           BlocBuilder<AllTodolistsBloc, AllTodolistsState>(

@@ -346,7 +346,10 @@ class FABrowOfDetailPage extends StatelessWidget {
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
                       heroTag: const Text('button3'),
-                      child: const Icon(Icons.refresh),
+                      child: const Icon(
+                        Icons.refresh,
+                        color: UiConstantsColors.iconOnDark,
+                      ),
                       onPressed: () {
                         getIt<SelectedTodolistBloc>().add(
                           const SelectedTodoListEventResetAll(),
@@ -361,7 +364,10 @@ class FABrowOfDetailPage extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
                   heroTag: const Text('button4'),
-                  child: const Icon(Icons.add),
+                  child: const Icon(
+                    Icons.add,
+                    color: UiConstantsColors.iconOnDark,
+                  ),
                   onPressed: () => addTodoDialog(
                     context: context,
                   ),

@@ -37,7 +37,8 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
-  Future<Either<Failure, UserCredential>> createUserWithEmailAndPassword({
+  Future<Either<AuthenticationFailure, UserCredential>>
+      createUserWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
@@ -47,7 +48,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       return right(userCredential);
     } catch (e) {
       //Implement custom Firebase Failures here
-      return Left(ApiFailure());
+      return Left(AuthenticationFailure(e.toString()));
     }
   }
 }
