@@ -73,15 +73,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             onTap: () => Scaffold.of(context).openEndDrawer(),
           );
         }),
-        GestureDetector(
-          child: const Padding(
-            padding: EdgeInsets.only(right: UiConstantsPadding.xlarge),
-            child: Icon(Icons.account_tree_rounded),
-          ),
-          onTap: () {
-            DatabaseHelper.deleteAllTodoLists();
-          },
-        )
+        // GestureDetector(
+        //   child: const Padding(
+        //     padding: EdgeInsets.only(right: UiConstantsPadding.xlarge),
+        //     child: Icon(Icons.account_tree_rounded),
+        //   ),
+        //   onTap: () {
+        //     DatabaseHelper.deleteAllTodoLists();
+        //   },
+        // )
       ],
       drawer: const MainPageDrawer(),
       willPop: false,

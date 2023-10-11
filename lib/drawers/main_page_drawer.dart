@@ -30,35 +30,39 @@ class MainPageDrawer extends Drawer {
               applicationVersion: '1.0.0',
               applicationLegalese: '\u{a9} Baris Cagdas Kösebas ${now.year}',
             ),
-            GestureDetector(
-                onTap: () async {
-                  // No need to popUntil() LoginPage here. FirebaseAuth.instance.authStateChanges() listens for logouts
-                  // and pushes to LoginPage.
+            Padding(
+              padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+              child: GestureDetector(
+                  onTap: () async {
+                    // No need to popUntil() LoginPage here. FirebaseAuth.instance.authStateChanges() listens for logouts
+                    // and pushes to LoginPage.
 
-                  getIt<AuthenticationBloc>().add(AuthenticationEventSignOut());
+                    getIt<AuthenticationBloc>()
+                        .add(AuthenticationEventSignOut());
 
-                  getIt<SharedPreferences>()
-                      .setString(StringConstants.spFirebaseIDTokenKey, '');
-                  Get.offUntil(
-                    MaterialPageRoute(
-                        builder: (context) => const InitialRoutingPage()),
-                    (route) => false,
-                  );
-                },
-                child: const Row(
-                  children: [Icon(Icons.logout), Text('Logout')],
-                )),
+                    getIt<SharedPreferences>()
+                        .setString(StringConstants.spFirebaseIDTokenKey, '');
+                    Get.offUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const InitialRoutingPage()),
+                      (route) => false,
+                    );
+                  },
+                  child: const Row(
+                    children: [Icon(Icons.logout), Text('Logout')],
+                  )),
+            ),
             const SizedBox(
               height: 50,
             ),
-            GestureDetector(
-                onTap: () async {
-                  DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
-                  DatabaseHelper.getAllEntriesOfsyncPendigTodos();
-                },
-                child: const Row(
-                  children: [Icon(Icons.upload), Text('Get lists and todos')],
-                ))
+            // GestureDetector(
+            //     onTap: () async {
+            //       DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
+            //       DatabaseHelper.getAllEntriesOfsyncPendigTodos();
+            //     },
+            //     child: const Row(
+            //       children: [Icon(Icons.upload), Text('Get lists and todos')],
+            //     ))
           ],
         ),
       ),
