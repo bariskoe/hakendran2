@@ -339,25 +339,25 @@ class _FABrowState extends State<FABrow> {
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
-          child: Align(
-              alignment: Alignment.bottomRight,
-              child: AnimatedRotation(
-                turns: turns,
-                duration: const Duration(seconds: 1),
-                child: FloatingActionButton(
-                    heroTag: const Text('button3'),
-                    child: const Icon(Icons.refresh,
-                        color: UiConstantsColors.iconOnDark),
-                    onPressed: () {
-                      turns++;
-                      getIt<AllTodolistsBloc>().add(
-                        AllTodolistsEventGetAllTodoLists(),
-                      );
-                    }),
-              )),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
+        //   child: Align(
+        //       alignment: Alignment.bottomRight,
+        //       child: AnimatedRotation(
+        //         turns: turns,
+        //         duration: const Duration(seconds: 1),
+        //         child: FloatingActionButton(
+        //             heroTag: const Text('button3'),
+        //             child: const Icon(Icons.refresh,
+        //                 color: UiConstantsColors.iconOnDark),
+        //             onPressed: () {
+        //               turns++;
+        //               getIt<AllTodolistsBloc>().add(
+        //                 AllTodolistsEventGetAllTodoLists(),
+        //               );
+        //             }),
+        //       )),
+        // ),
         if (widget.state != AllTodoListsStateError()) ...[
           Padding(
             padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
