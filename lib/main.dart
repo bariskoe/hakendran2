@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart'
+    as getPackageTransitionsType;
 
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
 import 'bloc/authentication/authentication_bloc.dart';
@@ -40,6 +42,8 @@ class BarisToDoListApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<SelectedTodolistBloc>()),
       ],
       child: GetMaterialApp(
+        defaultTransition: getPackageTransitionsType.Transition.fadeIn,
+        transitionDuration: const Duration(milliseconds: 500),
         debugShowCheckedModeBanner: false,
         theme: Themes.darkGreenTheme(),
         darkTheme: ThemeData(
