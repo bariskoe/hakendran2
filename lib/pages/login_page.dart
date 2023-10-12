@@ -19,10 +19,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController =
-      TextEditingController(text: 'bariskoe@gmail.com');
-  TextEditingController passwordController =
-      TextEditingController(text: 'asdfghjkl');
+  TextEditingController usernameController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
 
   bool loginShowing = true;
   var logger = Logger();

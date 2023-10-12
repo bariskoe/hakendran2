@@ -45,7 +45,6 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
     super.didChangeDependencies();
   }
 
-  Widget? oldWidget;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -53,22 +52,20 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
         BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
           // Don't build if a List Element has just been dismissed. That part is taken
           // care of by the dismissibe Widget
-          // buildWhen: (previous, current) =>
-          //     ((((current is SelectedTodolistStateLoaded) &&
-          //             (previous is SelectedTodolistStateLoaded)) &&
-          //         !(current.todoListModel.numberOfTodos <
-          //             previous.todoListModel.numberOfTodos))),
-          //         &&
-          // (current != SelectedTodoListStateLoading()),
+          buildWhen: (previous, current) =>
+              //     ((((current is SelectedTodolistStateLoaded) &&
+              //             (previous is SelectedTodolistStateLoaded)) &&
+              //         !(current.todoListModel.numberOfTodos <
+              //             previous.todoListModel.numberOfTodos))),
+              //         &&
+              (current != SelectedTodoListStateLoading()),
 
           builder: (context, state) {
-            Logger().d('state in TodoListDetailPage ist $state');
             if (state is SelectedTodolistStateError) {
               return _buildError(context);
             }
 
             if (state is SelectedTodolistStateLoaded) {
-              oldWidget = _buildListLoaded(state, context);
               return _buildListLoaded(state, context);
             }
 
@@ -79,15 +76,6 @@ class _TodoListDetailPageState extends State<TodoListDetailPage> {
             );
           },
         ),
-        // BlocBuilder<SelectedTodolistBloc, SelectedTodolistState>(
-        //   builder: (context, state) {
-        //     if (state is SelectedTodoListStateLoading) {
-        //       return const LoadingWidget();
-        //     } else {
-        //       return Container();
-        //     }
-        //   },
-        // )
       ],
     );
   }
@@ -97,7 +85,8 @@ _buildError(BuildContext context) {
   return const Center(child: ErrorBoxWidget());
 }
 
-_buildListLoaded(SelectedTodolistStateLoaded state, BuildContext context) {
+Widget _buildListLoaded(
+    SelectedTodolistStateLoaded state, BuildContext context) {
   return StandardPageWidget(
     onPop: () {
       getIt<SelectedTodolistBloc>().add(SelectedTodolistEventUnselect());
@@ -165,14 +154,16 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //add an empty TodoModel at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
     List<TodoModel> reversedList = List.from(list.reversed)
-      ..add(TodoModel(task: '', accomplished: false, parentTodoListId: 'Test'));
+      ..add(const TodoModel(
+          task: '', accomplished: false, parentTodoListId: 'Test'));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),
       child: AutomaticAnimatedListView<TodoModel>(
         comparator: AnimatedListDiffListComparator<TodoModel>(
             sameItem: (a, b) => a.uid == b.uid,
-            sameContent: (a, b) => a.accomplished == b.accomplished),
+            sameContent: (a, b) =>
+                a.accomplished == b.accomplished && a.task == b.task),
 
         listController: animatedListcontroller,
         list: reversedList, //widget.state.todoListModel.todoModels,
