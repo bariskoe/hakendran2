@@ -19,22 +19,14 @@ class DataPreparationBloc
   final DataPreparationUsecases dataPreparationUsecases;
   final AllTodoListsUsecases allTodoListsUsecases;
   final SelectedTodolistBloc selectedTodoListBloc;
-  //final AllTodolistsBloc _allTodolistBloc;
 
   DataPreparationBloc({
     required this.dataPreparationUsecases,
     required this.allTodoListsUsecases,
     required this.selectedTodoListBloc,
-    // required AllTodolistsBloc allTodolistBloc,
   }) :
         //_allTodolistBloc = allTodolistBloc,
         super(DataPreparationInitial()) {
-    // _allTodolistBloc.stream.listen((state) {
-    //   if (state is AllTodoListsStateDataPreparationComplete) {
-    //     emit(DataPreparationStateDataPreparationComplete());
-    //   }
-    // });
-
     // on<DataPreparationEvent>((event, emit) {
 
     // });

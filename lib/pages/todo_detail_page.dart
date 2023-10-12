@@ -1,21 +1,19 @@
-import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:great_list_view/great_list_view.dart';
-import 'package:logger/logger.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
+import '../dependency_injection.dart';
 import '../dialogs/add_todo_dialog.dart';
 import '../dialogs/edit_todo_dialog.dart';
 import '../models/todo_model.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/error_box_widget.dart';
-import '../ui/standard_widgets/loading_widget.dart';
 import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';

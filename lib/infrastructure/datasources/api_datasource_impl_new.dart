@@ -125,10 +125,8 @@ class ApiDataSourceImplNew implements ApiDatasource {
       headers['Authorization'] = 'Bearer $token';
       headers['Content-Type'] = 'application/json';
 
-      if (apiActionModel.body != null) {
-        apiActionModel.body[StringConstants.spDBTimestamp] =
-            getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
-      }
+      apiActionModel.body[StringConstants.spDBTimestamp] =
+          getIt<SharedPreferences>().getInt(StringConstants.spDBTimestamp);
 
       final response = await dio.request(
         apiActionModel.fullUrl,

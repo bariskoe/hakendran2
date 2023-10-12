@@ -1,4 +1,3 @@
-import 'package:baristodolistapp/pages/todo_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,7 +6,6 @@ import 'package:get/get.dart';
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
-import '../database/databse_helper.dart';
 import '../dependency_injection.dart';
 import '../dialogs/add_list_dialog.dart';
 import '../dialogs/edit_todolist_dialog.dart';
@@ -20,6 +18,7 @@ import '../ui/standard_widgets/standard_page_widget.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
 import '../ui/widgets/page_background_image_widget.dart';
+import 'todo_detail_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({
