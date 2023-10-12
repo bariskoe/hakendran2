@@ -352,7 +352,7 @@ class _FABrowState extends State<FABrow> {
                         color: UiConstantsColors.iconOnDark),
                     onPressed: () {
                       turns++;
-                      BlocProvider.of<AllTodolistsBloc>(context).add(
+                      getIt<AllTodolistsBloc>().add(
                         AllTodolistsEventGetAllTodoLists(),
                       );
                     }),

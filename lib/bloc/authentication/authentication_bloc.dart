@@ -48,7 +48,8 @@ class AuthenticationBloc
         password: event.password,
       );
       //! Bei einem Failure muss ein Error emitted werden
-      failureOrUserCredential.fold((l) => null, (r) async {
+      failureOrUserCredential
+          .fold((l) => emit(AuthenticationStateError(l.message)), (r) async {
         if (r.user != null) {
           Logger().i('Right is: $r');
           Logger().i('Credentials are: ${r.credential}');

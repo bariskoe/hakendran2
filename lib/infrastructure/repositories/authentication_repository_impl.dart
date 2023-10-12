@@ -14,8 +14,9 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   });
 
   @override
-  Future<Either<Failure, UserCredential>> signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<Either<AuthenticationFailure, UserCredential>>
+      signInWithEmailAndPassword(
+          {required String email, required String password}) async {
     try {
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -23,7 +24,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     } catch (e) {
       //Implement custom Firebase Failures here
       Logger().e('Error in Login: $e');
-      return Left(ApiFailure());
+      return Left(AuthenticationFailure(e.toString()));
     }
   }
 
