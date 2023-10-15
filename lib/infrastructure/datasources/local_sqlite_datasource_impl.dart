@@ -8,15 +8,10 @@ import 'local_sqlite_datasource.dart';
 class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   @override
   Future<int> createNewTodoList({
-    required TodoListEntity todoListEntity,
+    required TodoListModel todoListModel,
   }) async {
-    int idOflastCreatedRow = await DatabaseHelper.createNewTodoList(
-      TodoListModel(
-          todoModels: const [],
-          listName: todoListEntity.listName,
-          todoListCategory: todoListEntity.todoListCategory,
-          uid: todoListEntity.uid),
-    );
+    int idOflastCreatedRow =
+        await DatabaseHelper.createNewTodoList(todoListModel);
 
     return idOflastCreatedRow;
   }

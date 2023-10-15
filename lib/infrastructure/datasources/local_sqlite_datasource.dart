@@ -4,7 +4,10 @@ import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
 
 abstract class LocalSqliteDataSource {
-  Future<int> createNewTodoList({required TodoListEntity todoListEntity});
+  Future<int> createNewTodoList({
+    required TodoListModel todoListModel,
+  });
+
   Future<List<TodoListModel>> getAllTodoLists();
 
   Future<int> updateSpecificListParameters(

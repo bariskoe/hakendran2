@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
 import 'package:logger/logger.dart';
 
@@ -21,11 +22,12 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
 
   @override
   Future<Either<Failure, int>> createNewTodoList({
-    required TodoListEntity todoListEntity,
+    required TodoListEntityParameters todoListEntityParameters,
   }) async {
     try {
       final success = await localSqliteDataSource.createNewTodoList(
-          todoListEntity: todoListEntity);
+          todoListModel: TodoListModel.fromTodoListEntityParameters(
+              todoListEntityParameters));
       return Right(success);
     } catch (e) {
       return Left(DatabaseFailure());

@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
+
 import '../domain/entities/todolist_entity.dart';
 import 'todo_model.dart';
 
@@ -9,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class TodoListModel extends TodoListEntity with EquatableMixin {
-  // TODO: uuid in uid umbenennen. Dabei die Firebase namen beachten
   TodoListModel({
     String? uid,
     required String listName,
@@ -38,6 +39,17 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
         todoListCategory: TodoListCategoryExtension.deserialize(
             map[DatabaseHelper.todoListsTableFieldCategory]),
       );
+
+  factory TodoListModel.fromTodoListEntityParameters(
+      TodoListEntityParameters todoListEntityParameters) {
+    return TodoListModel(
+      uid: todoListEntityParameters.uid,
+      listName: todoListEntityParameters.listName ?? '',
+      todoModels: todoListEntityParameters.todoModels ?? [],
+      todoListCategory:
+          todoListEntityParameters.todoListCategory ?? TodoListCategory.none,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     var uuidLibrary = const Uuid();

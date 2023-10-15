@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/todo_list_update_model.dart';
@@ -11,7 +12,7 @@ abstract class AllTodoListsRepository {
   /// Returns a [DatabaseFailure] if no int is returned from Database
   /// it will return a [GeneralFailure] for all other failures
   Future<Either<Failure, int>> createNewTodoList(
-      {required TodoListEntity todoListEntity});
+      {required TodoListEntityParameters todoListEntityParameters});
 
   /// Returns a list of [TodoListModel] which contains all TodoLists
   /// in the database

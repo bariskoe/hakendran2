@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/usecases/selected_todolist_usecases.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:bloc/bloc.dart';
@@ -58,7 +59,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         // This id is not the uid of the created TodoList
         Either<Failure, int> idOflastCreatedRowOrFailure =
             await allTodoListsUsecases.createNewTodoList(
-          todoListEntity: TodoListModel(
+          todoListEntityParameters: TodoListEntityParameters(
             todoModels: const [],
             listName: event.listName,
             todoListCategory: event.todoListCategory,
@@ -140,7 +141,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         Future<void> saveListOfTodolistsLocally(List<dynamic> todoLists) async {
           Future.wait(todolists.map((todoList) async =>
               await allTodoListsUsecases.createNewTodoList(
-                  todoListEntity: TodoListModel(
+                  todoListEntityParameters: TodoListEntityParameters(
                       uid: todoList['uid'],
                       listName: todoList['listName'],
                       todoListCategory: TodoListCategoryExtension.deserialize(

@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
+
 import '../../models/todo_list_update_model.dart';
 
 import '../../models/todolist_model.dart';
@@ -12,10 +14,10 @@ class AllTodoListsUsecases {
   AllTodoListsUsecases({required this.allTodoListsRepository});
 
   Future<Either<Failure, int>> createNewTodoList({
-    required TodoListEntity todoListEntity,
+    required TodoListEntityParameters todoListEntityParameters,
   }) async {
     return allTodoListsRepository.createNewTodoList(
-        todoListEntity: todoListEntity);
+        todoListEntityParameters: todoListEntityParameters);
   }
 
   Future<Either<Failure, List<TodoListModel>>> getAllTodoLists() async {
