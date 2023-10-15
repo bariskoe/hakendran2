@@ -90,12 +90,12 @@ Widget _buildListLoaded(
       getIt<SelectedTodolistBloc>().add(SelectedTodolistEventUnselect());
       getIt<AllTodolistsBloc>().add(AllTodolistsEventGetAllTodoLists());
     },
-    appBarTitle: state.todoListModel.listName,
+    appBarTitle: state.todoListEntity.listName,
     child: Stack(
       children: [
         PageBackGroundImageWidget(
             imagePath:
-                state.todoListModel.todoListCategory.getBackgroundImage()),
+                state.todoListEntity.todoListCategory.getBackgroundImage()),
         DetailPageListWidget(state: state),
         FABrowOfDetailPage(loadedState: state),
       ],
@@ -145,7 +145,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
         TodoListDetailPage.justAddedTodo = false;
       });
     }
-    List<TodoModel> list = widget.state.todoListModel.todoModels;
+    List<TodoModel> list = widget.state.todoListEntity.todoModels;
     //Sorts the list by property 'accomplished'
     list.sort(((a, b) => b.accomplished ? 1 : -1));
     //Reverse the list in order to move the accomplished tasks to the bottom of the list
@@ -334,7 +334,7 @@ class FABrowOfDetailPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             if (state is SelectedTodolistStateLoaded &&
-                state.todoListModel.atLeastOneAccomplished) ...[
+                state.todoListEntity.atLeastOneAccomplished) ...[
               Padding(
                 padding: const EdgeInsets.all(UiConstantsPadding.xlarge),
                 child: Align(

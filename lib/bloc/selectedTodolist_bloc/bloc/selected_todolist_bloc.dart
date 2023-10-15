@@ -37,7 +37,7 @@ class SelectedTodolistBloc
       model.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
-              todoListModel: r.toModel(), synchronize: event.synchronize),
+              todoListEntity: r.toModel(), synchronize: event.synchronize),
         );
         Logger().d('selected TodoList: ${r.toModel().toString()}');
       });

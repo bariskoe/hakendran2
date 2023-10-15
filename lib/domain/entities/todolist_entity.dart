@@ -19,16 +19,6 @@ class TodoListEntity with EquatableMixin {
     this.uid,
   });
 
-//! There should not be a toModel function. In the model there should be a fromDomain function
-
-  TodoListModel toModel() {
-    return TodoListModel(
-        uid: uid,
-        listName: listName,
-        todoModels: todoModels,
-        todoListCategory: todoListCategory);
-  }
-
   @override
   List<Object?> get props => [
         listName,
@@ -48,4 +38,7 @@ class TodoListEntity with EquatableMixin {
       todoModels.where((element) => element.accomplished).length;
   bool get allAccomplished =>
       (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
+
+  bool get atLeastOneAccomplished =>
+      (todoModels.isNotEmpty && numberOfAccomplishedTodos > 0);
 }

@@ -10,16 +10,16 @@ abstract class SelectedTodolistState extends Equatable {
 class SelectedTodolistInitial extends SelectedTodolistState {}
 
 class SelectedTodolistStateLoaded extends SelectedTodolistState {
-  final TodoListModel todoListModel;
+  final TodoListEntity todoListEntity;
   final bool synchronize;
 
   const SelectedTodolistStateLoaded({
     this.synchronize = true,
-    required this.todoListModel,
+    required this.todoListEntity,
   });
 
   @override
-  List<Object> get props => [todoListModel, synchronize];
+  List<Object> get props => [todoListEntity, synchronize];
 }
 
 class SelectedTodoListStateLoading extends SelectedTodolistState {}

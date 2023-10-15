@@ -36,10 +36,10 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   @override
   Future<Either<Failure, List<TodoListEntity>>> getAllTodoLists() async {
     try {
-      List<TodoListModel> listOfTodoListModels =
-          await localSqliteDataSource.getAllTodoLists();
-      List<TodoListEntity> listOfTodoListEntities =
-          listOfTodoListModels.map((e) => e.toDomain()).toList();
+      List<TodoListEntity> listOfTodoListEntities = await localSqliteDataSource
+          .getAllTodoLists()
+          .then((value) => value.map((e) => e.toDomain()).toList());
+
       return Right(listOfTodoListEntities);
     } catch (e) {
       return Left(DatabaseFailure());

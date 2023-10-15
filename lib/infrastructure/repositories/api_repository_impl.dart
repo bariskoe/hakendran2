@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/domain/failures/failures.dart';
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/repositories/api_repository.dart';
 import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
@@ -29,11 +30,13 @@ class ApiRepositoryImpl implements ApiRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> createTodoList(
-      {required TodoListModel todoListModel}) async {
+  Future<Either<Failure, bool>> createTodoList({
+    required TodoListEntityParameters todoListEntityParameters,
+  }) async {
     try {
       final uploadSuccessful = await apiDatasource.createTodoList(
-        todoListModel: todoListModel,
+        todoListModel: TodoListModel.fromTodoListEntityParameters(
+            todoListEntityParameters),
       );
       if (uploadSuccessful) {
         return const Right(true);

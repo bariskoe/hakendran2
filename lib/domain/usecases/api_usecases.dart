@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/repositories/api_repository.dart';
 import 'package:dartz/dartz.dart';
 
@@ -14,9 +15,10 @@ class ApiUsecases {
   });
 
   Future<Either<Failure, bool>> createTodoList({
-    required TodoListModel todoListModel,
+    required TodoListEntityParameters todoListEntityParameters,
   }) async {
-    return await apiRepository.createTodoList(todoListModel: todoListModel);
+    return await apiRepository.createTodoList(
+        todoListEntityParameters: todoListEntityParameters);
   }
 
   Future<Either<Failure, bool>> addTodoToSpecificList({
