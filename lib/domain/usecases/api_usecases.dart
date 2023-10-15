@@ -1,5 +1,7 @@
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
-import 'package:baristodolistapp/domain/repositories/api_repository.dart';
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+
+import '../parameters/todolist_entity_parameters.dart';
+import '../repositories/api_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/api_action_model.dart';
@@ -22,9 +24,10 @@ class ApiUsecases {
   }
 
   Future<Either<Failure, bool>> addTodoToSpecificList({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
-    return await apiRepository.addTodoToSpecificList(todoModel: todoModel);
+    return await apiRepository.addTodoToSpecificList(
+        todoParameters: todoParameters);
   }
 
   Future<Either<Failure, bool>> performApiAction({

@@ -1,3 +1,4 @@
+import '../../../domain/parameters/todo_parameters.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -51,7 +52,7 @@ class SelectedTodolistBloc
       final uid = uuidPackage.v1();
 
       if (selectedTodoList != null) {
-        final todoModelToAdd = event.todoModel.copyWith(
+        final todoParameters = event.todoParameters.copyWith(
           uid: uid,
           parentTodoListId: selectedTodoList!,
         );
@@ -59,10 +60,10 @@ class SelectedTodolistBloc
         TodoListDetailPage.justAddedTodo = true;
 
         Either<Failure, int> didSave = await selectedTodolistUsecases
-            .addTodoToSpecificList(todoModel: todoModelToAdd);
+            .addTodoToSpecificList(todoParameters: todoParameters);
         didSave.fold((l) => emit(SelectedTodolistStateError()), (r) {
           add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-              todoModel: todoModelToAdd));
+              todoParameters: todoParameters));
           add(SelectedTodolistEventLoadSelectedTodolist(
               uid: selectedTodoList!));
         });
@@ -86,7 +87,7 @@ class SelectedTodolistBloc
                 uid: event.uid, accomplished: event.accomplished);
         changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
           add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-              todoModel: TodoModel(
+              todoParameters: TodoParameters(
             parentTodoListId: selectedTodoList!,
             uid: event.uid,
             task: '',
@@ -102,12 +103,12 @@ class SelectedTodolistBloc
     on<SelectedTodolistEventUpdateTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
       Either<Failure, int> changes = await selectedTodolistUsecases
-          .updateSpecificTodo(todoModel: event.todoModel);
+          .updateSpecificTodo(todoParameters: event.todoParameters);
       Logger().d('changes sind $changes');
       changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
         getIt<SelectedTodolistBloc>().add(
             SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-                todoModel: event.todoModel));
+                todoParameters: event.todoParameters));
         add(
           SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
         );
@@ -116,11 +117,11 @@ class SelectedTodolistBloc
 
     on<SelectedTodolistEventDeleteSpecificTodo>((event, emit) async {
       Either<Failure, int> changes = await selectedTodolistUsecases
-          .deleteSpecificTodo(todoModel: event.todoModel);
+          .deleteSpecificTodo(todoParameters: event.todoParameters);
 
       changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
         add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-            todoModel: event.todoModel));
+            todoParameters: event.todoParameters));
       });
 //No need to reload the list here. The Dismissible Listview takes care of the ui.
     });
@@ -155,7 +156,7 @@ class SelectedTodolistBloc
     on<SelectedTodoListEventAddTodoUidToSyncPendingTodos>((event, emit) async {
       Either<Failure, int> failureOridOfInsertedRow =
           await selectedTodolistUsecases.addTodoUidToSyncPendingTodos(
-        todoModel: event.todoModel,
+        todoParameters: event.todoParameters,
       );
       failureOridOfInsertedRow.fold((l) => null, (r) {
         getIt<DataPreparationBloc>()

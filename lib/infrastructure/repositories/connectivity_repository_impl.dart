@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/failures/failures.dart';
-import 'package:baristodolistapp/domain/repositories/connectivity_repository.dart';
+import '../../domain/failures/failures.dart';
+import '../../domain/repositories/connectivity_repository.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 

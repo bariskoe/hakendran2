@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
+import '../domain/parameters/todolist_entity_parameters.dart';
 
 import '../domain/entities/todolist_entity.dart';
 import 'todo_model.dart';
@@ -19,7 +19,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   }) : super(
           uid: uid,
           listName: listName,
-          todoModels: todoModels,
+          todoEntities: todoModels,
           todoListCategory: todoListCategory,
         );
 
@@ -27,7 +27,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   List<Object?> get props => [
         uid,
         listName,
-        todoModels,
+        todoEntities,
         todoListCategory,
       ];
 
@@ -56,7 +56,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
     return {
       DatabaseHelper.todoListsTableFieldUid: uid ?? uuidLibrary.v1(),
       DatabaseHelper.todoListsTableFieldListName: listName,
-      DatabaseHelper.todos: todoModels.map((e) => e.toMap()).toList(),
+      DatabaseHelper.todos: todoEntities,
       DatabaseHelper.todoListsTableFieldCategory: todoListCategory.serialize(),
     };
   }
@@ -65,7 +65,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
     return TodoListEntity(
         uid: uid,
         listName: listName,
-        todoModels: todoModels,
+        todoEntities: todoEntities,
         todoListCategory: todoListCategory);
   }
 
@@ -84,16 +84,16 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   double get percentageOfAccomplishedTodos =>
       numberOfAccomplishedTodos / numberOfTodos;
 
-  int get numberOfTodos => todoModels.length;
+  int get numberOfTodos => todoEntities.length;
 
   int get numberOfAccomplishedTodos =>
-      todoModels.where((element) => element.accomplished).length;
+      todoEntities.where((element) => element.accomplished).length;
 
   bool get allAccomplished =>
-      (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
+      (todoEntities.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
 
   bool get atLeastOneAccomplished =>
-      (todoModels.isNotEmpty && numberOfAccomplishedTodos > 0);
+      (todoEntities.isNotEmpty && numberOfAccomplishedTodos > 0);
 }
 
 enum TodoListCategory {

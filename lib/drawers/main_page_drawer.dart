@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../assets.dart';
 import '../bloc/authentication/authentication_bloc.dart';
-import '../database/databse_helper.dart';
 import '../dependency_injection.dart';
 import '../pages/initial_routing_page.dart';
 import '../strings/string_constants.dart';

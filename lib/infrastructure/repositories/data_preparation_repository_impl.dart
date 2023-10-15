@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/database/databse_helper.dart';
-import 'package:baristodolistapp/models/firestore_data_info_model.dart';
+import '../../database/databse_helper.dart';
+import '../../models/firestore_data_info_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,3 +1,5 @@
+import '../domain/entities/todo_entity.dart';
+import '../domain/parameters/todo_parameters.dart';
 import 'package:uuid/uuid.dart';
 
 import '../database/databse_helper.dart';
@@ -5,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TodoModel extends Equatable {
+class TodoModel extends TodoEntity with EquatableMixin {
   final String? uid;
   final String task;
   final bool accomplished;
@@ -20,7 +22,11 @@ class TodoModel extends Equatable {
     this.uid,
     this.accomplishedAt,
     this.repeatPeriod = RepeatPeriod.none,
-  });
+  }) : super(
+          task: task,
+          accomplished: accomplished,
+          parentTodoListId: parentTodoListId,
+        );
 
   TodoModel copyWith({
     String? uid,
@@ -55,6 +61,19 @@ class TodoModel extends Equatable {
               map[DatabaseHelper.todosTableFieldaccomplishedAt])
           : null,
     );
+  }
+
+  factory TodoModel.fromTodoParameters(TodoParameters todoParameters) {
+    var uuidLibrary = const Uuid();
+    return TodoModel(
+        task: todoParameters.task ?? '',
+        accomplished: todoParameters.accomplished ?? false,
+        parentTodoListId: todoParameters.parentTodoListId ?? '',
+        accomplishedAt: todoParameters.accomplishedAt,
+        repeatPeriod: todoParameters.repeatPeriod ?? RepeatPeriod.none,
+        //! uid should probably be required
+
+        uid: todoParameters.uid ?? uuidLibrary.v1());
   }
 
   Map<String, dynamic> toMap() {

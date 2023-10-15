@@ -1,4 +1,5 @@
-import 'package:baristodolistapp/models/todo_model.dart';
+import '../parameters/todo_parameters.dart';
+import '../../models/todo_model.dart';
 
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
@@ -20,10 +21,10 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     return await selectedTodolistRepository.addTodoToSpecificList(
-      todoModel: todoModel,
+      todoParameters: todoParameters,
     );
   }
 
@@ -38,18 +39,18 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     return await selectedTodolistRepository.updateSpecificTodo(
-      todoModel: todoModel,
+      todoParameters: todoParameters,
     );
   }
 
   Future<Either<Failure, int>> deleteSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     return await selectedTodolistRepository.deleteSpecificTodo(
-      todoModel: todoModel,
+      todoParameters: todoParameters,
     );
   }
 
@@ -71,9 +72,9 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> addTodoUidToSyncPendingTodos({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     return await selectedTodolistRepository.addTodoUidToSyncPendingTodos(
-        todoModel: todoModel);
+        todoParameters: todoParameters);
   }
 }

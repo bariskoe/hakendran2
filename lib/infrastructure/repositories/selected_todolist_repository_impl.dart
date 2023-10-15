@@ -1,4 +1,5 @@
-import 'package:baristodolistapp/models/todo_model.dart';
+import '../../domain/parameters/todo_parameters.dart';
+import '../../models/todo_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
 
@@ -32,11 +33,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     try {
       final int success = await localSqliteDataSource.addTodoToSpecificList(
-          todoModel: todoModel);
+          todoModel: TodoModel.fromTodoParameters(todoParameters));
       return Right(success);
     } catch (e) {
       return Left(DatabaseFailure());
@@ -61,11 +62,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     try {
       int changes = await localSqliteDataSource.updateSpecificTodo(
-        todoModel: todoModel,
+        todoModel: TodoModel.fromTodoParameters(todoParameters),
       );
       return Right(changes);
     } catch (e) {
@@ -104,10 +105,10 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> addTodoUidToSyncPendingTodos(
-      {required TodoModel todoModel}) async {
+      {required TodoParameters todoParameters}) async {
     try {
       int changes = await localSqliteDataSource.addTodoUidToSyncPendingTodos(
-        todoModel: todoModel,
+        todoModel: TodoModel.fromTodoParameters(todoParameters),
       );
       return Right(changes);
     } catch (e) {
@@ -117,11 +118,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> deleteSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     try {
       int changes = await localSqliteDataSource.deleteSpecificTodo(
-        todoModel: todoModel,
+        todoModel: TodoModel.fromTodoParameters(todoParameters),
       );
       return Right(changes);
     } catch (e) {

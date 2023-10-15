@@ -1,7 +1,8 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
-import 'package:baristodolistapp/domain/usecases/selected_todolist_usecases.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
+import '../../domain/entities/todolist_entity.dart';
+import '../../domain/parameters/todo_parameters.dart';
+import '../../domain/parameters/todolist_entity_parameters.dart';
+import '../../domain/usecases/selected_todolist_usecases.dart';
+import '../../models/todo_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -151,8 +152,9 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
         }
 
         Future<void> saveListOfTodosLocally(List<dynamic> todos) async {
-          Future.wait(todos.map((todo) async => await selectedTodolistUsecases
-              .addTodoToSpecificList(todoModel: TodoModel.fromMap(todo))));
+          Future.wait(todos.map((todo) async =>
+              await selectedTodolistUsecases.addTodoToSpecificList(
+                  todoParameters: TodoParameters.fromMap(todo))));
         }
 
         await saveListOfTodolistsLocally(todolists);

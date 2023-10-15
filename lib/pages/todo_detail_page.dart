@@ -10,7 +10,8 @@ import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dependency_injection.dart';
 import '../dialogs/add_todo_dialog.dart';
 import '../dialogs/edit_todo_dialog.dart';
-import '../models/todo_model.dart';
+import '../domain/entities/todo_entity.dart';
+import '../domain/parameters/todo_parameters.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/error_box_widget.dart';
@@ -145,26 +146,25 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
         TodoListDetailPage.justAddedTodo = false;
       });
     }
-    List<TodoModel> list = widget.state.todoListEntity.todoModels;
+    List<TodoEntity> list = widget.state.todoListEntity.todoEntities;
     //Sorts the list by property 'accomplished'
     list.sort(((a, b) => b.accomplished ? 1 : -1));
     //Reverse the list in order to move the accomplished tasks to the bottom of the list
-    //add an empty TodoModel at the end in order to extend the length of the list by 1,
+    //add an empty TodoEntity at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
-    List<TodoModel> reversedList = List.from(list.reversed)
-      ..add(const TodoModel(
+    List<TodoEntity> reversedList = List.from(list.reversed)
+      ..add(const TodoEntity(
           task: '', accomplished: false, parentTodoListId: 'Test'));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),
-      child: AutomaticAnimatedListView<TodoModel>(
-        comparator: AnimatedListDiffListComparator<TodoModel>(
+      child: AutomaticAnimatedListView<TodoEntity>(
+        comparator: AnimatedListDiffListComparator<TodoEntity>(
             sameItem: (a, b) => a.uid == b.uid,
             sameContent: (a, b) =>
                 a.accomplished == b.accomplished && a.task == b.task),
-
         listController: animatedListcontroller,
-        list: reversedList, //widget.state.todoListModel.todoModels,
+        list: reversedList,
         itemBuilder: ((context, model, data) {
           //Put an invisible Container to the end of the list so that the Floating
           //Action Buttons don't disturb when scrolled down to the end
@@ -190,7 +190,8 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                             .removeWhere((element) => element.uid == model.uid);
                         getIt<SelectedTodolistBloc>().add(
                             SelectedTodolistEventDeleteSpecificTodo(
-                                todoModel: model));
+                                todoParameters:
+                                    TodoParameters.fromDomain(model)));
                       },
                       key: UniqueKey(),
                       background: const SwipeToDeleteBackgroundWidget(),
@@ -199,9 +200,9 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                           ? SizeTransition(
                               sizeFactor: _animation!,
                               axis: Axis.vertical,
-                              child: ListElement(model: model),
+                              child: ListElement(todoEntity: model),
                             )
-                          : ListElement(model: model),
+                          : ListElement(todoEntity: model),
                     ));
           }
         }),
@@ -213,10 +214,10 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
 class ListElement extends StatelessWidget {
   const ListElement({
     Key? key,
-    required this.model,
+    required this.todoEntity,
   }) : super(key: key);
 
-  final TodoModel model;
+  final TodoEntity todoEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +229,7 @@ class ListElement extends StatelessWidget {
         height: UiConstantsSize.xxlarge,
         decoration: StandardUiWidgets.standardBoxDecoration(
             context,
-            model.accomplished
+            todoEntity.accomplished
                 ? UiConstantsColors.allAccomplishedGradientColors
                 : [
                     Theme.of(context).colorScheme.secondaryContainer,
@@ -240,19 +241,20 @@ class ListElement extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(flex: 4, child: BigListElementText(text: model.task)),
+              Flexible(
+                  flex: 4, child: BigListElementText(text: todoEntity.task)),
               Flexible(
                 flex: 1,
                 child: GestureDetector(
                   onTap: () {
                     getIt<SelectedTodolistBloc>().add(
                       SelectedTodolistEventUpdateAccomplishedOfTodo(
-                        uid: model.uid!,
-                        accomplished: !model.accomplished,
+                        uid: todoEntity.uid!,
+                        accomplished: !todoEntity.accomplished,
                       ),
                     );
                   },
-                  child: CheckBoxWidget(model: model),
+                  child: CheckBoxWidget(todoEntity: todoEntity),
                 ),
               )
             ],
@@ -266,10 +268,10 @@ class ListElement extends StatelessWidget {
 class CheckBoxWidget extends StatelessWidget {
   const CheckBoxWidget({
     Key? key,
-    required this.model,
+    required this.todoEntity,
   }) : super(key: key);
 
-  final TodoModel model;
+  final TodoEntity todoEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +288,7 @@ class CheckBoxWidget extends StatelessWidget {
             width: UiConstantsSize.small,
           ),
         ),
-        if (model.accomplished) ...[
+        if (todoEntity.accomplished) ...[
           Align(
             alignment: Alignment.center,
             child: SvgPicture.asset(

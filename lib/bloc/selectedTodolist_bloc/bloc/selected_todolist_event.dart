@@ -25,11 +25,11 @@ class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {
 }
 
 class SelectedTodolistEventAddNewTodo extends SelectedTodolistEvent {
-  final TodoModel todoModel;
-  const SelectedTodolistEventAddNewTodo({required this.todoModel});
+  final TodoParameters todoParameters;
+  const SelectedTodolistEventAddNewTodo({required this.todoParameters});
 
   @override
-  List<Object> get props => [todoModel];
+  List<Object> get props => [todoParameters];
 }
 
 class SelectedTodolistEventUpdateAccomplishedOfTodo
@@ -44,19 +44,19 @@ class SelectedTodolistEventUpdateAccomplishedOfTodo
 }
 
 class SelectedTodolistEventUpdateTodo extends SelectedTodolistEvent {
-  final TodoModel todoModel;
-  const SelectedTodolistEventUpdateTodo({required this.todoModel});
+  final TodoParameters todoParameters;
+  const SelectedTodolistEventUpdateTodo({required this.todoParameters});
 
   @override
-  List<Object> get props => [todoModel];
+  List<Object> get props => [todoParameters];
 }
 
 class SelectedTodolistEventDeleteSpecificTodo extends SelectedTodolistEvent {
-  final TodoModel todoModel;
-  const SelectedTodolistEventDeleteSpecificTodo({required this.todoModel});
+  final TodoParameters todoParameters;
+  const SelectedTodolistEventDeleteSpecificTodo({required this.todoParameters});
 
   @override
-  List<Object> get props => [todoModel];
+  List<Object> get props => [todoParameters];
 }
 
 class SelectedTodoListEventResetAll extends SelectedTodolistEvent {
@@ -76,12 +76,12 @@ class SelectedTodoListEventAddTodoListUidToSyncPendingTodoLists
 
 class SelectedTodoListEventAddTodoUidToSyncPendingTodos
     extends SelectedTodolistEvent {
-  final TodoModel todoModel;
+  final TodoParameters todoParameters;
 
   const SelectedTodoListEventAddTodoUidToSyncPendingTodos({
-    required this.todoModel,
+    required this.todoParameters,
   });
 
   @override
-  List<Object> get props => [todoModel];
+  List<Object> get props => [todoParameters];
 }

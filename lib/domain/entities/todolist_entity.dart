@@ -1,3 +1,4 @@
+import 'todo_entity.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../models/todo_model.dart';
@@ -9,12 +10,12 @@ class TodoListEntity with EquatableMixin {
 
   final String listName;
   //! This has to be List<TodoEntity>
-  final List<TodoModel> todoModels;
+  final List<TodoEntity> todoEntities;
   final TodoListCategory todoListCategory;
 
   TodoListEntity({
     required this.listName,
-    this.todoModels = const [],
+    this.todoEntities = const [],
     this.todoListCategory = TodoListCategory.none,
     this.uid,
   });
@@ -22,7 +23,7 @@ class TodoListEntity with EquatableMixin {
   @override
   List<Object?> get props => [
         listName,
-        todoModels,
+        todoEntities,
         todoListCategory,
       ];
 
@@ -32,13 +33,13 @@ class TodoListEntity with EquatableMixin {
   double get percentageOfAccomplishedTodos =>
       numberOfAccomplishedTodos / numberOfTodos;
 
-  int get numberOfTodos => todoModels.length;
+  int get numberOfTodos => todoEntities.length;
 
   int get numberOfAccomplishedTodos =>
-      todoModels.where((element) => element.accomplished).length;
+      todoEntities.where((element) => element.accomplished).length;
   bool get allAccomplished =>
-      (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
+      (todoEntities.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
 
   bool get atLeastOneAccomplished =>
-      (todoModels.isNotEmpty && numberOfAccomplishedTodos > 0);
+      (todoEntities.isNotEmpty && numberOfAccomplishedTodos > 0);
 }

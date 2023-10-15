@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/failures/failures.dart';
+import '../failures/failures.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class ConnectivityRepository {

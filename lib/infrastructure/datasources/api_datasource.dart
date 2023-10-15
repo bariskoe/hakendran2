@@ -1,6 +1,8 @@
-import 'package:baristodolistapp/models/api_action_model.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+
+import '../../models/api_action_model.dart';
+import '../../models/todo_model.dart';
+import '../../models/todolist_model.dart';
 
 abstract class ApiDatasource {
   // Future<bool> synchronizeAllTodoListsWithBackend(

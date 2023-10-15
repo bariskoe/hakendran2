@@ -1,5 +1,7 @@
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
-import 'package:baristodolistapp/models/api_action_model.dart';
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+
+import '../parameters/todolist_entity_parameters.dart';
+import '../../models/api_action_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/todo_model.dart';
@@ -12,7 +14,7 @@ abstract class ApiRepository {
   });
 
   Future<Either<Failure, bool>> addTodoToSpecificList({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
 
   Future<Either<Failure, bool>> performApiAction({

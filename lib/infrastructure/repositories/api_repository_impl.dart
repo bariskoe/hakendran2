@@ -1,9 +1,11 @@
-import 'package:baristodolistapp/domain/failures/failures.dart';
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
-import 'package:baristodolistapp/domain/repositories/api_repository.dart';
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
-import 'package:baristodolistapp/models/todo_model.dart';
-import 'package:baristodolistapp/models/todolist_model.dart';
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+
+import '../../domain/failures/failures.dart';
+import '../../domain/parameters/todolist_entity_parameters.dart';
+import '../../domain/repositories/api_repository.dart';
+import '../datasources/api_datasource.dart';
+import '../../models/todo_model.dart';
+import '../../models/todolist_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/api_action_model.dart';
@@ -15,10 +17,10 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<Either<Failure, bool>> addTodoToSpecificList(
-      {required TodoModel todoModel}) async {
+      {required TodoParameters todoParameters}) async {
     try {
-      final uploadSuccessful =
-          await apiDatasource.addTodoToSpecificList(todoModel: todoModel);
+      final uploadSuccessful = await apiDatasource.addTodoToSpecificList(
+          todoModel: TodoModel.fromTodoParameters(todoParameters));
       if (uploadSuccessful) {
         return const Right(true);
       } else {

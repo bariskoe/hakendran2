@@ -1,4 +1,5 @@
-import 'package:baristodolistapp/models/todo_model.dart';
+import '../parameters/todo_parameters.dart';
+import '../../models/todo_model.dart';
 
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
@@ -10,7 +11,7 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
 
   Future<Either<Failure, int>> setAccomplishmentStatusOfTodo({
@@ -19,10 +20,10 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
   Future<Either<Failure, int>> deleteSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
 
   Future<Either<Failure, int>> resetAllTodosOfSpecificList({
@@ -32,6 +33,6 @@ abstract class SelectedTodolistRepository {
     required String uid,
   });
   Future<Either<Failure, int>> addTodoUidToSyncPendingTodos({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
 }

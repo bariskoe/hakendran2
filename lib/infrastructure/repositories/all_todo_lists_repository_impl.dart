@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
+import '../../domain/entities/todolist_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
 

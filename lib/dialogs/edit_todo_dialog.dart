@@ -1,3 +1,5 @@
+import '../domain/entities/todo_entity.dart';
+import '../domain/parameters/todo_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -12,12 +14,12 @@ int? _selectedRepetitionPeriodIndexInEditTodoDialog;
 
 Future<void> editTodoDialog(
   BuildContext context,
-  TodoModel todoModel,
+  TodoEntity todoEntity,
 ) async {
   TextEditingController textEditingController =
-      TextEditingController(text: todoModel.task);
+      TextEditingController(text: todoEntity.task);
   _selectedRepetitionPeriodIndexInEditTodoDialog =
-      todoModel.repeatPeriod?.serialize();
+      todoEntity.repeatPeriod?.serialize();
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -53,15 +55,16 @@ Future<void> editTodoDialog(
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
-                getIt<SelectedTodolistBloc>()
-                    .add(SelectedTodolistEventUpdateTodo(
-                        todoModel: todoModel.copyWith(
-                            task: textEditingController.text,
-                            repeatPeriod: RepeatPeriodExtension.deserialize(
-                              value:
-                                  _selectedRepetitionPeriodIndexInEditTodoDialog ??
-                                      0,
-                            ))));
+                getIt<SelectedTodolistBloc>().add(
+                    SelectedTodolistEventUpdateTodo(
+                        todoParameters:
+                            TodoParameters.fromDomain(todoEntity).copyWith(
+                                task: textEditingController.text,
+                                repeatPeriod: RepeatPeriodExtension.deserialize(
+                                  value:
+                                      _selectedRepetitionPeriodIndexInEditTodoDialog ??
+                                          0,
+                                ))));
                 Navigator.of(context).pop();
               }
             },
