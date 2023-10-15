@@ -17,7 +17,7 @@ class AllTodoListsStateError extends AllTodolistsState {}
 class AllTodolistsInitial extends AllTodolistsState {}
 
 class AllTodoListsStateLoaded extends AllTodolistsState {
-  final List<TodoListModel> listOfAllLists;
+  final List<TodoListEntity> listOfAllLists;
 
   const AllTodoListsStateLoaded({required this.listOfAllLists});
 

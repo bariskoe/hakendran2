@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -187,9 +188,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   _buildListLoaded(AllTodoListsStateLoaded state, BuildContext context) {
     //Sorts the list by property 'accomplished'
-    List<TodoListModel> list = state.listOfAllLists;
+    List<TodoListEntity> list = state.listOfAllLists;
     list.sort(((a, b) => b.allAccomplished ? 1 : -1));
-    List<TodoListModel> reversedList = List.from(list.reversed);
+    List<TodoListEntity> reversedList = List.from(list.reversed);
     return ListView.builder(
       shrinkWrap: true,
       itemCount: reversedList.length + 1,
@@ -199,17 +200,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             height: 100,
           );
         } else {
-          TodoListModel model = reversedList[index];
+          TodoListEntity todoListEntity = reversedList[index];
           return index == 0 && MainPage.justAddedList
               ? SizeTransition(
                   sizeFactor: _animation!,
                   axis: Axis.vertical,
                   child: DismissibleListElement(
-                    model: model,
+                    todoListEntity: todoListEntity,
                   ),
                 )
               : DismissibleListElement(
-                  model: model,
+                  todoListEntity: todoListEntity,
                 );
         }
       }),
@@ -220,22 +221,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 class DismissibleListElement extends StatelessWidget {
   const DismissibleListElement({
     Key? key,
-    required this.model,
+    required this.todoListEntity,
   }) : super(key: key);
 
-  final TodoListModel model;
+  final TodoListEntity todoListEntity;
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(
-        model.toString(),
+        todoListEntity.toString(),
       ),
       background: const SwipeToDeleteBackgroundWidget(),
       onDismissed: (dismissdirection) {
         MainPage.justDismissedList = true;
         getIt<AllTodolistsBloc>().add(
-          AllTodolistsEventDeleteSpecificTodolist(uid: model.uid!),
+          AllTodolistsEventDeleteSpecificTodolist(uid: todoListEntity.uid!),
         );
       },
       child: Container(
@@ -244,23 +245,24 @@ class DismissibleListElement extends StatelessWidget {
             vertical: UiConstantsPadding.large),
         child: GestureDetector(
           child: MainPageListItemWidget(
-            todoListModel: model,
+            todoListEntity: todoListEntity,
           ),
           onTap: () {
             getIt<SelectedTodolistBloc>().add(
-              SelectedTodoListEventSelectSpecificTodoList(uid: model.uid!),
+              SelectedTodoListEventSelectSpecificTodoList(
+                  uid: todoListEntity.uid!),
             );
 
             getIt<SelectedTodolistBloc>().add(
               SelectedTodolistEventLoadSelectedTodolist(
-                  uid: model.uid!, synchronize: false),
+                  uid: todoListEntity.uid!, synchronize: false),
             );
 
             Get.to(() => const TodoListDetailPage());
           },
           onLongPress: () => editListDialog(
             context,
-            model,
+            todoListEntity,
           ),
         ),
       ),
@@ -269,9 +271,9 @@ class DismissibleListElement extends StatelessWidget {
 }
 
 class MainPageListItemWidget extends StatelessWidget {
-  const MainPageListItemWidget({required this.todoListModel, Key? key})
+  const MainPageListItemWidget({required this.todoListEntity, Key? key})
       : super(key: key);
-  final TodoListModel todoListModel;
+  final TodoListEntity todoListEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -279,13 +281,13 @@ class MainPageListItemWidget extends StatelessWidget {
       padding: const EdgeInsets.only(left: UiConstantsPadding.xlarge),
       decoration: StandardUiWidgets.standardBoxDecoration(
           context,
-          todoListModel.allAccomplished
+          todoListEntity.allAccomplished
               ? UiConstantsColors.allAccomplishedGradientColors
               : UiConstantsColors.listElementBrightColors),
       child: Row(
         children: [
           Expanded(
-            child: BigListElementText(text: todoListModel.listName),
+            child: BigListElementText(text: todoListEntity.listName),
           ),
           Padding(
             padding: const EdgeInsets.all(UiConstantsPadding.small),
@@ -297,8 +299,8 @@ class MainPageListItemWidget extends StatelessWidget {
                   end: Alignment.topCenter,
                   stops: [
                     0,
-                    todoListModel.percentageOfAccomplishedTodos,
-                    todoListModel.percentageOfAccomplishedTodos
+                    todoListEntity.percentageOfAccomplishedTodos,
+                    todoListEntity.percentageOfAccomplishedTodos
                   ],
                   tileMode: TileMode.clamp,
                   colors: <Color>[
@@ -308,7 +310,7 @@ class MainPageListItemWidget extends StatelessWidget {
                   ],
                 ).createShader(bounds);
               },
-              child: Icon(todoListModel.todoListCategory.getIcon(),
+              child: Icon(todoListEntity.todoListCategory.getIcon(),
                   color: Colors.white, size: UiConstantsSize.xlarge),
             ),
           ),

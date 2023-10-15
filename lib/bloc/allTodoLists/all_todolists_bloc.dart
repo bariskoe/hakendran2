@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/usecases/selected_todolist_usecases.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
@@ -83,7 +84,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       (event, emit) async {
         emit(AllTodoListsStateLoading());
 
-        Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
+        Either<Failure, List<TodoListEntity>> failureOrListOfTodoListModels =
             await allTodoListsUsecases.getAllTodoLists();
 
         failureOrListOfTodoListModels.fold((l) => null, (r) {

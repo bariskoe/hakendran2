@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
@@ -13,12 +14,12 @@ int? _selectedCategoryIndexInEditListDialog;
 
 Future<void> editListDialog(
   BuildContext context,
-  TodoListModel todoListModel,
+  TodoListEntity todoListEntity,
 ) async {
   TextEditingController textEditingController =
-      TextEditingController(text: todoListModel.listName);
+      TextEditingController(text: todoListEntity.listName);
   _selectedCategoryIndexInEditListDialog =
-      todoListModel.todoListCategory.serialize();
+      todoListEntity.todoListCategory.serialize();
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -62,7 +63,7 @@ Future<void> editListDialog(
               if (canPress) {
                 getIt<AllTodolistsBloc>()
                     .add(AllTodoListEventUpdateListParameters(
-                  uid: todoListModel.uid!,
+                  uid: todoListEntity.uid!,
                   listName: textEditingController.text,
                   todoListCategory: TodoListCategoryExtension.deserialize(
                       _selectedCategoryIndexInEditListDialog!),

@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
+import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/repositories/all_todolists_repository.dart';
 import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';
 import 'package:dartz/dartz.dart';
@@ -20,7 +21,8 @@ void main() {
   });
 
   group('createNewTodoList usecase', () {
-    final TodoListEntity tTodoListEntity = TodoListEntity(
+    final TodoListEntityParameters tTodoListEntityParameters =
+        TodoListEntityParameters(
       listName: 'Sport',
       todoModels: [],
     );
@@ -28,15 +30,15 @@ void main() {
     test('should return an integer', () async {
       // arrange
       when(mockAllTodoListsRepository.createNewTodoList(
-              todoListEntity: tTodoListEntity))
+              todoListEntityParameters: tTodoListEntityParameters))
           .thenAnswer((realInvocation) async => const Right(1));
       // act
       final result = await allTodoListsUsecases.createNewTodoList(
-          todoListEntity: tTodoListEntity);
+          todoListEntityParameters: tTodoListEntityParameters);
       //assert
       expect(result, const Right(1));
       verify(mockAllTodoListsRepository.createNewTodoList(
-          todoListEntity: tTodoListEntity));
+          todoListEntityParameters: tTodoListEntityParameters));
       verifyNoMoreInteractions(mockAllTodoListsRepository);
     });
   });

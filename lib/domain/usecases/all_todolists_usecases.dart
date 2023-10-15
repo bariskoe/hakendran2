@@ -20,7 +20,7 @@ class AllTodoListsUsecases {
         todoListEntityParameters: todoListEntityParameters);
   }
 
-  Future<Either<Failure, List<TodoListModel>>> getAllTodoLists() async {
+  Future<Either<Failure, List<TodoListEntity>>> getAllTodoLists() async {
     return allTodoListsRepository.getAllTodoLists();
   }
 

@@ -61,6 +61,14 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
     };
   }
 
+  TodoListEntity toDomain() {
+    return TodoListEntity(
+        uid: uid,
+        listName: listName,
+        todoModels: todoModels,
+        todoListCategory: todoListCategory);
+  }
+
   Map<String, dynamic> toMapForInsertNewListIntoDatabase() {
     var uuidLibrary = const Uuid();
     return {
@@ -83,6 +91,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
 
   bool get allAccomplished =>
       (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
+
   bool get atLeastOneAccomplished =>
       (todoModels.isNotEmpty && numberOfAccomplishedTodos > 0);
 }

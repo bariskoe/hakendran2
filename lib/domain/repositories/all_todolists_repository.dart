@@ -14,9 +14,9 @@ abstract class AllTodoListsRepository {
   Future<Either<Failure, int>> createNewTodoList(
       {required TodoListEntityParameters todoListEntityParameters});
 
-  /// Returns a list of [TodoListModel] which contains all TodoLists
+  /// Returns a list of [TodoListEntity] which contains all TodoLists
   /// in the database
-  Future<Either<Failure, List<TodoListModel>>> getAllTodoLists();
+  Future<Either<Failure, List<TodoListEntity>>> getAllTodoLists();
 
   // Future<Either<Failure, bool>> synchronizeAllTodoListsWithBackend(
   //     {required List<TodoListModel> todoLists});

@@ -35,4 +35,17 @@ class TodoListEntity with EquatableMixin {
         todoModels,
         todoListCategory,
       ];
+
+  int get numberOfUnaccomplishedTodos =>
+      numberOfTodos - numberOfAccomplishedTodos;
+
+  double get percentageOfAccomplishedTodos =>
+      numberOfAccomplishedTodos / numberOfTodos;
+
+  int get numberOfTodos => todoModels.length;
+
+  int get numberOfAccomplishedTodos =>
+      todoModels.where((element) => element.accomplished).length;
+  bool get allAccomplished =>
+      (todoModels.isNotEmpty && numberOfAccomplishedTodos == numberOfTodos);
 }

@@ -1,15 +1,14 @@
-import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
-import 'package:baristodolistapp/infrastructure/datasources/api_datasource.dart';
+import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
+import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
 
+import '../../domain/failures/failures.dart';
+import '../../domain/parameters/todolist_entity_parameters.dart';
+import '../../domain/repositories/all_todolists_repository.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
-
-import '../../domain/entities/todolist_entity.dart';
-import '../../domain/failures/failures.dart';
-import '../../domain/repositories/all_todolists_repository.dart';
+import '../datasources/api_datasource.dart';
 import '../datasources/local_sqlite_datasource.dart';
-import 'package:dartz/dartz.dart';
 
 class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   final LocalSqliteDataSource localSqliteDataSource;
@@ -35,11 +34,13 @@ class AllTodoListsRepositoryImpl implements AllTodoListsRepository {
   }
 
   @override
-  Future<Either<Failure, List<TodoListModel>>> getAllTodoLists() async {
+  Future<Either<Failure, List<TodoListEntity>>> getAllTodoLists() async {
     try {
       List<TodoListModel> listOfTodoListModels =
           await localSqliteDataSource.getAllTodoLists();
-      return Right(listOfTodoListModels);
+      List<TodoListEntity> listOfTodoListEntities =
+          listOfTodoListModels.map((e) => e.toDomain()).toList();
+      return Right(listOfTodoListEntities);
     } catch (e) {
       return Left(DatabaseFailure());
     }
