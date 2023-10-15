@@ -32,14 +32,14 @@ class SelectedTodolistBloc
 
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
       emit(SelectedTodoListStateLoading());
-      Either<Failure, TodoListEntity> model =
+      Either<Failure, TodoListEntity> todoListEntity =
           await selectedTodolistUsecases.getSpecificTodoList(uid: event.uid);
-      model.fold((l) => emit(SelectedTodolistStateError()), (r) {
+      todoListEntity.fold((l) => emit(SelectedTodolistStateError()), (r) {
         emit(
           SelectedTodolistStateLoaded(
-              todoListEntity: r.toModel(), synchronize: event.synchronize),
+              todoListEntity: r, synchronize: event.synchronize),
         );
-        Logger().d('selected TodoList: ${r.toModel().toString()}');
+        Logger().d('selected TodoList: ${r.toString()}');
       });
       Logger().d('selected list loaded');
     });
