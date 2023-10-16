@@ -215,7 +215,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
   }
 
   @override
-  Future<Map<String, dynamic>?> getDataInfo() async {
+  Future<FirestoreDataInfoModel?> getDataInfo() async {
     try {
       final response = await makeRequest(
         pathParts: [dataInfoEndpoint],
@@ -223,22 +223,19 @@ class ApiDataSourceImplNew implements ApiDatasource {
       );
       Logger().d('Response in getdata is $response');
       if (response.statusCode == 200) {
-        //final Map<String, dynamic>? responseBody = jsonDecode(response.data);
         final responseBody = response.data;
         Logger().d('Response body in getdata is $responseBody');
-        return {
-          "dataInfo": FirestoreDataInfoModel(
-              timestamp: responseBody[StringConstants.spDBTimestamp],
-              count: responseBody[StringConstants.firestoreFieldNumberOfLists]),
-        };
+        final model = FirestoreDataInfoModel.fromMap(responseBody);
+        return model;
       }
     } on NotConnectedToTheInternetError catch (e) {
       Logger().e("Not connected to internet error $e");
-      return {"dataInfo": FirestoreDataInfoModel(dataIsAcessible: false)};
+
+      return FirestoreDataInfoModel(dataIsAcessible: false);
     } on DioException catch (e) {
       Logger().e("Catching DioException 404");
       if (e.response?.statusCode == 404) {
-        return {"dataInfo": FirestoreDataInfoModel(userDocExists: false)};
+        return FirestoreDataInfoModel(userDocExists: false);
       }
     } catch (e) {
       Logger().e("Error getting data info: $e");
@@ -358,9 +355,3 @@ class ApiDataSourceImplNew implements ApiDatasource {
     }
   }
 }
-// @override
-// Future<bool> synchronizeAllTodoListsWithBackend(
-//     List<TodoListModel> todoLists) {
-//   // TODO: implement synchronizeAllTodoListsWithBackend
-//   throw UnimplementedError();
-// }

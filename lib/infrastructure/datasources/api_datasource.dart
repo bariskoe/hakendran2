@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/models/firestore_data_info_model.dart';
+
 import '../../models/api_action_model.dart';
 import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
@@ -22,7 +24,7 @@ abstract class ApiDatasource {
 
   // Gets relevant information from Backend about the saved Todolists like timeStamp and listLength
   // Returns null if an error occurs or if there is no internet connection.
-  Future<Map<String, dynamic>?> getDataInfo();
+  Future<FirestoreDataInfoModel?> getDataInfo();
 
   /// Loops through the table [syncPendingTodoLists], takes every uid and uploads
   /// the respective Todolist to the cloud

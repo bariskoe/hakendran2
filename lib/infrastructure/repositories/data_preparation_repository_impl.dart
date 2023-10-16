@@ -26,9 +26,9 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
       checkSynchronizationStatus() async {
     // TODO: Hier aufräumen
     try {
-      final Map<String, dynamic>? remoteData =
+      final FirestoreDataInfoModel? remoteData =
           await apiDatasource.getDataInfo();
-      Logger().d('dataInfo is ${remoteData?["dataInfo"]}');
+      // Logger().d('dataInfo is ${remoteData?["dataInfo"]}');
       final syncPendingTodoLists =
           await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
       final syncPendingTodos =
@@ -46,8 +46,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
         Logger().d('remodata = null');
         return const Right(SynchronizationStatus.unknown);
       } else {
-        final FirestoreDataInfoModel firestoreDataInfoModel =
-            remoteData["dataInfo"];
+        final FirestoreDataInfoModel firestoreDataInfoModel = remoteData;
         if (firestoreDataInfoModel.dataIsAcessible == false) {
           return const Right(SynchronizationStatus.unknown);
         }
