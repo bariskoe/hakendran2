@@ -1,6 +1,7 @@
-import 'bloc/allTodoLists/all_todolists_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/allTodoLists/all_todolists_bloc.dart';
 
 class LifeCycleManager extends StatefulWidget {
   final Widget child;

@@ -1,4 +1,3 @@
-import 'bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
     as getPackageTransitionsType;
 
+import 'bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
 import 'bloc/authentication/authentication_bloc.dart';
 import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';

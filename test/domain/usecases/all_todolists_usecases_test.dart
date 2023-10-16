@@ -1,4 +1,3 @@
-import 'package:baristodolistapp/domain/entities/todolist_entity.dart';
 import 'package:baristodolistapp/domain/parameters/todolist_entity_parameters.dart';
 import 'package:baristodolistapp/domain/repositories/all_todolists_repository.dart';
 import 'package:baristodolistapp/domain/usecases/all_todolists_usecases.dart';

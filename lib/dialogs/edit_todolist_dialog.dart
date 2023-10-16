@@ -1,10 +1,10 @@
-import '../domain/entities/todolist_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
 import '../dependency_injection.dart';
+import '../domain/entities/todolist_entity.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/standard_ui_widgets.dart';

@@ -1,12 +1,9 @@
-import '../parameters/todolist_entity_parameters.dart';
-
-import '../../models/todo_list_update_model.dart';
-
-import '../../models/todolist_model.dart';
-import '../entities/todolist_entity.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../models/todo_list_update_model.dart';
+import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
+import '../parameters/todolist_entity_parameters.dart';
 import '../repositories/all_todolists_repository.dart';
 
 class AllTodoListsUsecases {

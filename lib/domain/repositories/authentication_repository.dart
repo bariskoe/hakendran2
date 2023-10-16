@@ -1,6 +1,7 @@
-import '../failures/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../failures/failures.dart';
 
 abstract class AuthenticationRepository {
   Future<Either<AuthenticationFailure, UserCredential>>

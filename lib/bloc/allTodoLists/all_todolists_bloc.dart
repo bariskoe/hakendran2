@@ -1,8 +1,3 @@
-import '../../domain/entities/todolist_entity.dart';
-import '../../domain/parameters/todo_parameters.dart';
-import '../../domain/parameters/todolist_entity_parameters.dart';
-import '../../domain/usecases/selected_todolist_usecases.dart';
-import '../../models/todo_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -11,10 +6,14 @@ import 'package:uuid/uuid.dart';
 
 import '../../database/databse_helper.dart';
 import '../../dependency_injection.dart';
+import '../../domain/entities/todolist_entity.dart';
 import '../../domain/failures/failures.dart';
+import '../../domain/parameters/todo_parameters.dart';
+import '../../domain/parameters/todolist_entity_parameters.dart';
 import '../../domain/repositories/connectivity_repository.dart';
 import '../../domain/usecases/all_todolists_usecases.dart';
 import '../../domain/usecases/api_usecases.dart';
+import '../../domain/usecases/selected_todolist_usecases.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todolist_model.dart';
 import '../../pages/main_page.dart';

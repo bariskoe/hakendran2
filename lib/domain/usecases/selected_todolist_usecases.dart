@@ -1,10 +1,9 @@
-import '../parameters/todo_parameters.dart';
-import '../../models/todo_model.dart';
+import 'package:dartz/dartz.dart';
 
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
+import '../parameters/todo_parameters.dart';
 import '../repositories/selected_todolist_repository.dart';
-import 'package:dartz/dartz.dart';
 
 class SelectedTodolistUsecases {
   final SelectedTodolistRepository selectedTodolistRepository;

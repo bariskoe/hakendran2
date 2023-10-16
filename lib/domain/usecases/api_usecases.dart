@@ -1,13 +1,10 @@
-import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
-
-import '../parameters/todolist_entity_parameters.dart';
-import '../repositories/api_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/api_action_model.dart';
-import '../../models/todo_model.dart';
-import '../../models/todolist_model.dart';
 import '../failures/failures.dart';
+import '../parameters/todo_parameters.dart';
+import '../parameters/todolist_entity_parameters.dart';
+import '../repositories/api_repository.dart';
 
 class ApiUsecases {
   ApiRepository apiRepository;

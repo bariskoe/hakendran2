@@ -1,4 +1,3 @@
-import '../domain/entities/todolist_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,6 +9,7 @@ import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dependency_injection.dart';
 import '../dialogs/add_list_dialog.dart';
 import '../dialogs/edit_todolist_dialog.dart';
+import '../domain/entities/todolist_entity.dart';
 import '../drawers/main_page_drawer.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';

@@ -1,9 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:baristodolistapp/domain/failures/failures.dart';
 import 'package:baristodolistapp/domain/repositories/authentication_repository.dart';
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 
 class AuthenticationRepositoryImpl implements AuthenticationRepository {

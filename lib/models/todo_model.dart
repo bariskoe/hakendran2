@@ -1,11 +1,11 @@
-import '../domain/entities/todo_entity.dart';
-import '../domain/parameters/todo_parameters.dart';
-import 'package:uuid/uuid.dart';
-
-import '../database/databse_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
+
+import '../database/databse_helper.dart';
+import '../domain/entities/todo_entity.dart';
+import '../domain/parameters/todo_parameters.dart';
 
 class TodoModel extends TodoEntity with EquatableMixin {
   final String? uid;

@@ -1,10 +1,9 @@
-import '../parameters/todolist_entity_parameters.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/todo_list_update_model.dart';
-import '../../models/todolist_model.dart';
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
+import '../parameters/todolist_entity_parameters.dart';
 
 abstract class AllTodoListsRepository {
   /// Calls a function in [DatabaseHelper] to create a new TodoList.

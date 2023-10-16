@@ -1,4 +1,3 @@
-import '../../../domain/parameters/todo_parameters.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -9,9 +8,8 @@ import 'package:uuid/uuid.dart';
 import '../../../dependency_injection.dart';
 import '../../../domain/entities/todolist_entity.dart';
 import '../../../domain/failures/failures.dart';
+import '../../../domain/parameters/todo_parameters.dart';
 import '../../../domain/usecases/selected_todolist_usecases.dart';
-import '../../../models/todo_model.dart';
-import '../../../models/todolist_model.dart';
 import '../../../pages/todo_detail_page.dart';
 import '../../DataPreparation/bloc/data_preparation_bloc.dart';
 

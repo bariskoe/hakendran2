@@ -1,8 +1,7 @@
-import 'todo_entity.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
+import 'todo_entity.dart';
 
 class TodoListEntity with EquatableMixin {
   //! Should the uid

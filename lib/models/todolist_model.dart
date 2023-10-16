@@ -1,14 +1,13 @@
-import '../domain/parameters/todolist_entity_parameters.dart';
-
-import '../domain/entities/todolist_entity.dart';
-import 'todo_model.dart';
-
-import '../assets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../database/databse_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
+
+import '../assets.dart';
+import '../database/databse_helper.dart';
+import '../domain/entities/todolist_entity.dart';
+import '../domain/parameters/todolist_entity_parameters.dart';
+import 'todo_model.dart';
 
 class TodoListModel extends TodoListEntity with EquatableMixin {
   TodoListModel({

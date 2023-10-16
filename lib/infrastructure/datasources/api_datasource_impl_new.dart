@@ -231,8 +231,6 @@ class ApiDataSourceImplNew implements ApiDatasource {
               timestamp: responseBody[StringConstants.spDBTimestamp],
               count: responseBody[StringConstants.firestoreFieldNumberOfLists]),
         };
-        // } else {
-        //   return null;
       }
     } on NotConnectedToTheInternetError catch (e) {
       Logger().e("Not connected to internet error $e");
@@ -246,6 +244,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
       Logger().e("Error getting data info: $e");
       return null;
     }
+    return null;
   }
 
   @override
