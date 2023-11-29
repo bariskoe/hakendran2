@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
+import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
 import 'package:dartz/dartz.dart';
 
 import '../entities/todolist_entity.dart';
@@ -19,8 +21,13 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoParameters todoParameters,
+    required UpdateTodoModelParameters updateTodoModelParameters,
   });
+
+  Future<Either<Failure, int>> updateSpecificTodoNew({
+    required TodoUpdateParameters todoUpdateParameters,
+  });
+
   Future<Either<Failure, int>> deleteSpecificTodo({
     required TodoParameters todoParameters,
   });

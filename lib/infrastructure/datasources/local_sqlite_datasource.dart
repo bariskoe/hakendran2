@@ -1,6 +1,8 @@
 import '../../domain/entities/todolist_entity.dart';
+import '../../domain/parameters/sync_pending_photo_params.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todo_model.dart';
+import '../../models/todo_update_model.dart';
 import '../../models/todolist_model.dart';
 
 abstract class LocalSqliteDataSource {
@@ -30,7 +32,11 @@ abstract class LocalSqliteDataSource {
 
   Future<int> updateSpecificTodo({required TodoModel todoModel});
 
+  Future<int> updateSpecificTodoNew({required TodoUpdateModel todoUpdateModel});
+
   Future<int> deleteSpecificTodo({required TodoModel todoModel});
+
+  Future<int> deleteFromsyncPendingPhotos({required String relativePath});
 
   Future<int> resetAllTodosOfSpecificList({
     required String uid,
@@ -40,5 +46,9 @@ abstract class LocalSqliteDataSource {
   });
   Future<int> addTodoUidToSyncPendingTodos({
     required TodoModel todoModel,
+  });
+
+  Future<int> addToSyncPendingPhotos({
+    required SyncPendingPhotoParams syncPendingPhotoParams,
   });
 }

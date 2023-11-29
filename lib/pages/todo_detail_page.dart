@@ -1,8 +1,20 @@
+import 'dart:io';
+
+import 'package:baristodolistapp/bloc/photo/photo_bloc.dart';
+import 'package:baristodolistapp/domain/parameters/photo_parameters.dart';
+import 'package:baristodolistapp/domain/parameters/take_thumbnail_photo_params.dart';
+import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
+import 'package:baristodolistapp/services/image_picker_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/route_manager.dart';
+
 import 'package:great_list_view/great_list_view.dart';
+import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:popover/popover.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
@@ -153,22 +165,25 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //add an empty TodoEntity at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
     List<TodoEntity> reversedList = List.from(list.reversed)
-      ..add(const TodoEntity(
-          task: '', accomplished: false, parentTodoListId: 'Test'));
+      ..add(
+          TodoEntity(task: '', accomplished: false, parentTodoListId: 'Test'));
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),
       child: AutomaticAnimatedListView<TodoEntity>(
         comparator: AnimatedListDiffListComparator<TodoEntity>(
-            sameItem: (a, b) => a.uid == b.uid,
-            sameContent: (a, b) =>
-                a.accomplished == b.accomplished && a.task == b.task),
+          sameItem: (a, b) => a.uid == b.uid,
+          sameContent: (a, b) =>
+              a.accomplished == b.accomplished &&
+              a.task == b.task &&
+              a.thumbnailImageName == b.thumbnailImageName,
+        ),
         listController: animatedListcontroller,
         list: reversedList,
-        itemBuilder: ((context, model, data) {
+        itemBuilder: ((context, todoEntity, data) {
           //Put an invisible Container to the end of the list so that the Floating
           //Action Buttons don't disturb when scrolled down to the end
-          if (reversedList.indexOf(model) == reversedList.length - 1) {
+          if (reversedList.indexOf(todoEntity) == reversedList.length - 1) {
             return Container(
               height: 100,
             );
@@ -177,7 +192,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                 ? Container(height: 60)
                 : GestureDetector(
                     onLongPress: () {
-                      editTodoDialog(context, model);
+                      editTodoDialog(context, todoEntity);
                     },
                     child: Dismissible(
                       onDismissed: (direction) {
@@ -186,23 +201,23 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
                         //List with the old reversedList immediately before rebuilding it with
                         //the new reversedList
 
-                        reversedList
-                            .removeWhere((element) => element.uid == model.uid);
+                        reversedList.removeWhere(
+                            (element) => element.uid == todoEntity.uid);
                         getIt<SelectedTodolistBloc>().add(
                             SelectedTodolistEventDeleteSpecificTodo(
                                 todoParameters:
-                                    TodoParameters.fromDomain(model)));
+                                    TodoParameters.fromDomain(todoEntity)));
                       },
                       key: UniqueKey(),
                       background: const SwipeToDeleteBackgroundWidget(),
-                      child: reversedList.indexOf(model) == 0 &&
+                      child: reversedList.indexOf(todoEntity) == 0 &&
                               TodoListDetailPage.justAddedTodo
                           ? SizeTransition(
                               sizeFactor: _animation!,
                               axis: Axis.vertical,
-                              child: ListElement(todoEntity: model),
+                              child: ListElement(todoEntity: todoEntity),
                             )
-                          : ListElement(todoEntity: model),
+                          : ListElement(todoEntity: todoEntity),
                     ));
           }
         }),
@@ -237,12 +252,16 @@ class ListElement extends StatelessWidget {
                   ],
             false),
         child: Align(
-          alignment: Alignment.centerLeft,
+          //alignment: Alignment.center,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
+              Expanded(
                   flex: 4, child: BigListElementText(text: todoEntity.task)),
+              Flexible(
+                flex: 1,
+                child: ImageThumbnailWidget(todoEntity: todoEntity),
+              ),
               Flexible(
                 flex: 1,
                 child: GestureDetector(
@@ -259,6 +278,126 @@ class ListElement extends StatelessWidget {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ImageThumbnailWidget extends StatelessWidget {
+  const ImageThumbnailWidget({
+    Key? key,
+    required this.todoEntity,
+  }) : super(key: key);
+
+  final TodoEntity todoEntity;
+
+  @override
+  Widget build(BuildContext context) {
+    Logger().d('TodoEntity ist: $todoEntity');
+    return FutureBuilder(
+      future: todoEntity.getFullImagePath,
+      builder: (context, snapshot) => GestureDetector(
+        onTap: () async {
+          if (snapshot.hasData) {
+            showPopover(
+              context: context,
+              //constraints: BoxConstraints.loose(Size(300, 300)),
+              constraints: const BoxConstraints(
+                  minWidth: 200, maxWidth: 300, minHeight: 200, maxHeight: 400),
+              radius: UiConstantsRadius.regular,
+              bodyBuilder: (context) => IntrinsicHeight(
+                child: IntrinsicWidth(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      Row(mainAxisSize: MainAxisSize.min, children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                              getIt<PhotoBloc>().add(
+                                  PhotoEventSetSelectedThumbnailPhoto(
+                                      fullImagePath: snapshot.data!));
+                              getIt<PhotoBloc>().add(
+                                  PhotoEventTakeThumbnailPicture(
+                                      takeThumbnailPhotoParams:
+                                          TakeThumbnailPhotoParams(
+                                              todoId: todoEntity.uid!)));
+                            },
+                            child: const SizedBox(
+                                height: 50, child: Icon(Icons.edit_outlined)),
+                          ),
+                        ),
+                        Expanded(
+                            child: GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                  getIt<SelectedTodolistBloc>().add(
+                                      SelectedTodolistEventUpdateTodo(
+                                          updateTodoModelParameters:
+                                              UpdateTodoModelParameters
+                                                      .fromDomain(
+                                                          todoEntity:
+                                                              todoEntity)
+                                                  .copyWith(
+                                                      deleteImagePath: true)));
+
+                                  getIt<PhotoBloc>().add(
+                                      PhotoEventSetSelectedThumbnailPhoto(
+                                          fullImagePath: snapshot.data!));
+                                  getIt<PhotoBloc>().add(
+                                      PhotoEventDeleteThumbnailPhotoFromGallery());
+                                },
+                                child: const SizedBox(
+                                    height: 50,
+                                    child: Icon(Icons.delete_outline))))
+                      ])
+                    ],
+                  ),
+                ),
+              ),
+              onPop: () => print('Popover was popped!'),
+              direction: PopoverDirection.bottom,
+              // width: 300,
+              // height: 300,
+              arrowHeight: 15,
+              arrowWidth: 30,
+            );
+          } else {
+            getIt<PhotoBloc>().add(PhotoEventTakeThumbnailPicture(
+                takeThumbnailPhotoParams:
+                    TakeThumbnailPhotoParams(todoId: todoEntity.uid!)));
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
+                Radius.circular(UiConstantsRadius.regular)),
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          height: UiConstantsSize.small,
+          width: UiConstantsSize.small,
+          child: snapshot.hasData
+              ? ClipRRect(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(UiConstantsRadius.regular)),
+                  clipBehavior: Clip.hardEdge,
+                  child: Image.file(
+                    File(snapshot.data!),
+                    fit: BoxFit.fill,
+                  ),
+                )
+              : snapshot.hasError
+                  ? const Icon(Icons.camera_alt_outlined)
+                  : const Icon(Icons.camera_alt_outlined),
         ),
       ),
     );
@@ -294,7 +433,8 @@ class CheckBoxWidget extends StatelessWidget {
             child: SvgPicture.asset(
               ImageAssets.blueCheckmark,
               height: UiConstantsSize.xxlarge,
-              color: Colors.green,
+              colorFilter:
+                  ColorFilter.mode(Colors.green.shade500, BlendMode.srcIn),
               placeholderBuilder: (BuildContext context) => Container(
                   padding: const EdgeInsets.all(UiConstantsPadding.regular),
                   child: const CircularProgressIndicator()),

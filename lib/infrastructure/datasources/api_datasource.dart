@@ -34,7 +34,11 @@ abstract class ApiDatasource {
   /// the respective Todo to the cloud
   Future<bool> syncPendingTodos();
 
-  /// This method executes an api action that comes from the backend. It is designed
+  /// Loops through the table [syncPendingPhotos] and uploads / downloads / deletes
+  /// every Photo to / from / in the cloud storage
+  Future<bool> syncPendingPhotos();
+
+  /// This method executes an api action that comes from the backend (HATEOAS). It is designed
   /// to make an app scalable
   Future<bool> performApiAction({
     required ApiActionModel apiActionModel,

@@ -1,7 +1,10 @@
 import '../../database/databse_helper.dart';
 import '../../domain/entities/todolist_entity.dart';
+import '../../domain/parameters/sync_pending_photo_params.dart';
+import '../../models/sync_pending_photo_model.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todo_model.dart';
+import '../../models/todo_update_model.dart';
 import '../../models/todolist_model.dart';
 import 'local_sqlite_datasource.dart';
 
@@ -84,7 +87,7 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
     required TodoModel todoModel,
   }) async {
     return await DatabaseHelper.updateSpecificTodo(
-      model: todoModel,
+      todoModel: todoModel,
     );
   }
 
@@ -118,5 +121,27 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   @override
   Future<int> deleteSpecificTodo({required TodoModel todoModel}) async {
     return await DatabaseHelper.deleteSpecificTodo(todoModel: todoModel);
+  }
+
+  @override
+  Future<int> addToSyncPendingPhotos(
+      {required SyncPendingPhotoParams syncPendingPhotoParams}) async {
+    final model =
+        SyncPendingPhotoModel.fromParams(params: syncPendingPhotoParams);
+    return await DatabaseHelper.addToSyncPendingPhotos(model: model);
+  }
+
+  @override
+  Future<int> updateSpecificTodoNew(
+      {required TodoUpdateModel todoUpdateModel}) async {
+    return await DatabaseHelper.updateSpecificTodoNew(
+        todoUpdateModel: todoUpdateModel);
+  }
+
+  @override
+  Future<int> deleteFromsyncPendingPhotos(
+      {required String relativePath}) async {
+    return await DatabaseHelper.deleteFromsyncPendingPhotos(
+        relativePath: relativePath);
   }
 }

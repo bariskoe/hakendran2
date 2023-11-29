@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,25 +9,27 @@ import '../domain/entities/todo_entity.dart';
 import '../domain/parameters/todo_parameters.dart';
 
 class TodoModel extends TodoEntity with EquatableMixin {
-  final String? uid;
-  final String task;
-  final bool accomplished;
-  final String parentTodoListId;
+  //final String? uid;
+  //final String task;
+  //final bool accomplished;
+  //final String parentTodoListId;
   final RepeatPeriod? repeatPeriod;
   final DateTime? accomplishedAt;
+  String? thumbnailImageName;
 
-  const TodoModel({
-    required this.task,
-    required this.accomplished,
-    required this.parentTodoListId,
-    this.uid,
+  TodoModel({
+    required String? uid,
+    required String task,
+    required bool accomplished,
+    required String parentTodoListId,
     this.accomplishedAt,
     this.repeatPeriod = RepeatPeriod.none,
+    this.thumbnailImageName,
   }) : super(
-          task: task,
-          accomplished: accomplished,
-          parentTodoListId: parentTodoListId,
-        );
+            task: task,
+            accomplished: accomplished,
+            parentTodoListId: parentTodoListId,
+            uid: uid);
 
   TodoModel copyWith({
     String? uid,
@@ -35,6 +38,8 @@ class TodoModel extends TodoEntity with EquatableMixin {
     String? parentTodoListId,
     RepeatPeriod? repeatPeriod,
     DateTime? accomplishedAt,
+    String? imagePath,
+    bool deleteImagePath = false,
   }) {
     return TodoModel(
       uid: uid ?? this.uid,
@@ -43,37 +48,82 @@ class TodoModel extends TodoEntity with EquatableMixin {
       parentTodoListId: parentTodoListId ?? this.parentTodoListId,
       repeatPeriod: repeatPeriod ?? this.repeatPeriod,
       accomplishedAt: accomplishedAt ?? this.accomplishedAt,
+      thumbnailImageName:
+          deleteImagePath ? null : imagePath ?? this.thumbnailImageName,
     );
   }
 
   factory TodoModel.fromMap(Map<dynamic, dynamic> map) {
     return TodoModel(
-      uid: map[DatabaseHelper.todosTableFieldTodoUid],
-      task: map[DatabaseHelper.todosTableFieldTask],
-      accomplished: AccomplishmentStatusExtension.deserialize(
-          value: map[DatabaseHelper.todosTableFieldAccomplished]),
-      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
-      repeatPeriod: RepeatPeriodExtension.deserialize(
-        value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
-      ),
-      accomplishedAt: map[DatabaseHelper.todosTableFieldaccomplishedAt] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              map[DatabaseHelper.todosTableFieldaccomplishedAt])
-          : null,
+        uid: map[DatabaseHelper.todosTableFieldTodoUid],
+        task: map[DatabaseHelper.todosTableFieldTask],
+        accomplished: AccomplishmentStatusExtension.deserialize(
+            value: map[DatabaseHelper.todosTableFieldAccomplished]),
+        parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
+        repeatPeriod: RepeatPeriodExtension.deserialize(
+          value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
+        ),
+        accomplishedAt:
+            map[DatabaseHelper.todosTableFieldaccomplishedAt] != null
+                ? DateTime.fromMillisecondsSinceEpoch(
+                    map[DatabaseHelper.todosTableFieldaccomplishedAt])
+                : null,
+        thumbnailImageName: map[DatabaseHelper.todosTableFieldImagePath]);
+  }
+
+  factory TodoModel.fromDomain({required TodoEntity todoEntity}) {
+    return TodoModel(
+      accomplished: todoEntity.accomplished,
+      parentTodoListId: todoEntity.parentTodoListId,
+      task: todoEntity.task,
+      accomplishedAt: todoEntity.accomplishedAt,
+      thumbnailImageName: todoEntity.thumbnailImageName,
+      repeatPeriod: todoEntity.repeatPeriod,
+      uid: todoEntity.uid,
     );
   }
 
   factory TodoModel.fromTodoParameters(TodoParameters todoParameters) {
     var uuidLibrary = const Uuid();
     return TodoModel(
-        task: todoParameters.task ?? '',
-        accomplished: todoParameters.accomplished ?? false,
-        parentTodoListId: todoParameters.parentTodoListId ?? '',
-        accomplishedAt: todoParameters.accomplishedAt,
-        repeatPeriod: todoParameters.repeatPeriod ?? RepeatPeriod.none,
-        //! uid should probably be required
+      //! Dangerous
+      task: todoParameters.task ?? '',
+      accomplished: todoParameters.accomplished ?? false,
+      parentTodoListId: todoParameters.parentTodoListId ?? '',
+      accomplishedAt: todoParameters.accomplishedAt,
+      repeatPeriod: todoParameters.repeatPeriod ?? RepeatPeriod.none,
+      //! uid should probably be required
 
-        uid: todoParameters.uid ?? uuidLibrary.v1());
+      uid: todoParameters.uid ?? uuidLibrary.v1(),
+      thumbnailImageName: todoParameters.imagePath,
+    );
+  }
+
+  // TodoModel update(
+  //   TodoParameters todoParameters,
+  // ) {
+  //   return TodoModel(
+  //     accomplished: todoParameters.accomplished ?? accomplished,
+  //     parentTodoListId: todoParameters.parentTodoListId ?? parentTodoListId,
+  //     task: todoParameters.task ?? task,
+  //     accomplishedAt: todoParameters.accomplishedAt ?? accomplishedAt,
+  //     imagePath: todoParameters.imagePath ?? imagePath,
+  //     repeatPeriod: todoParameters.repeatPeriod ?? repeatPeriod,
+  //     uid: todoParameters.uid ?? uid,
+  //   );
+  // }
+
+  factory TodoModel.fromUpdateTodoModelParameters(
+      {required UpdateTodoModelParameters u}) {
+    return TodoModel(
+      task: u.task,
+      accomplished: u.accomplished,
+      parentTodoListId: u.parentTodoListId,
+      accomplishedAt: u.accomplishedAt,
+      thumbnailImageName: u.deleteImagePath ? null : u.thumbnailImageName,
+      repeatPeriod: u.repeatPeriod,
+      uid: u.uid,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -86,7 +136,8 @@ class TodoModel extends TodoEntity with EquatableMixin {
       DatabaseHelper.todosTableFieldTodoListUid: parentTodoListId,
       DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod?.serialize(),
       DatabaseHelper.todosTableFieldaccomplishedAt:
-          accomplishedAt?.millisecondsSinceEpoch
+          accomplishedAt?.millisecondsSinceEpoch,
+      DatabaseHelper.todosTableFieldImagePath: thumbnailImageName
     };
   }
 
@@ -98,6 +149,7 @@ class TodoModel extends TodoEntity with EquatableMixin {
         parentTodoListId,
         repeatPeriod,
         accomplishedAt,
+        thumbnailImageName
       ];
 
   bool shouldResetAccomplishmentStatus() {

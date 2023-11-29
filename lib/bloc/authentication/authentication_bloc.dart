@@ -51,8 +51,13 @@ class AuthenticationBloc
       failureOrUserCredential
           .fold((l) => emit(AuthenticationStateError(l.message)), (r) async {
         if (r.user != null) {
-          Logger().i('Right is: $r');
-          Logger().i('Credentials are: ${r.credential}');
+          if (r.user?.uid != null) {
+            final uid = r.user?.uid;
+
+            await getIt<SharedPreferences>()
+                .setString(StringConstants.spFirebaseUserIDKey, uid!);
+          }
+
           final idToken =
               await getIt<FirebaseAuth>().currentUser?.getIdToken(true);
 
@@ -61,7 +66,6 @@ class AuthenticationBloc
                 .setString(StringConstants.spFirebaseIDTokenKey, idToken);
             add(AuthenticationEventIsSignedIn());
           }
-          Logger().i('idToken is $idToken');
         }
       });
     });

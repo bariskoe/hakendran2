@@ -59,6 +59,10 @@ dependencies:
   get: ^4.6.5
   connectivity_plus: ^5.0.0
   dio: ^5.3.3
+  image_picker: ^1.0.4
+  permission_handler: ^11.0.1
+  popover: ^0.2.8+2
+  firebase_storage: ^11.4.0
   
 
 dev_dependencies:

@@ -10,6 +10,7 @@ class TodoParameters {
   final String? parentTodoListId;
   final RepeatPeriod? repeatPeriod;
   final DateTime? accomplishedAt;
+  final String? imagePath;
 
   TodoParameters({
     this.uid,
@@ -18,20 +19,25 @@ class TodoParameters {
     this.parentTodoListId,
     this.repeatPeriod,
     this.accomplishedAt,
+    this.imagePath,
   });
 
   factory TodoParameters.fromMap(Map<dynamic, dynamic> map) {
     return TodoParameters(
-      uid: map[DatabaseHelper.todosTableFieldTodoUid],
-      task: map[DatabaseHelper.todosTableFieldTask],
-      accomplished: AccomplishmentStatusExtension.deserialize(
-          value: map[DatabaseHelper.todosTableFieldAccomplished]),
-      parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
-      repeatPeriod: RepeatPeriodExtension.deserialize(
-        value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
-      ),
-      accomplishedAt: map[DatabaseHelper.todosTableFieldaccomplishedAt],
-    );
+        uid: map[DatabaseHelper.todosTableFieldTodoUid],
+        task: map[DatabaseHelper.todosTableFieldTask],
+        accomplished: AccomplishmentStatusExtension.deserialize(
+            value: map[DatabaseHelper.todosTableFieldAccomplished]),
+        parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
+        repeatPeriod: RepeatPeriodExtension.deserialize(
+          value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
+        ),
+        accomplishedAt:
+            map[DatabaseHelper.todosTableFieldaccomplishedAt] != null
+                ? DateTime.fromMillisecondsSinceEpoch(
+                    map[DatabaseHelper.todosTableFieldaccomplishedAt])
+                : null,
+        imagePath: map[DatabaseHelper.todosTableFieldImagePath]);
   }
 
   factory TodoParameters.fromDomain(TodoEntity todoEntity) {
@@ -42,6 +48,7 @@ class TodoParameters {
       parentTodoListId: todoEntity.parentTodoListId,
       repeatPeriod: todoEntity.repeatPeriod,
       task: todoEntity.task,
+      imagePath: todoEntity.thumbnailImageName,
     );
   }
 
@@ -52,6 +59,7 @@ class TodoParameters {
     String? parentTodoListId,
     RepeatPeriod? repeatPeriod,
     DateTime? accomplishedAt,
+    String? imagePath,
   }) {
     return TodoParameters(
       uid: uid ?? this.uid,
@@ -60,6 +68,7 @@ class TodoParameters {
       parentTodoListId: parentTodoListId ?? this.parentTodoListId,
       repeatPeriod: repeatPeriod ?? this.repeatPeriod,
       accomplishedAt: accomplishedAt ?? this.accomplishedAt,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 }

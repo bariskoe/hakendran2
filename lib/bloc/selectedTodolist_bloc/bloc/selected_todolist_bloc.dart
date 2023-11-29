@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -9,6 +10,7 @@ import '../../../dependency_injection.dart';
 import '../../../domain/entities/todolist_entity.dart';
 import '../../../domain/failures/failures.dart';
 import '../../../domain/parameters/todo_parameters.dart';
+import '../../../domain/parameters/update_todo_parameters.dart';
 import '../../../domain/usecases/selected_todolist_usecases.dart';
 import '../../../pages/todo_detail_page.dart';
 import '../../DataPreparation/bloc/data_preparation_bloc.dart';
@@ -19,6 +21,7 @@ part 'selected_todolist_state.dart';
 class SelectedTodolistBloc
     extends Bloc<SelectedTodolistEvent, SelectedTodolistState> {
   String? selectedTodoList;
+
   SelectedTodolistUsecases selectedTodolistUsecases;
   SelectedTodolistBloc({required this.selectedTodolistUsecases})
       : super(SelectedTodolistInitial()) {
@@ -100,13 +103,34 @@ class SelectedTodolistBloc
 
     on<SelectedTodolistEventUpdateTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
-      Either<Failure, int> changes = await selectedTodolistUsecases
-          .updateSpecificTodo(todoParameters: event.todoParameters);
+
+      Either<Failure, int> changes =
+          await selectedTodolistUsecases.updateSpecificTodo(
+              updateTodoModelParameters: event.updateTodoModelParameters);
       Logger().d('changes sind $changes');
       changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
         getIt<SelectedTodolistBloc>().add(
             SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-                todoParameters: event.todoParameters));
+                todoParameters:
+                    TodoParameters(uid: event.updateTodoModelParameters.uid)));
+        add(
+          SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
+        );
+      });
+    });
+
+    on<SelectedTodoListEventUpdateTodoNew>((event, emit) async {
+      emit(SelectedTodoListStateLoading());
+
+      Either<Failure, int> changes =
+          await selectedTodolistUsecases.updateSpecificTodoNew(
+              todoUpdateParameters: event.todoUpdateParameters);
+      Logger().d('changes sind $changes');
+      changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
+        getIt<SelectedTodolistBloc>().add(
+            SelectedTodoListEventAddTodoUidToSyncPendingTodos(
+                todoParameters:
+                    TodoParameters(uid: event.todoUpdateParameters.uid)));
         add(
           SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
         );

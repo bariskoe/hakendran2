@@ -1,12 +1,20 @@
-import '../../models/api_action_model.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
+import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
+import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource.dart';
+import 'package:baristodolistapp/models/sync_pending_photo_model.dart';
+import 'package:baristodolistapp/models/todo_update_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:baristodolistapp/services/firebase_storage_service.dart';
+
 import '../../database/databse_helper.dart';
 import '../../dependency_injection.dart';
 import '../../domain/errors/errors.dart';
+import '../../models/api_action_model.dart';
 import '../../models/firestore_data_info_model.dart';
 import '../../models/todo_model.dart';
 import '../../models/todolist_model.dart';
@@ -15,6 +23,13 @@ import '../../strings/string_constants.dart';
 import 'api_datasource.dart';
 
 class ApiDataSourceImplNew implements ApiDatasource {
+  final FirebaseStorageService firebaseStorageService;
+  final LocalSqliteDataSource localSqliteDataSource;
+  ApiDataSourceImplNew({
+    required this.firebaseStorageService,
+    required this.localSqliteDataSource,
+  });
+
   final baseUrl =
       'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction';
 
@@ -191,12 +206,8 @@ class ApiDataSourceImplNew implements ApiDatasource {
         method: 'GET',
         pathParts: [todolists],
       );
-      Logger().i("Response in getAllTodoListsFromBackend is $response");
-      Logger().i(
-          "statuscode in getAllTodoListsFromBackend is ${response.statusCode}");
+
       if (response.statusCode == 200) {
-        Logger().i(
-            " Responsebody in getAllTodoListsFromBackend is ${response.data}");
         //! Wann muss man jsondecode machen und wann nicht? Es kommt wohl drauf an, was das backend sendet
         //! getallists wird vom backend mit res.status(200).json({"todoLists": todolists }); gesendet, also mit .json
 
@@ -247,7 +258,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
   @override
   Future<bool> syncPendingTodoLists() async {
     final data = await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
-    Logger().d('Uploading Todolists in syncPendigTodoLists');
+
     for (Map entry in data['syncPendigTodoLists']) {
       final TodoListModel? todoListModel =
           await DatabaseHelper.getSpecificTodoList(
@@ -353,5 +364,44 @@ class ApiDataSourceImplNew implements ApiDatasource {
       Logger().e("Error in deleteTodoFromSpecificList: $e");
       return false;
     }
+  }
+
+  @override
+  Future<bool> syncPendingPhotos() async {
+    final data = await DatabaseHelper.getAllEntriesFromSyncPendingPhotos();
+
+    List<SyncPendingPhotoModel> list =
+        data.map((e) => SyncPendingPhotoModel.fromMap(e)).toList();
+    Future.wait(list.map((model) async {
+      switch (model.method) {
+        case SyncPendingPhotoMethod.upload:
+          final downloadUrl =
+              await firebaseStorageService.uploadFileToFirebaseStorage(
+                  uploadToFirebaseStorageParameters:
+                      UploadToFirebaseStorageParameters(
+            firebaseStorageReferenceEnum:
+                FirebaseStorageReferenceEnum.thumbnailImages,
+            pathToFile: model.fullPath,
+            imageName: model.imageName,
+          ));
+          Logger().d('downloadUrl ist $downloadUrl');
+          final deletedrow = await localSqliteDataSource
+              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
+
+        case SyncPendingPhotoMethod.download:
+        case SyncPendingPhotoMethod.delete:
+          await firebaseStorageService.deleteFileFromFirebaseStorage(
+              deleteFileFromFirebaseStorageParams:
+                  DeleteFileFromFirebaseStorageParams(
+                      firebaseStorageReferenceEnum:
+                          FirebaseStorageReferenceEnum.thumbnailImages,
+                      fileName: model.imageName));
+          final deletedrow = await localSqliteDataSource
+              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
+      }
+      return true;
+    }));
+    {}
+    return true;
   }
 }

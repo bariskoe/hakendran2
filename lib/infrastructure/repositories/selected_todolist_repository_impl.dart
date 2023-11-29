@@ -1,4 +1,8 @@
+import 'package:baristodolistapp/models/todo_update_model.dart';
+
 import '../../domain/parameters/todo_parameters.dart';
+import '../../domain/parameters/todo_update_parameters.dart';
+import '../../domain/parameters/update_todo_parameters.dart';
 import '../../models/todo_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:logger/logger.dart';
@@ -62,14 +66,33 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoParameters todoParameters,
+    required UpdateTodoModelParameters updateTodoModelParameters,
   }) async {
     try {
+      final updatedTodoModel =
+          TodoModel.fromUpdateTodoModelParameters(u: updateTodoModelParameters);
+
       int changes = await localSqliteDataSource.updateSpecificTodo(
-        todoModel: TodoModel.fromTodoParameters(todoParameters),
+        todoModel: updatedTodoModel,
       );
       return Right(changes);
     } catch (e) {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> updateSpecificTodoNew({
+    required TodoUpdateParameters todoUpdateParameters,
+  }) async {
+    try {
+      final todoUpdateModel =
+          TodoUpdateModel.fromTodoUpdateParams(todoUpdateParameters);
+      int changes = await localSqliteDataSource.updateSpecificTodoNew(
+          todoUpdateModel: todoUpdateModel);
+      return Right(changes);
+    } catch (e) {
+      Logger().e(e);
       return Left(DatabaseFailure());
     }
   }

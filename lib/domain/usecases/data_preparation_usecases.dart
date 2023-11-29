@@ -28,4 +28,9 @@ class DataPreparationUsecases {
     final result = await dataPreparationRepository.syncPendingTodos();
     return result;
   }
+
+  Future<Either<Failure, bool>> syncPendingPhotos() async {
+    final result = await dataPreparationRepository.syncPendingPhotos();
+    return result;
+  }
 }

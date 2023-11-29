@@ -9,8 +9,10 @@ import 'package:sqflite/sqflite.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../dependency_injection.dart';
+import '../models/sync_pending_photo_model.dart';
 import '../models/todo_list_update_model.dart';
 import '../models/todo_model.dart';
+import '../models/todo_update_model.dart';
 import '../models/todolist_model.dart';
 import '../strings/string_constants.dart';
 
@@ -40,6 +42,8 @@ class DatabaseHelper {
 
   static const String todosTableFieldTodoListUid = 'todolistUid'; //Foreign key
   static const String todosTableFieldaccomplishedAt = 'accomplishedAt';
+  static const String todosTableFieldImagePath = 'imagePath';
+  static const String todosTableFieldDownloadUrl = 'downloadUrl';
 
   ///Other TodolistModel variables ---------------------------------------------
   static const String numberOfTodos = 'numberOfTodos';
@@ -66,13 +70,18 @@ class DatabaseHelper {
   /// This is the uid of the TodoList which the todo belongs to.
   static const syncPendigTodosFieldParentTodoListUid = 'parentTodoListUid';
 
+  /// Fields of the syncPendingPhotos-------------------------------------------
+  static const String syncPendingPhotosName = 'syncPendingPhotos';
+  static const String syncPendingPhotosFieldRelativePath = 'relativePath';
+  static const String syncPendingPhotosFieldMethod = 'method';
+  static const String syncPendingPhotosFieldDownloadUrl = 'downloadUrl';
+
   ///---------------------------------------------------------------------------
   Future onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
   Future _onCreate(Database db, int version) async {
-    // An integer primary key might be unnecessary if we have a uid
     await db.execute('''
       CREATE TABLE $todoListsTableName(
          
@@ -81,7 +90,7 @@ class DatabaseHelper {
           $todoListsTableFieldCategory INTEGER
       );
       ''');
-// An integer primary key might be unnecessary if we have a uid
+
     await db.execute('''
       CREATE TABLE $todosTableName(
           $todosTableFieldTodoUid TEXT PRIMARY KEY,
@@ -89,6 +98,8 @@ class DatabaseHelper {
           $todosTableFieldAccomplished INTEGER,
           $todosTableFieldRepetitionPeriod INTEGER,
           $todosTableFieldaccomplishedAt INTEGER,
+          $todosTableFieldImagePath TEXT,
+          $todosTableFieldDownloadUrl TEXT,
           $todosTableFieldTodoListUid TEXT,
           FOREIGN KEY ($todosTableFieldTodoListUid) REFERENCES $todoListsTableName($todoListsTableFieldUid) ON DELETE CASCADE
       );
@@ -104,6 +115,15 @@ class DatabaseHelper {
       CREATE TABLE $syncPendigTodosName (
           $syncPendigTodosFieldParentTodoListUid TEXT,
           $syncPendigTodosFieldUid TEXT
+          
+      );
+      ''');
+
+    await db.execute('''
+      CREATE TABLE $syncPendingPhotosName (
+          $syncPendingPhotosFieldRelativePath TEXT,
+          $syncPendingPhotosFieldMethod TEXT,
+          $syncPendingPhotosFieldDownloadUrl TEXT
           
       );
       ''');
@@ -257,15 +277,87 @@ class DatabaseHelper {
     return update;
   }
 
+//TODO: delete [updateSpecificTodo] and replace it with updateSpecificTodoNew
   static Future<int> updateSpecificTodo({
-    required TodoModel model,
+    required TodoModel todoModel,
   }) async {
     Database db = await instance.database;
-    Logger().d('Das model ist $model');
+    // Logger().d('Das model ist $model');
+    //final oldModel = await getSpecificTodo(uid: todoParameters.uid!);
+    // final TodoModel updatedModel;
+
+    // final oldModelMap = oldModel!.toMap();
+    // Logger().d('Das oldmodel ist $oldModelMap');
+    // final updatedModelMap = Map.from(oldModelMap);
+    // final updateModelMap = model.toMap();
+    // //! Das Problem liegt bei TodoModel.fromTodoParameters. Dort wird Task mit '' überschrieben, weil es in den TodoParameters
+    // //! null ist. Dadurch wird es in der folgenden for Schleife wird task ebenfalls auf '' gesetzt
+    // for (MapEntry mapentry in updateModelMap.entries) {
+    //   updatedModelMap[mapentry.key] = mapentry.value;
+    // }
+    // updatedModel = TodoModel.fromMap(updatedModelMap);
+    // Logger().d('Das updatemodel ist $updatedModel');
+    // final updatedModel = oldModel!.copyWith();
+    // Logger().d('UpdatedModel in DatabaseHelper is $updatedModel');
     final update = await db.rawUpdate(
-        'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ? WHERE $todosTableFieldTodoUid = ?',
-        [model.task, model.repeatPeriod?.serialize(), model.uid]);
+        'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ?, $todosTableFieldImagePath = ? WHERE $todosTableFieldTodoUid = ?',
+        [
+          todoModel.task,
+          todoModel.repeatPeriod?.serialize(),
+          todoModel.thumbnailImageName,
+          todoModel.uid
+        ]);
     saveTimestamp();
+    Logger().d('Update in DatabaseHelper is $update');
+    return update;
+  }
+
+  static Future<int> updateSpecificTodoNew(
+      {required TodoUpdateModel todoUpdateModel}) async {
+    Database db = await instance.database;
+    List<String> fieldsToUpdate = [];
+    List args = [];
+
+    if (todoUpdateModel.task != null) {
+      fieldsToUpdate.add(todosTableFieldTask);
+      args.add(todoUpdateModel.task);
+    }
+    if (todoUpdateModel.repeatPeriod != null) {
+      fieldsToUpdate.add(todosTableFieldRepetitionPeriod);
+      args.add(todoUpdateModel.repeatPeriod);
+    }
+    if (todoUpdateModel.imagePath != null) {
+      fieldsToUpdate.add(todosTableFieldImagePath);
+      args.add(todoUpdateModel.imagePath);
+    }
+    if (todoUpdateModel.accomplishedAt != null) {
+      fieldsToUpdate.add(todosTableFieldaccomplishedAt);
+      args.add(todoUpdateModel.accomplishedAt);
+    }
+    if (todoUpdateModel.downloadUrl != null) {
+      fieldsToUpdate.add(todosTableFieldDownloadUrl);
+      args.add(todoUpdateModel.downloadUrl);
+    }
+    if (todoUpdateModel.parentTodoListId != null) {
+      fieldsToUpdate.add(todosTableFieldTodoListUid);
+      args.add(todoUpdateModel.parentTodoListId);
+    }
+    if (todoUpdateModel.accomplished != null) {
+      fieldsToUpdate.add(todosTableFieldAccomplished);
+      args.add(todoUpdateModel.accomplished);
+    }
+    args.add(todoUpdateModel.uid);
+    String fieldsToUpdateString = '';
+    if (fieldsToUpdate.length == 1) {
+      fieldsToUpdateString = '${fieldsToUpdate.first} = ?';
+    } else {
+      fieldsToUpdateString = '${fieldsToUpdate.join(' = ?, ')}';
+    }
+    String sqliteUpdateStatement =
+        'UPDATE $todosTableName SET $fieldsToUpdateString WHERE $todosTableFieldTodoUid = ?';
+    final update = await db.rawUpdate(sqliteUpdateStatement, args);
+    saveTimestamp();
+
     return update;
   }
 
@@ -426,6 +518,50 @@ class DatabaseHelper {
       'numberOfEntries': list.isNotEmpty ? list.length : 0
     };
     return mapToReturn;
+  }
+
+  /// Regarding SyncPendingPhotos ------------------------------------------------
+  static Future<int> addToSyncPendingPhotos({
+    required SyncPendingPhotoModel model,
+  }) async {
+    Database db = await instance.database;
+
+    final mapToInsert = model.toMap();
+    Logger().d('Map being saved in syncPendigPhotos: $mapToInsert');
+    return await db.insert(syncPendingPhotosName, mapToInsert);
+  }
+
+  static Future<int> deleteFromsyncPendingPhotos(
+      {required String relativePath}) async {
+    Database db = await instance.database;
+
+    return await db.rawDelete(
+        'DELETE FROM $syncPendingPhotosName WHERE $syncPendingPhotosFieldRelativePath = ?',
+        [relativePath]);
+  }
+
+  static Future<List<Map<String, Object?>>>
+      getAllEntriesFromSyncPendingPhotos() async {
+    Database db = await instance.database;
+    List<Map<String, Object?>> entries =
+        await db.rawQuery('SELECT * FROM $syncPendingPhotosName');
+
+    return entries;
+  }
+
+  /// Other helper functions ----------------------------------------------------
+  static Future<bool> hasEntries(String tableName) async {
+    Database db = await instance.database;
+    try {
+      final list = await db.rawQuery('SELECT * FROM $tableName LIMIT 1');
+      if (list.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }
 

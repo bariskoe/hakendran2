@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
+
 import '../../database/databse_helper.dart';
 import '../../models/firestore_data_info_model.dart';
 import 'package:dartz/dartz.dart';
@@ -33,10 +35,13 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
           await DatabaseHelper.getAllEntriesOfsyncPendigTodolists();
       final syncPendingTodos =
           await DatabaseHelper.getAllEntriesOfsyncPendigTodos();
-      Logger().d('syncPendingTodoLists = $syncPendingTodoLists');
-      Logger().d('syncPendingTodos = $syncPendingTodos');
+      final syncPendingPhotosHasEntries =
+          await DatabaseHelper.hasEntries(DatabaseHelper.syncPendingPhotosName);
+      final syncPendingPhotosEntries = syncPendingPhotosHasEntries ? 1 : 0;
+
       final hasSyncPending = syncPendingTodoLists['numberOfEntries'] +
-                  syncPendingTodos['numberOfEntries'] >
+                  syncPendingTodos['numberOfEntries'] +
+                  syncPendingPhotosEntries >
               0
           ? true
           : false;
@@ -111,6 +116,7 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
       final success = await apiDatasource.syncPendingTodoLists();
       return Right(success);
     } catch (e) {
+      Logger().e('Could not sync pending todoLists: $e');
       return Left(ApiFailure());
     }
   }
@@ -121,6 +127,36 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
       final success = await apiDatasource.syncPendingTodos();
       return Right(success);
     } catch (e) {
+      Logger().e('Could not sync pending todos: $e');
+      return Left(ApiFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> addToSyncPendingPhotos(
+      {required SyncPendingPhotoParams syncPendingPhotoParams}) async {
+    try {
+      final success = await localSqliteDataSource.addToSyncPendingPhotos(
+          syncPendingPhotoParams: syncPendingPhotoParams);
+      Logger().d('success ist $success');
+      if (success != 0) {
+        return Right(success);
+      } else {
+        return Left(DatabaseFailure());
+      }
+    } catch (e) {
+      Logger().e('Could not add to sync pending photos: $e');
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> syncPendingPhotos() async {
+    try {
+      final success = await apiDatasource.syncPendingPhotos();
+      return Right(success);
+    } catch (e) {
+      Logger().e('Could not sync pending photos: $e');
       return Left(ApiFailure());
     }
   }

@@ -24,9 +24,7 @@ class DataPreparationBloc
     required this.dataPreparationUsecases,
     required this.allTodoListsUsecases,
     required this.selectedTodoListBloc,
-  }) :
-        //_allTodolistBloc = allTodolistBloc,
-        super(DataPreparationInitial()) {
+  }) : super(DataPreparationInitial()) {
     // on<DataPreparationEvent>((event, emit) {
 
     // });
@@ -46,7 +44,6 @@ class DataPreparationBloc
           await dataPreparationUsecases.checkSynchronizationStatus();
       failureOrSynchronizationStatus.fold(
           (l) => emit(DataPreparationStateDataPreparationComplete()), (r) {
-        Logger().d('SynchronizationStatus: $r');
         switch (r) {
           case SynchronizationStatus.newUser:
             {
@@ -83,9 +80,13 @@ class DataPreparationBloc
       Either<Failure, bool> todosUploaded =
           await dataPreparationUsecases.syncPendingTodos();
 
-      todosUploaded.fold((l) => emit(DataPreparationStateUploadFailed()), (r) {
-        emit(DataPreparationStateDataPreparationComplete());
-      });
+      todosUploaded.fold(
+          (l) => emit(DataPreparationStateUploadFailed()), (r) {});
+
+      Either<Failure, bool> photosSynced =
+          await dataPreparationUsecases.syncPendingPhotos();
+
+      emit(DataPreparationStateDataPreparationComplete());
     });
   }
 }

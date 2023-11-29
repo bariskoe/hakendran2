@@ -1,8 +1,10 @@
+import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:dartz/dartz.dart';
 
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
 import '../parameters/todo_parameters.dart';
+import '../parameters/update_todo_parameters.dart';
 import '../repositories/selected_todolist_repository.dart';
 
 class SelectedTodolistUsecases {
@@ -37,11 +39,20 @@ class SelectedTodolistUsecases {
     );
   }
 
+//TODO: Eliminate this method and only use updateSpecificTodoNew
   Future<Either<Failure, int>> updateSpecificTodo({
-    required TodoParameters todoParameters,
+    required UpdateTodoModelParameters updateTodoModelParameters,
   }) async {
     return await selectedTodolistRepository.updateSpecificTodo(
-      todoParameters: todoParameters,
+      updateTodoModelParameters: updateTodoModelParameters,
+    );
+  }
+
+  Future<Either<Failure, int>> updateSpecificTodoNew({
+    required TodoUpdateParameters todoUpdateParameters,
+  }) async {
+    return await selectedTodolistRepository.updateSpecificTodoNew(
+      todoUpdateParameters: todoUpdateParameters,
     );
   }
 

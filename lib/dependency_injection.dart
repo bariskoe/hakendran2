@@ -1,8 +1,19 @@
 import 'dart:async';
 
+import 'package:baristodolistapp/bloc/photo/photo_bloc.dart';
+import 'package:baristodolistapp/domain/repositories/photo_repository.dart';
+import 'package:baristodolistapp/infrastructure/repositories/photo_repository_impl.dart';
+import 'package:baristodolistapp/services/firebase_storage_service.dart';
+import 'package:baristodolistapp/services/folder_creator.dart';
+import 'package:baristodolistapp/services/image_picker_service.dart';
+import 'package:baristodolistapp/services/path_builder.dart';
+import 'package:baristodolistapp/services/string_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc/DataPreparation/bloc/data_preparation_bloc.dart';
@@ -18,6 +29,7 @@ import 'domain/repositories/selected_todolist_repository.dart';
 import 'domain/usecases/all_todolists_usecases.dart';
 import 'domain/usecases/api_usecases.dart';
 import 'domain/usecases/data_preparation_usecases.dart';
+import 'domain/usecases/photo_usecases.dart';
 import 'domain/usecases/selected_todolist_usecases.dart';
 import 'infrastructure/datasources/api_datasource.dart';
 import 'infrastructure/datasources/api_datasource_impl_new.dart';
@@ -53,6 +65,7 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt.registerLazySingleton<SelectedTodolistBloc>(() => SelectedTodolistBloc(
         selectedTodolistUsecases: getIt(),
       ));
+  getIt.registerLazySingleton(() => PhotoBloc(photoUsecases: getIt()));
 
 //! Usecases
   getIt.registerLazySingleton<DataPreparationUsecases>(
@@ -66,6 +79,11 @@ Future<void> setupDependencyInjectionWithGetIt() async {
           ));
   getIt.registerLazySingleton<ApiUsecases>(() => ApiUsecases(
         apiRepository: getIt(),
+      ));
+  getIt.registerLazySingleton<PhotoUsecases>(() => PhotoUsecases(
+        photoRepository: getIt(),
+        apiRepository: getIt(),
+        dataPreparationRepository: getIt(),
       ));
 
 //! repos
@@ -91,15 +109,25 @@ Future<void> setupDependencyInjectionWithGetIt() async {
           ));
   getIt.registerLazySingleton<ApiRepository>(() => ApiRepositoryImpl(
         apiDatasource: getIt(),
+        firebaseStorageService: getIt(),
       ));
+  getIt.registerLazySingleton<PhotoRepository>(
+      () => PhotoRepositoryImpl(pathBuilder: getIt()));
 //! Datasources
   getIt.registerLazySingleton<LocalSqliteDataSource>(
       () => LocalSqliteDataSourceImpl());
   getIt.registerLazySingleton<ApiDatasource>(
-    () => ApiDataSourceImplNew(),
+    () => ApiDataSourceImplNew(
+      firebaseStorageService: getIt(),
+      localSqliteDataSource: getIt(),
+    ),
   );
 
-  getIt.registerSingleton(await SharedPreferences.getInstance());
+  FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  getIt.registerSingleton<SharedPreferences>(
+      await SharedPreferences.getInstance());
+  getIt.registerSingleton<FirebaseStorageService>(FirebaseStorageService.forDi(
+      firebaseStorage: firebaseStorage, sharedPreferences: getIt()));
 
   //! Authentication
   final firebaseAuth = FirebaseAuth.instance;
@@ -112,4 +140,18 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt.registerSingleton<Connectivity>(connectivity);
   getIt.registerSingleton<ConnectivityService>(
       ConnectivityService.forDi(getIt()));
+
+  //! ImagePickerService
+  final ImagePicker imagePicker = ImagePicker();
+  getIt.registerSingleton<ImagePicker>(imagePicker);
+  getIt
+      .registerSingleton<ImagePickerService>(ImagePickerService.forDi(getIt()));
+
+  //! Strings
+  getIt.registerSingleton<StringService>(StringService.forDi(getIt()));
+  getIt.registerSingleton<PathBuilder>(
+      PathBuilder.forDi(sharedPreferences: getIt()));
+
+  //! Folders
+  getIt.registerSingleton<FolderCreator>(FolderCreator.forDi(getIt()));
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
@@ -92,6 +93,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             buildWhen: (previous, current) =>
                 current != AllTodoListsStateLoading(),
             builder: (context, state) {
+              Logger().d('state in der Mainpage ist $state');
               if (MainPage.justAddedList) {
                 _controller?.reset();
                 _controller?.forward().then((value) {
@@ -114,6 +116,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               }
               if (state is AllTodoListsStateListEmpty) {
                 return _buildListEmpty(context);
+              }
+
+              if (state is AllTodoListsStateDataPreparationComplete) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
 
               return Container();
