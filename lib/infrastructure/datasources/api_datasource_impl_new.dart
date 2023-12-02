@@ -244,7 +244,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
 
       return FirestoreDataInfoModel(dataIsAcessible: false);
     } on DioException catch (e) {
-      Logger().e("Catching DioException 404");
+      Logger().e("Catching DioException 404 $e");
       if (e.response?.statusCode == 404) {
         return FirestoreDataInfoModel(userDocExists: false);
       }
