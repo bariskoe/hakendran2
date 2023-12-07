@@ -53,4 +53,13 @@ class PathBuilder {
     Logger().d('path ist $path');
     return path;
   }
+
+  static photoNameExtractor(String path) {
+    if (path.contains('/')) {
+      final parts = path.split('/');
+      return parts.last;
+    } else {
+      return path;
+    }
+  }
 }

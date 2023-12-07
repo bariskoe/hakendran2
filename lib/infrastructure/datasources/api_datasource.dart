@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/models/downloadable_photos_model.dart';
 import 'package:baristodolistapp/models/firestore_data_info_model.dart';
 
 import '../../models/api_action_model.dart';
@@ -43,4 +44,7 @@ abstract class ApiDatasource {
   Future<bool> performApiAction({
     required ApiActionModel apiActionModel,
   });
+
+  /// Gets a list of download urls of the photos that are stored in Firebase Storage.
+  Future<PhotoDownloadUrlsModel?> getPhotoDownloadUrls();
 }

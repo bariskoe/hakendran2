@@ -1,9 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
 import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
 import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource.dart';
+import 'package:baristodolistapp/models/downloadable_photos_model.dart';
 import 'package:baristodolistapp/models/sync_pending_photo_model.dart';
 import 'package:baristodolistapp/models/todo_update_model.dart';
+import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
@@ -37,6 +41,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
 
   final todolists = 'todolists';
   final todos = 'todos';
+  final downloadablePhotos = 'downloadablePhotos';
 
   String buildUrlString(List<String> paths) {
     String url = baseUrl;
@@ -389,6 +394,13 @@ class ApiDataSourceImplNew implements ApiDatasource {
               .deleteFromsyncPendingPhotos(relativePath: model.imageName);
 
         case SyncPendingPhotoMethod.download:
+          final relativePath = model.relativePath;
+
+          await firebaseStorageService
+              .downloadFromFirebaseStorage(relativePath);
+          final deletedrow = await localSqliteDataSource
+              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
+
         case SyncPendingPhotoMethod.delete:
           await firebaseStorageService.deleteFileFromFirebaseStorage(
               deleteFileFromFirebaseStorageParams:
@@ -403,5 +415,33 @@ class ApiDataSourceImplNew implements ApiDatasource {
     }));
     {}
     return true;
+  }
+
+  @override
+  Future<PhotoDownloadUrlsModel?> getPhotoDownloadUrls() async {
+    try {
+      final response = await makeRequest(
+        pathParts: [downloadablePhotos],
+        method: 'GET',
+      );
+      Logger().d('Response in getPhotoDownloadUrls is $response');
+      if (response.statusCode == 200) {
+        final responseBody = response.data;
+        Logger().d('Response body in getPhotoDownloadUrls is $responseBody');
+        final model = PhotoDownloadUrlsModel.fromJson(responseBody);
+        return model;
+      }
+    } on NotConnectedToTheInternetError catch (e) {
+      Logger().e("Not connected to internet error $e");
+    } on DioException catch (e) {
+      Logger().e("Catching DioException 404 $e");
+      if (e.response?.statusCode == 404) {
+        return null;
+      }
+    } catch (e) {
+      Logger().e("Error getting PhotoDownloadUrls: $e");
+      return null;
+    }
+    return null;
   }
 }

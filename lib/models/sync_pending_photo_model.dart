@@ -35,6 +35,15 @@ class SyncPendingPhotoModel with EquatableMixin {
     return fullpath;
   }
 
+  //The path on
+  String get relativePath {
+    final userId = getIt<SharedPreferences>()
+        .getString(StringConstants.spFirebaseUserIDKey);
+    final photoDirectoryName = StringConstants.photoFolderName;
+    final localPath = '$userId/$photoDirectoryName/$imageName';
+    return localPath;
+  }
+
   factory SyncPendingPhotoModel.fromParams(
       {required SyncPendingPhotoParams params}) {
     return SyncPendingPhotoModel(

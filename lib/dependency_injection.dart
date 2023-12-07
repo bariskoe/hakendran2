@@ -51,9 +51,11 @@ Future<void> setupDependencyInjectionWithGetIt() async {
         authenticationRepository: getIt(),
       ));
   getIt.registerLazySingleton<DataPreparationBloc>(() => DataPreparationBloc(
-      dataPreparationUsecases: getIt(),
-      allTodoListsUsecases: getIt(),
-      selectedTodoListBloc: getIt()));
+        dataPreparationUsecases: getIt(),
+        allTodoListsUsecases: getIt(),
+        selectedTodoListBloc: getIt(),
+        dataPreparationRepository: getIt(),
+      ));
 
   getIt.registerLazySingleton<AllTodolistsBloc>(() => AllTodolistsBloc(
         allTodoListsUsecases: getIt(),

@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
+import 'package:baristodolistapp/models/downloadable_photos_model.dart';
 
 import '../../database/databse_helper.dart';
 import '../../models/firestore_data_info_model.dart';
@@ -157,6 +158,21 @@ class DataPreparationRepositoryImpl implements DataPreparationRepository {
       return Right(success);
     } catch (e) {
       Logger().e('Could not sync pending photos: $e');
+      return Left(ApiFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, PhotoDownloadUrlsModel>> getPhotoDownloadUrls() async {
+    try {
+      final model = await apiDatasource.getPhotoDownloadUrls();
+      if (model == null) {
+        return Left(ApiFailure());
+      } else {
+        return Right(model);
+      }
+    } catch (e) {
+      Logger().e('Could not get PhotoDownloadUrls $e');
       return Left(ApiFailure());
     }
   }

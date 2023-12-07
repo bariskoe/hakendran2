@@ -1,3 +1,7 @@
+import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
+import 'package:baristodolistapp/domain/repositories/data_preparation_repository.dart';
+import 'package:baristodolistapp/models/sync_pending_photo_model.dart';
+import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -19,11 +23,13 @@ class DataPreparationBloc
   final DataPreparationUsecases dataPreparationUsecases;
   final AllTodoListsUsecases allTodoListsUsecases;
   final SelectedTodolistBloc selectedTodoListBloc;
+  final DataPreparationRepository dataPreparationRepository;
 
   DataPreparationBloc({
     required this.dataPreparationUsecases,
     required this.allTodoListsUsecases,
     required this.selectedTodoListBloc,
+    required this.dataPreparationRepository,
   }) : super(DataPreparationInitial()) {
     // on<DataPreparationEvent>((event, emit) {
 
@@ -42,8 +48,9 @@ class DataPreparationBloc
       emit(DataPreparationStateLoading());
       final failureOrSynchronizationStatus =
           await dataPreparationUsecases.checkSynchronizationStatus();
-      failureOrSynchronizationStatus.fold(
-          (l) => emit(DataPreparationStateDataPreparationComplete()), (r) {
+      failureOrSynchronizationStatus
+          .fold((l) => emit(DataPreparationStateDataPreparationComplete()),
+              (r) async {
         switch (r) {
           case SynchronizationStatus.newUser:
             {
@@ -53,6 +60,24 @@ class DataPreparationBloc
             {
               getIt<AllTodolistsBloc>()
                   .add(AllTodoListEvenGetAllTodoListsFromBackend());
+              // final failureOrPhotoUrlModel =
+              //     await dataPreparationRepository.getPhotoDownloadUrls();
+              // failureOrPhotoUrlModel.fold(
+              //     (l) => Logger().e('failureOrPhotoUrlModel is left $l'), (r) {
+              //   Logger().d(
+              //       'Das PhotoUrlModel ist ${r.downloadableImages.first.imagePath}');
+
+              //   for (var model in r.downloadableImages) {
+              //     final imageName =
+              //         PathBuilder.photoNameExtractor(model.imagePath);
+              //     dataPreparationRepository.addToSyncPendingPhotos(
+              //         syncPendingPhotoParams: SyncPendingPhotoParams(
+              //             photoName: imageName,
+              //             method: SyncPendingPhotoMethod.download,
+              //             downloadUrl: model.downLoadUrl));
+              //   }
+              //   add(DataPreparationEventSyncAllSyncPendingLists());
+              // });
             }
           case SynchronizationStatus.localDataIsNewer:
             {

@@ -5,6 +5,7 @@ import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:baristodolistapp/domain/failures/failures.dart';
 import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
 import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
+import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:baristodolistapp/strings/string_constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:logger/logger.dart';
@@ -76,6 +77,45 @@ class FirebaseStorageService {
     } else {
       return null;
     }
+  }
+
+  downloadFromFirebaseStorage(String path) async {
+    final appDocDirPath = getIt<SharedPreferences>()
+        .getString(StringConstants.spApplicationDocumentsDirectoryPath);
+    final file = File('$appDocDirPath/$path');
+    final firebaseUserId =
+        sharedPreferences.getString(StringConstants.spFirebaseUserIDKey);
+    final photoname = PathBuilder.photoNameExtractor(path);
+    final imageRef = storageRef
+        .child(firebaseUserId!)
+        .child(StringConstants.photoFolderName)
+        .child(photoname);
+    await file.create(recursive: true);
+    await imageRef.writeToFile(file);
+    // downloadTask.snapshotEvents.listen((taskSnapshot) {
+    //   switch (taskSnapshot.state) {
+    //     case TaskState.running:
+    //       () {
+    //         Logger().d('download running');
+    //       };
+    //     case TaskState.paused:
+    //       () {
+    //         Logger().d('download paused');
+    //       };
+    //     case TaskState.success:
+    //       () {
+    //         Logger().d('download success');
+    //       };
+    //     case TaskState.canceled:
+    //       () {
+    //         Logger().d('download canceled');
+    //       };
+    //     case TaskState.error:
+    //       () {
+    //         Logger().d('download error');
+    //       };
+    //   }
+    // });
   }
 
   Future<bool> deleteFileFromFirebaseStorage(
