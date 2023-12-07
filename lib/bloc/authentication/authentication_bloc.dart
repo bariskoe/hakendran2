@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/services/folder_creator.dart';
+import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,6 +66,8 @@ class AuthenticationBloc
           if (idToken != null) {
             getIt<SharedPreferences>()
                 .setString(StringConstants.spFirebaseIDTokenKey, idToken);
+            getIt<FolderCreator>();
+            getIt<PathBuilder>();
             add(AuthenticationEventIsSignedIn());
           }
         }

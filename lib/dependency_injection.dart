@@ -147,11 +147,12 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt
       .registerSingleton<ImagePickerService>(ImagePickerService.forDi(getIt()));
 
+  //! Folders
+  getIt
+      .registerLazySingleton<FolderCreator>(() => FolderCreator.forDi(getIt()));
+
   //! Strings
   getIt.registerSingleton<StringService>(StringService.forDi(getIt()));
-  getIt.registerSingleton<PathBuilder>(
-      PathBuilder.forDi(sharedPreferences: getIt()));
-
-  //! Folders
-  getIt.registerSingleton<FolderCreator>(FolderCreator.forDi(getIt()));
+  getIt.registerLazySingleton<PathBuilder>(
+      () => PathBuilder.forDi(sharedPreferences: getIt()));
 }
