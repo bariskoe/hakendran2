@@ -1,30 +1,23 @@
 import 'dart:async';
 
-import 'package:baristodolistapp/bloc/photo/photo_bloc.dart';
-import 'package:baristodolistapp/domain/repositories/photo_repository.dart';
-import 'package:baristodolistapp/infrastructure/repositories/photo_repository_impl.dart';
-import 'package:baristodolistapp/services/firebase_storage_service.dart';
-import 'package:baristodolistapp/services/folder_creator.dart';
-import 'package:baristodolistapp/services/image_picker_service.dart';
-import 'package:baristodolistapp/services/path_builder.dart';
-import 'package:baristodolistapp/services/string_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc/DataPreparation/bloc/data_preparation_bloc.dart';
 import 'bloc/allTodoLists/all_todolists_bloc.dart';
 import 'bloc/authentication/authentication_bloc.dart';
+import 'bloc/photo/photo_bloc.dart';
 import 'bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import 'domain/repositories/all_todolists_repository.dart';
 import 'domain/repositories/api_repository.dart';
 import 'domain/repositories/authentication_repository.dart';
 import 'domain/repositories/connectivity_repository.dart';
 import 'domain/repositories/data_preparation_repository.dart';
+import 'domain/repositories/photo_repository.dart';
 import 'domain/repositories/selected_todolist_repository.dart';
 import 'domain/usecases/all_todolists_usecases.dart';
 import 'domain/usecases/api_usecases.dart';
@@ -40,8 +33,14 @@ import 'infrastructure/repositories/api_repository_impl.dart';
 import 'infrastructure/repositories/authentication_repository_impl.dart';
 import 'infrastructure/repositories/connectivity_repository_impl.dart';
 import 'infrastructure/repositories/data_preparation_repository_impl.dart';
+import 'infrastructure/repositories/photo_repository_impl.dart';
 import 'infrastructure/repositories/selected_todolist_repository_impl.dart';
 import 'services/connectivity_service.dart';
+import 'services/firebase_storage_service.dart';
+import 'services/folder_creator.dart';
+import 'services/image_picker_service.dart';
+import 'services/path_builder.dart';
+import 'services/string_service.dart';
 
 final getIt = GetIt.I;
 
@@ -149,11 +148,12 @@ Future<void> setupDependencyInjectionWithGetIt() async {
   getIt
       .registerSingleton<ImagePickerService>(ImagePickerService.forDi(getIt()));
 
+  //! Folders
+  getIt
+      .registerLazySingleton<FolderCreator>(() => FolderCreator.forDi(getIt()));
+
   //! Strings
   getIt.registerSingleton<StringService>(StringService.forDi(getIt()));
-  getIt.registerSingleton<PathBuilder>(
-      PathBuilder.forDi(sharedPreferences: getIt()));
-
-  //! Folders
-  getIt.registerSingleton<FolderCreator>(FolderCreator.forDi(getIt()));
+  getIt.registerLazySingleton<PathBuilder>(
+      () => PathBuilder.forDi(sharedPreferences: getIt()));
 }
