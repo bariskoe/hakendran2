@@ -60,24 +60,21 @@ class DataPreparationBloc
             {
               getIt<AllTodolistsBloc>()
                   .add(AllTodoListEvenGetAllTodoListsFromBackend());
-              // final failureOrPhotoUrlModel =
-              //     await dataPreparationRepository.getPhotoDownloadUrls();
-              // failureOrPhotoUrlModel.fold(
-              //     (l) => Logger().e('failureOrPhotoUrlModel is left $l'), (r) {
-              //   Logger().d(
-              //       'Das PhotoUrlModel ist ${r.downloadableImages.first.imagePath}');
-
-              //   for (var model in r.downloadableImages) {
-              //     final imageName =
-              //         PathBuilder.photoNameExtractor(model.imagePath);
-              //     dataPreparationRepository.addToSyncPendingPhotos(
-              //         syncPendingPhotoParams: SyncPendingPhotoParams(
-              //             photoName: imageName,
-              //             method: SyncPendingPhotoMethod.download,
-              //             downloadUrl: model.downLoadUrl));
-              //   }
-              //   add(DataPreparationEventSyncAllSyncPendingLists());
-              // });
+              final failureOrPhotoUrlModel =
+                  await dataPreparationRepository.getPhotoDownloadUrls();
+              failureOrPhotoUrlModel.fold(
+                  (l) => Logger().e('failureOrPhotoUrlModel is left $l'), (r) {
+                for (var model in r.downloadableImages) {
+                  final imageName =
+                      PathBuilder.photoNameExtractor(model.imagePath);
+                  dataPreparationRepository.addToSyncPendingPhotos(
+                      syncPendingPhotoParams: SyncPendingPhotoParams(
+                          photoName: imageName,
+                          method: SyncPendingPhotoMethod.download,
+                          downloadUrl: model.downLoadUrl));
+                }
+                add(DataPreparationEventSyncAllSyncPendingLists());
+              });
             }
           case SynchronizationStatus.localDataIsNewer:
             {
@@ -110,8 +107,7 @@ class DataPreparationBloc
 
       Either<Failure, bool> photosSynced =
           await dataPreparationUsecases.syncPendingPhotos();
-
-      emit(DataPreparationStateDataPreparationComplete());
+      photosSynced.fold((l) => null, (r) {});
     });
   }
 }

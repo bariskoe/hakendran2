@@ -1,19 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
-
 import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
 import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
 import 'package:baristodolistapp/infrastructure/datasources/local_sqlite_datasource.dart';
 import 'package:baristodolistapp/models/downloadable_photos_model.dart';
 import 'package:baristodolistapp/models/sync_pending_photo_model.dart';
-import 'package:baristodolistapp/models/todo_update_model.dart';
-import 'package:baristodolistapp/services/path_builder.dart';
+import 'package:baristodolistapp/services/firebase_storage_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:baristodolistapp/services/firebase_storage_service.dart';
 
 import '../../database/databse_helper.dart';
 import '../../dependency_injection.dart';
@@ -391,16 +386,19 @@ class ApiDataSourceImplNew implements ApiDatasource {
           ));
           Logger().d('downloadUrl ist $downloadUrl');
           final deletedrow = await localSqliteDataSource
-              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
+              .deleteFromsyncPendingPhotos(imageName: model.imageName);
 
         case SyncPendingPhotoMethod.download:
-          final relativePath = model.relativePath;
+          try {
+            final relativePath = model.relativePath;
 
-          await firebaseStorageService
-              .downloadFromFirebaseStorage(relativePath);
-          final deletedrow = await localSqliteDataSource
-              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
-
+            await firebaseStorageService
+                .downloadFromFirebaseStorage(relativePath);
+            final deletedrow = await localSqliteDataSource
+                .deleteFromsyncPendingPhotos(imageName: model.imageName);
+          } catch (e) {
+            Logger().e('Failed to download ${model.relativePath}. Error: $e');
+          }
         case SyncPendingPhotoMethod.delete:
           await firebaseStorageService.deleteFileFromFirebaseStorage(
               deleteFileFromFirebaseStorageParams:
@@ -409,7 +407,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
                           FirebaseStorageReferenceEnum.thumbnailImages,
                       fileName: model.imageName));
           final deletedrow = await localSqliteDataSource
-              .deleteFromsyncPendingPhotos(relativePath: model.imageName);
+              .deleteFromsyncPendingPhotos(imageName: model.imageName);
       }
       return true;
     }));

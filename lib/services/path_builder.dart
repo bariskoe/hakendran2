@@ -1,11 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:baristodolistapp/strings/string_constants.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:baristodolistapp/strings/string_constants.dart';
-
-import '../dependency_injection.dart';
 
 class PathBuilder {
   final SharedPreferences sharedPreferences;
@@ -13,9 +10,13 @@ class PathBuilder {
   late String? appDocDir;
   late String? userId;
 
-  PathBuilder({required this.sharedPreferences});
+  PathBuilder({
+    required this.sharedPreferences,
+  });
 
-  factory PathBuilder.forDi({required SharedPreferences sharedPreferences}) {
+  factory PathBuilder.forDi({
+    required SharedPreferences sharedPreferences,
+  }) {
     return PathBuilder(sharedPreferences: sharedPreferences)..initialize();
   }
 

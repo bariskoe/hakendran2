@@ -1,29 +1,25 @@
 import 'dart:io';
 
-import 'package:baristodolistapp/bloc/photo/photo_bloc.dart';
-import 'package:baristodolistapp/domain/parameters/photo_parameters.dart';
-import 'package:baristodolistapp/domain/parameters/take_thumbnail_photo_params.dart';
-import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
-import 'package:baristodolistapp/services/image_picker_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/route_manager.dart';
-
 import 'package:great_list_view/great_list_view.dart';
 import 'package:logger/logger.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:popover/popover.dart';
 
 import '../assets.dart';
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
+import '../bloc/photo/photo_bloc.dart';
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dependency_injection.dart';
 import '../dialogs/add_todo_dialog.dart';
 import '../dialogs/edit_todo_dialog.dart';
 import '../domain/entities/todo_entity.dart';
+import '../domain/parameters/take_thumbnail_photo_params.dart';
 import '../domain/parameters/todo_parameters.dart';
+import '../domain/parameters/update_todo_parameters.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/error_box_widget.dart';

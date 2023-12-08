@@ -2,14 +2,12 @@
 import 'dart:io';
 
 import 'package:baristodolistapp/dependency_injection.dart';
-import 'package:baristodolistapp/domain/failures/failures.dart';
 import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
 import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
 import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:baristodolistapp/strings/string_constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseStorageService {

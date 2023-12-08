@@ -36,7 +36,7 @@ abstract class LocalSqliteDataSource {
 
   Future<int> deleteSpecificTodo({required TodoModel todoModel});
 
-  Future<int> deleteFromsyncPendingPhotos({required String relativePath});
+  Future<int> deleteFromsyncPendingPhotos({required String imageName});
 
   Future<int> resetAllTodosOfSpecificList({
     required String uid,

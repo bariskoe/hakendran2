@@ -139,9 +139,8 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }
 
   @override
-  Future<int> deleteFromsyncPendingPhotos(
-      {required String relativePath}) async {
+  Future<int> deleteFromsyncPendingPhotos({required String imageName}) async {
     return await DatabaseHelper.deleteFromsyncPendingPhotos(
-        relativePath: relativePath);
+        relativePath: imageName);
   }
 }
