@@ -63,8 +63,7 @@ class FirebaseStorageService {
               contentType: "image/jpeg",
             ));
         String downloadUrl = await referenceOnFirebase.getDownloadURL();
-        Logger().d(
-            "Die DownloadUrl an der entscheidenden Stelle ist: $downloadUrl");
+
         return downloadUrl;
       } on FirebaseException catch (e) {
         Logger().e('Error in uploadFileToFirebaseStorage: ${e.message}');

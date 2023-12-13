@@ -13,6 +13,7 @@ class TodoModel extends TodoEntity with EquatableMixin {
   //final String task;
   //final bool accomplished;
   //final String parentTodoListId;
+  @override
   final RepeatPeriod? repeatPeriod;
   final DateTime? accomplishedAt;
   String? thumbnailImageName;
@@ -49,7 +50,7 @@ class TodoModel extends TodoEntity with EquatableMixin {
       repeatPeriod: repeatPeriod ?? this.repeatPeriod,
       accomplishedAt: accomplishedAt ?? this.accomplishedAt,
       thumbnailImageName:
-          deleteImagePath ? null : imagePath ?? this.thumbnailImageName,
+          deleteImagePath ? null : imagePath ?? thumbnailImageName,
     );
   }
 
