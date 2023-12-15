@@ -98,32 +98,7 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
       },
     );
 
-    // on<AllTodolistsEventSynchronizeAllTodoListsWithBackend>(
-    //     (event, emit) async {
-    //   emit(AllTodoListsStateSynchronizingWithBackend());
-
-    //   Either<Failure, List<TodoListModel>> failureOrListOfTodoListModels =
-    //       await allTodoListsUsecases.getAllTodoLists();
-
-    //   //! Emit an error state if Failure is returned
-    //   await failureOrListOfTodoListModels.fold((l) => null, (todolists) async {
-    //     if (todolists.isEmpty) {
-    //       emit(AllTodoListsStateListEmpty());
-    //     } else {
-    //       Either<Failure, bool> uploadToBackendSuccessful =
-    //           await allTodoListsUsecases
-    //               .synchronizeAllTodoListsWithBackend(todolists);
-    //       uploadToBackendSuccessful.fold((l) {
-    //         emit(AllTodoListsStateError());
-    //       }, (r) {
-    //         emit(AllTodoListsStateLoaded(listOfAllLists: todolists));
-    //       });
-    //     }
-    //   });
-    // });
-
     _allTodoListEvenGetAllTodoListsFromBackend(event, emit) async {
-      Logger().d('AllTodoListEvenGetAllTodoListsFromBackend received');
       emit(AllTodoListsStateLoading());
 
       Either<Failure, Map<String, dynamic>?> data =
@@ -137,8 +112,6 @@ class AllTodolistsBloc extends Bloc<AllTodolistsEvent, AllTodolistsState> {
 
         final List todolists = r?['todoLists'];
         final List todos = r?['todos'];
-        // todolists.sort((a, b) => a['id'].compareTo(b['id']));
-        Logger().d('todolists vom Backend sind: $todolists');
 
         Future<void> saveListOfTodolistsLocally(List<dynamic> todoLists) async {
           Future.wait(todolists.map((todoList) async =>
