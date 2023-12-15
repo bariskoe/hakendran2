@@ -161,8 +161,9 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
     //add an empty TodoEntity at the end in order to extend the length of the list by 1,
     //so that an invisible container with a height of 100 can be added.
     List<TodoEntity> reversedList = List.from(list.reversed)
-      ..add(
-          TodoEntity(task: '', accomplished: false, parentTodoListId: 'Test'));
+        // ..add(TodoEntity.empty()
+        //TodoEntity(uid: 'h4398rzirf', task: '', accomplished: false, parentTodoListId: 'Test')
+        ;
 
     return Padding(
       padding: const EdgeInsets.all(UiConstantsPadding.regular),

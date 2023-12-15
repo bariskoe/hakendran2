@@ -23,10 +23,10 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<Either<Failure, bool>> addTodoToSpecificList(
-      {required TodoParameters todoParameters}) async {
+      {required TodoModel todoModel}) async {
     try {
-      final uploadSuccessful = await apiDatasource.addTodoToSpecificList(
-          todoModel: TodoModel.fromTodoParameters(todoParameters));
+      final uploadSuccessful =
+          await apiDatasource.addTodoToSpecificList(todoModel: todoModel);
       if (uploadSuccessful) {
         return const Right(true);
       } else {

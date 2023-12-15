@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/entities/todo_entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,7 +19,7 @@ class TodoListModel extends TodoListEntity with EquatableMixin {
   }) : super(
           uid: uid,
           listName: listName,
-          todoEntities: todoModels,
+          todoEntities: todoModels.map((e) => e.toDomain()).toList(),
           todoListCategory: todoListCategory,
         );
 

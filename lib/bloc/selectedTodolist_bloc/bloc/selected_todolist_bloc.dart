@@ -1,4 +1,5 @@
 import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
+import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +21,7 @@ part 'selected_todolist_state.dart';
 
 class SelectedTodolistBloc
     extends Bloc<SelectedTodolistEvent, SelectedTodolistState> {
-  String? selectedTodoList;
+  static String? selectedTodoList;
 
   SelectedTodolistUsecases selectedTodolistUsecases;
   SelectedTodolistBloc({required this.selectedTodolistUsecases})
@@ -53,18 +54,15 @@ class SelectedTodolistBloc
       final uid = uuidPackage.v1();
 
       if (selectedTodoList != null) {
-        final todoParameters = event.todoParameters.copyWith(
-          uid: uid,
-          parentTodoListId: selectedTodoList!,
-        );
-
         TodoListDetailPage.justAddedTodo = true;
 
         Either<Failure, int> didSave = await selectedTodolistUsecases
-            .addTodoToSpecificList(todoParameters: todoParameters);
+            .addTodoToSpecificList(todoModel: event.todoModel);
         didSave.fold((l) => emit(SelectedTodolistStateError()), (r) {
           add(SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-              todoParameters: todoParameters));
+              todoParameters: TodoParameters(
+                  parentTodoListId: event.todoModel.parentTodoListId,
+                  uid: event.todoModel.uid)));
           add(SelectedTodolistEventLoadSelectedTodolist(
               uid: selectedTodoList!));
         });

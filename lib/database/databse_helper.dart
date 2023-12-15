@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -303,7 +304,7 @@ class DatabaseHelper {
         'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ?, $todosTableFieldImagePath = ? WHERE $todosTableFieldTodoUid = ?',
         [
           todoModel.task,
-          todoModel.repeatPeriod?.serialize(),
+          RepeatPeriodExtension.getRepeatPeriodIndex(todoModel.repeatPeriod),
           todoModel.thumbnailImageName,
           todoModel.uid
         ]);
@@ -362,12 +363,12 @@ class DatabaseHelper {
   }
 
   static Future<int> deleteSpecificTodo({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     Database db = await instance.database;
     final delete = await db.rawDelete(
         'DELETE FROM $todosTableName WHERE $todosTableFieldTodoUid = ?',
-        [todoModel.uid]);
+        [todoParameters.uid]);
     saveTimestamp();
     return delete;
   }
@@ -482,13 +483,13 @@ class DatabaseHelper {
 
   /// Regarding syncPendigTodos table ------------------------------------------
   static Future<int> addTodoUidToSyncPendingTodos({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     Database db = await instance.database;
 
     final mapToInsert = {
-      syncPendigTodosFieldUid: todoModel.uid,
-      syncPendigTodosFieldParentTodoListUid: todoModel.parentTodoListId
+      syncPendigTodosFieldUid: todoParameters.uid,
+      syncPendigTodosFieldParentTodoListUid: todoParameters.parentTodoListId
     };
     try {
       final success = await db.insert(syncPendigTodosName, mapToInsert);

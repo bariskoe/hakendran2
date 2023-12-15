@@ -1,6 +1,7 @@
 import '../../database/databse_helper.dart';
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/parameters/sync_pending_photo_params.dart';
+import '../../domain/parameters/todo_parameters.dart';
 import '../../models/sync_pending_photo_model.dart';
 import '../../models/todo_list_update_model.dart';
 import '../../models/todo_model.dart';
@@ -111,16 +112,18 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
 
   @override
   Future<int> addTodoUidToSyncPendingTodos({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   }) async {
     return await DatabaseHelper.addTodoUidToSyncPendingTodos(
-      todoModel: todoModel,
+      todoParameters: todoParameters,
     );
   }
 
   @override
-  Future<int> deleteSpecificTodo({required TodoModel todoModel}) async {
-    return await DatabaseHelper.deleteSpecificTodo(todoModel: todoModel);
+  Future<int> deleteSpecificTodo(
+      {required TodoParameters todoParameters}) async {
+    return await DatabaseHelper.deleteSpecificTodo(
+        todoParameters: todoParameters);
   }
 
   @override

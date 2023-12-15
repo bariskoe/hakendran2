@@ -37,11 +37,11 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoParameters todoParameters,
+    required TodoModel todoModel,
   }) async {
     try {
       final int success = await localSqliteDataSource.addTodoToSpecificList(
-          todoModel: TodoModel.fromTodoParameters(todoParameters));
+          todoModel: todoModel);
       return Right(success);
     } catch (e) {
       return Left(DatabaseFailure());
@@ -131,7 +131,7 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
       {required TodoParameters todoParameters}) async {
     try {
       int changes = await localSqliteDataSource.addTodoUidToSyncPendingTodos(
-        todoModel: TodoModel.fromTodoParameters(todoParameters),
+        todoParameters: todoParameters,
       );
       return Right(changes);
     } catch (e) {
@@ -145,7 +145,7 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
   }) async {
     try {
       int changes = await localSqliteDataSource.deleteSpecificTodo(
-        todoModel: TodoModel.fromTodoParameters(todoParameters),
+        todoParameters: todoParameters,
       );
       return Right(changes);
     } catch (e) {

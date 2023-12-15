@@ -19,7 +19,7 @@ Future<void> editTodoDialog(
   TextEditingController textEditingController =
       TextEditingController(text: todoEntity.task);
   _selectedRepetitionPeriodIndexInEditTodoDialog =
-      todoEntity.repeatPeriod?.serialize();
+      todoEntity.repeatPeriod.serialize();
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -65,7 +65,7 @@ Future<void> editTodoDialog(
                                   value:
                                       _selectedRepetitionPeriodIndexInEditTodoDialog ??
                                           0,
-                                ))));
+                                ).name)));
                 Navigator.of(context).pop();
               }
             },

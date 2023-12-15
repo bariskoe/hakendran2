@@ -24,7 +24,7 @@ class UpdateTodoModelParameters extends TodoModel {
       parentTodoListId: todoEntity.parentTodoListId,
       accomplishedAt: todoEntity.accomplishedAt,
       thumbnailImageName: todoEntity.thumbnailImageName,
-      repeatPeriod: todoEntity.repeatPeriod,
+      repeatPeriod: todoEntity.repeatPeriod.name,
       uid: todoEntity.uid,
     );
   }
@@ -36,7 +36,7 @@ class UpdateTodoModelParameters extends TodoModel {
       String? parentTodoListId,
       DateTime? accomplishedAt,
       String? imagePath,
-      RepeatPeriod? repeatPeriod,
+      String? repeatPeriod,
       String? uid,
       bool? deleteImagePath,
       bool? deleteImageFromGallery}) {

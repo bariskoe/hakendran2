@@ -26,11 +26,11 @@ class SelectedTodolistEventLoadSelectedTodolist extends SelectedTodolistEvent {
 }
 
 class SelectedTodolistEventAddNewTodo extends SelectedTodolistEvent {
-  final TodoParameters todoParameters;
-  const SelectedTodolistEventAddNewTodo({required this.todoParameters});
+  final TodoModel todoModel;
+  const SelectedTodolistEventAddNewTodo({required this.todoModel});
 
   @override
-  List<Object> get props => [todoParameters];
+  List<Object> get props => [todoModel];
 }
 
 class SelectedTodolistEventUpdateAccomplishedOfTodo

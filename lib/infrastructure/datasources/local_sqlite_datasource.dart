@@ -1,3 +1,5 @@
+import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/parameters/sync_pending_photo_params.dart';
 import '../../models/todo_list_update_model.dart';
@@ -34,7 +36,7 @@ abstract class LocalSqliteDataSource {
 
   Future<int> updateSpecificTodoNew({required TodoUpdateModel todoUpdateModel});
 
-  Future<int> deleteSpecificTodo({required TodoModel todoModel});
+  Future<int> deleteSpecificTodo({required TodoParameters todoParameters});
 
   Future<int> deleteFromsyncPendingPhotos({required String imageName});
 
@@ -45,7 +47,7 @@ abstract class LocalSqliteDataSource {
     required String uid,
   });
   Future<int> addTodoUidToSyncPendingTodos({
-    required TodoModel todoModel,
+    required TodoParameters todoParameters,
   });
 
   Future<int> addToSyncPendingPhotos({

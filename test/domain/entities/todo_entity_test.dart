@@ -10,6 +10,7 @@ void main() {
 
     setUp(() {
       todoEntity1 = TodoEntity(
+        uid: '1',
         task: 'Test task',
         accomplished: false,
         parentTodoListId: 'abc123',
@@ -17,6 +18,7 @@ void main() {
       );
 
       todoEntity2 = TodoEntity(
+        uid: '2',
         task: 'Test task 2',
         accomplished: false,
         parentTodoListId: 'abc123',

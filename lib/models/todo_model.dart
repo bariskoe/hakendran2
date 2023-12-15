@@ -1,43 +1,65 @@
-import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
+
 import '../database/databse_helper.dart';
 import '../domain/entities/todo_entity.dart';
 import '../domain/parameters/todo_parameters.dart';
 
-class TodoModel extends TodoEntity with EquatableMixin {
-  //final String? uid;
-  //final String task;
-  //final bool accomplished;
-  //final String parentTodoListId;
-  @override
-  final RepeatPeriod? repeatPeriod;
+class TodoModel with EquatableMixin {
+  final String uid;
+  final String task;
+  final String parentTodoListId;
+  final String repeatPeriod;
+  final bool accomplished;
   final DateTime? accomplishedAt;
   String? thumbnailImageName;
 
   TodoModel({
-    required String? uid,
-    required String task,
-    required bool accomplished,
-    required String parentTodoListId,
+    required this.task,
+    required this.parentTodoListId,
+    String? repeatPeriod,
+    String? uid,
+    bool? accomplished,
     this.accomplishedAt,
-    this.repeatPeriod = RepeatPeriod.none,
     this.thumbnailImageName,
-  }) : super(
-            task: task,
-            accomplished: accomplished,
-            parentTodoListId: parentTodoListId,
-            uid: uid);
+  })  : uid = uid ?? const Uuid().v4(),
+        repeatPeriod = repeatPeriod ?? RepeatPeriod.none.name,
+        accomplished = accomplished ?? false;
+
+// A constructor for TodoModel that takes in all the fields
+
+  // factory TodoModel.createFromScratch({
+  //   required String task,
+  //   required String parentTodoListId,
+  //   String? uid,
+  //   RepeatPeriod? repeatPeriod,
+  //   bool? accomplished,
+  //   DateTime? accomplishedAt,
+  //   String? thumbnailImageName,
+  // }) {
+  //   return TodoModel(
+  //     uid: uid ?? const Uuid().v1(),
+  //     task: task,
+  //     accomplished: accomplished ?? false,
+  //     parentTodoListId: parentTodoListId,
+  //     repeatPeriod:
+  //         repeatPeriod == null ? RepeatPeriod.none.name : repeatPeriod.name,
+  //     accomplishedAt: accomplishedAt,
+  //     thumbnailImageName: thumbnailImageName,
+  //   );
+  // }
 
   TodoModel copyWith({
     String? uid,
     String? task,
     bool? accomplished,
     String? parentTodoListId,
-    RepeatPeriod? repeatPeriod,
+    String? repeatPeriod,
     DateTime? accomplishedAt,
     String? imagePath,
     bool deleteImagePath = false,
@@ -63,7 +85,7 @@ class TodoModel extends TodoEntity with EquatableMixin {
         parentTodoListId: map[DatabaseHelper.todosTableFieldTodoListUid],
         repeatPeriod: RepeatPeriodExtension.deserialize(
           value: map[DatabaseHelper.todosTableFieldRepetitionPeriod],
-        ),
+        ).name,
         accomplishedAt:
             map[DatabaseHelper.todosTableFieldaccomplishedAt] != null
                 ? DateTime.fromMillisecondsSinceEpoch(
@@ -79,24 +101,20 @@ class TodoModel extends TodoEntity with EquatableMixin {
       task: todoEntity.task,
       accomplishedAt: todoEntity.accomplishedAt,
       thumbnailImageName: todoEntity.thumbnailImageName,
-      repeatPeriod: todoEntity.repeatPeriod,
+      repeatPeriod: todoEntity.repeatPeriod.name,
       uid: todoEntity.uid,
     );
   }
 
-  factory TodoModel.fromTodoParameters(TodoParameters todoParameters) {
-    var uuidLibrary = const Uuid();
-    return TodoModel(
-      //! Dangerous
-      task: todoParameters.task ?? '',
-      accomplished: todoParameters.accomplished ?? false,
-      parentTodoListId: todoParameters.parentTodoListId ?? '',
-      accomplishedAt: todoParameters.accomplishedAt,
-      repeatPeriod: todoParameters.repeatPeriod ?? RepeatPeriod.none,
-      //! uid should probably be required
-
-      uid: todoParameters.uid ?? uuidLibrary.v1(),
-      thumbnailImageName: todoParameters.imagePath,
+  TodoEntity toDomain() {
+    return TodoEntity(
+      accomplished: accomplished,
+      parentTodoListId: parentTodoListId,
+      task: task,
+      accomplishedAt: accomplishedAt,
+      thumbnailImageName: thumbnailImageName,
+      repeatPeriod: RepeatPeriodExtension.fromString(repeatPeriod),
+      uid: uid,
     );
   }
 
@@ -128,14 +146,14 @@ class TodoModel extends TodoEntity with EquatableMixin {
   }
 
   Map<String, dynamic> toMap() {
-    var uuidLibrary = const Uuid();
     return {
-      DatabaseHelper.todosTableFieldTodoUid: uid ?? uuidLibrary.v1(),
+      DatabaseHelper.todosTableFieldTodoUid: uid,
       DatabaseHelper.todosTableFieldTask: task,
       DatabaseHelper.todosTableFieldAccomplished:
           AccomplishmentStatusExtension.serialize(accomplished: accomplished),
       DatabaseHelper.todosTableFieldTodoListUid: parentTodoListId,
-      DatabaseHelper.todosTableFieldRepetitionPeriod: repeatPeriod?.serialize(),
+      DatabaseHelper.todosTableFieldRepetitionPeriod:
+          RepeatPeriodExtension.getRepeatPeriodIndex(repeatPeriod),
       DatabaseHelper.todosTableFieldaccomplishedAt:
           accomplishedAt?.millisecondsSinceEpoch,
       DatabaseHelper.todosTableFieldImagePath: thumbnailImageName
@@ -159,7 +177,7 @@ class TodoModel extends TodoEntity with EquatableMixin {
     } else {
       DateTime now = DateTime.now();
       bool timeHasPassed = accomplishedAt!.isBefore(now);
-      switch (repeatPeriod) {
+      switch (RepeatPeriodExtension.fromString(repeatPeriod)) {
         case RepeatPeriod.none:
           return false;
 
@@ -227,6 +245,16 @@ extension RepeatPeriodExtension on RepeatPeriod {
 
   int serialize() {
     return RepeatPeriod.values.indexWhere((element) => element == this);
+  }
+
+  static int getRepeatPeriodIndex(String periodName) {
+    return RepeatPeriod.values.indexWhere(
+        (period) => period.toString().split('.').last == periodName);
+  }
+
+  static RepeatPeriod fromString(String periodName) {
+    return RepeatPeriod.values.firstWhere(
+        (period) => period.toString().split('.').last == periodName);
   }
 
   String getName(BuildContext context) {

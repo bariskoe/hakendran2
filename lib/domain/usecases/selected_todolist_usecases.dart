@@ -1,6 +1,7 @@
 import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../models/todo_model.dart';
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
 import '../parameters/todo_parameters.dart';
@@ -22,10 +23,10 @@ class SelectedTodolistUsecases {
   }
 
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoParameters todoParameters,
+    required TodoModel todoModel,
   }) async {
     return await selectedTodolistRepository.addTodoToSpecificList(
-      todoParameters: todoParameters,
+      todoModel: todoModel,
     );
   }
 

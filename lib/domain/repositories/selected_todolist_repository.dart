@@ -2,6 +2,7 @@ import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:baristodolistapp/domain/parameters/update_todo_parameters.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../models/todo_model.dart';
 import '../entities/todolist_entity.dart';
 import '../failures/failures.dart';
 import '../parameters/todo_parameters.dart';
@@ -12,7 +13,7 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> addTodoToSpecificList({
-    required TodoParameters todoParameters,
+    required TodoModel todoModel,
   });
 
   Future<Either<Failure, int>> setAccomplishmentStatusOfTodo({

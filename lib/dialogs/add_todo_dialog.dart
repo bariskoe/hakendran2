@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../domain/parameters/todo_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -55,20 +57,29 @@ Future<void> addTodoDialog({
                 Logger().d('Repeatperiod: $deserialized');
                 getIt<SelectedTodolistBloc>().add(
                   SelectedTodolistEventAddNewTodo(
-                    todoParameters: TodoParameters(
-                      accomplished: false,
-                      task: textEditingController.text,
-                      parentTodoListId: '',
-                      repeatPeriod: RepeatPeriodExtension.deserialize(
-                          value: _selectedRepeatPeriodIndex),
-                    ),
-                  ),
+                      todoModel: TodoModel(
+                    accomplished: false,
+                    task: textEditingController.text,
+                    parentTodoListId: SelectedTodolistBloc.selectedTodoList!,
+                    repeatPeriod: RepeatPeriodExtension.deserialize(
+                            value: _selectedRepeatPeriodIndex)
+                        .name,
+                  )
+
+                      // TodoParameters(
+                      //   accomplished: false,
+                      //   task: textEditingController.text,
+                      //   parentTodoListId: SelectedTodolistBloc.selectedTodoList,
+                      //   repeatPeriod: RepeatPeriodExtension.deserialize(
+                      //       value: _selectedRepeatPeriodIndex),
+                      // ),
+                      ),
                 );
 
                 Navigator.of(context).pop();
               }
             },
-          ),
+          )
         ],
       );
     },
