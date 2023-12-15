@@ -6,7 +6,6 @@ import 'package:baristodolistapp/dependency_injection.dart';
 import 'package:baristodolistapp/models/todo_model.dart';
 import 'package:baristodolistapp/services/path_builder.dart';
 import 'package:equatable/equatable.dart';
-import 'package:uuid/uuid.dart';
 
 class TodoEntity with EquatableMixin {
   final String uid;
@@ -28,7 +27,7 @@ class TodoEntity with EquatableMixin {
 
   factory TodoEntity.empty() {
     return TodoEntity(
-      uid: const Uuid().v4(),
+      uid: '',
       task: '',
       accomplished: false,
       parentTodoListId: '',
