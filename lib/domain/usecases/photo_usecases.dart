@@ -46,14 +46,6 @@ class PhotoUsecases {
     );
   }
 
-  // Future<Either<Failure, bool>> deleteFileFromFirebaseStorage(
-  //     {required DeleteFileFromFirebaseStorageParams
-  //         deleteFileFromFirebaseStorageParams}) async {
-  //   return await apiRepository.deleteFileFromFirebaseStorage(
-  //     deleteFileFromFirebaseStorageParams: deleteFileFromFirebaseStorageParams,
-  //   );
-  // }
-
   Future<Either<Failure, int>> addToSyncPendingPhotos(
       {required SyncPendingPhotoParams syncPendingPhotoParams}) async {
     return await dataPreparationRepository.addToSyncPendingPhotos(

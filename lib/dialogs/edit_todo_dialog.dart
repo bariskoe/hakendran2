@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
+import '../domain/parameters/todo_update_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -56,18 +56,8 @@ Future<void> editTodoDialog(
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
-                getIt<SelectedTodolistBloc>().add(
-                    // SelectedTodolistEventUpdateTodo(
-                    //     updateTodoModelParameters: UpdateTodoModelParameters
-                    //             .fromDomain(todoEntity: todoEntity)
-                    //         .copyWith(
-                    //             task: textEditingController.text,
-                    //             repeatPeriod: RepeatPeriodExtension.deserialize(
-                    //               value:
-                    //                   _selectedRepetitionPeriodIndexInEditTodoDialog ??
-                    //                       0,
-                    //             ).name))
-                    SelectedTodoListEventUpdateTodo(
+                getIt<SelectedTodolistBloc>()
+                    .add(SelectedTodoListEventUpdateTodo(
                         todoUpdateParameters: TodoUpdateParameters(
                   uid: todoEntity.uid,
                   accomplished: todoEntity.accomplished,
