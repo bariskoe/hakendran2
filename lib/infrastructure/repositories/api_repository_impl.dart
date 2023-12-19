@@ -92,22 +92,22 @@ class ApiRepositoryImpl implements ApiRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, bool>> deleteFileFromFirebaseStorage(
-      {required DeleteFileFromFirebaseStorageParams
-          deleteFileFromFirebaseStorageParams}) async {
-    try {
-      bool success = await firebaseStorageService.deleteFileFromFirebaseStorage(
-          deleteFileFromFirebaseStorageParams:
-              deleteFileFromFirebaseStorageParams);
-      if (success) {
-        return const Right(true);
-      } else {
-        return Left(FirebaseFailure(
-            message: 'Failed to delete file on FirebaseStorage'));
-      }
-    } catch (e) {
-      return Left(FirebaseFailure(message: e.toString()));
-    }
-  }
+  // @override
+  // Future<Either<Failure, bool>> deleteFileFromFirebaseStorage(
+  //     {required DeleteFileFromFirebaseStorageParams
+  //         deleteFileFromFirebaseStorageParams}) async {
+  //   try {
+  //     bool success = await firebaseStorageService.deleteFileFromFirebaseStorage(
+  //         deleteFileFromFirebaseStorageParams:
+  //             deleteFileFromFirebaseStorageParams);
+  //     if (success) {
+  //       return const Right(true);
+  //     } else {
+  //       return Left(FirebaseFailure(
+  //           message: 'Failed to delete file on FirebaseStorage'));
+  //     }
+  //   } catch (e) {
+  //     return Left(FirebaseFailure(message: e.toString()));
+  //   }
+  // }
 }

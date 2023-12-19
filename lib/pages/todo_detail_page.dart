@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -341,14 +342,22 @@ class ImageThumbnailWidget extends StatelessWidget {
                                 onTap: () {
                                   Get.back();
                                   getIt<SelectedTodolistBloc>().add(
-                                      SelectedTodolistEventUpdateTodo(
-                                          updateTodoModelParameters:
-                                              UpdateTodoModelParameters
-                                                      .fromDomain(
-                                                          todoEntity:
-                                                              todoEntity)
-                                                  .copyWith(
-                                                      deleteImagePath: true)));
+                                      // SelectedTodolistEventUpdateTodo(
+                                      //     updateTodoModelParameters:
+                                      //         UpdateTodoModelParameters
+                                      //                 .fromDomain(
+                                      //                     todoEntity:
+                                      //                         todoEntity)
+                                      //             .copyWith(
+                                      //                 deleteImagePath: true))
+
+                                      SelectedTodoListEventUpdateTodo(
+                                          todoUpdateParameters:
+                                              TodoUpdateParameters(
+                                    uid: todoEntity.uid,
+                                    //thumbnailImageName: null
+                                    deleteImage: true,
+                                  )));
 
                                   getIt<PhotoBloc>().add(
                                       PhotoEventSetSelectedThumbnailPhoto(

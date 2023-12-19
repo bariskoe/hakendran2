@@ -26,8 +26,8 @@ abstract class ApiRepository {
         uploadToFirebaseStorageParameters,
   });
 
-  Future<Either<Failure, bool>> deleteFileFromFirebaseStorage({
-    required DeleteFileFromFirebaseStorageParams
-        deleteFileFromFirebaseStorageParams,
-  });
+  // Future<Either<Failure, bool>> deleteFileFromFirebaseStorage({
+  //   required DeleteFileFromFirebaseStorageParams
+  //       deleteFileFromFirebaseStorageParams,
+  // });
 }

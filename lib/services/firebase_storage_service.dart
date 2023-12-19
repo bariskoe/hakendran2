@@ -119,6 +119,8 @@ class FirebaseStorageService {
       {required DeleteFileFromFirebaseStorageParams
           deleteFileFromFirebaseStorageParams}) async {
     try {
+      Logger().d(
+          'deleting File From FirebaseStorage ${deleteFileFromFirebaseStorageParams.fileName}}');
       // Reference finalReference = storageRef.child(
       //     "${deleteFileFromFirebaseStorageParams.firebaseStorageReferenceEnum.getNameOfFolderOnStorageBucket()}/${deleteFileFromFirebaseStorageParams.fileName}");
       final firebaseUserId =

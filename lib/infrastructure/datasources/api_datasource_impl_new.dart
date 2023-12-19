@@ -411,7 +411,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
       }
       return true;
     }));
-    {}
+
     return true;
   }
 

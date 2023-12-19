@@ -11,6 +11,7 @@ class TodoUpdateParameters with EquatableMixin {
   DateTime? accomplishedAt;
   String? thumbnailImageName;
   String? downloadUrl;
+  bool deleteImage;
 
   TodoUpdateParameters({
     required this.uid,
@@ -21,6 +22,7 @@ class TodoUpdateParameters with EquatableMixin {
     this.accomplishedAt,
     this.thumbnailImageName,
     this.downloadUrl,
+    this.deleteImage = false,
   });
 
   @override
@@ -33,5 +35,6 @@ class TodoUpdateParameters with EquatableMixin {
         repeatPeriod,
         thumbnailImageName,
         downloadUrl,
+        deleteImage,
       ];
 }

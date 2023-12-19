@@ -40,19 +40,10 @@ class SelectedTodolistUsecases {
     );
   }
 
-//TODO: Eliminate this method and only use updateSpecificTodoNew
   Future<Either<Failure, int>> updateSpecificTodo({
-    required UpdateTodoModelParameters updateTodoModelParameters,
-  }) async {
-    return await selectedTodolistRepository.updateSpecificTodo(
-      updateTodoModelParameters: updateTodoModelParameters,
-    );
-  }
-
-  Future<Either<Failure, int>> updateSpecificTodoNew({
     required TodoUpdateParameters todoUpdateParameters,
   }) async {
-    return await selectedTodolistRepository.updateSpecificTodoNew(
+    return await selectedTodolistRepository.updateSpecificTodo(
       todoUpdateParameters: todoUpdateParameters,
     );
   }

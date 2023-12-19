@@ -278,41 +278,6 @@ class DatabaseHelper {
     return update;
   }
 
-//TODO: delete [updateSpecificTodo] and replace it with updateSpecificTodoNew
-  static Future<int> updateSpecificTodo({
-    required TodoModel todoModel,
-  }) async {
-    Database db = await instance.database;
-    // Logger().d('Das model ist $model');
-    //final oldModel = await getSpecificTodo(uid: todoParameters.uid!);
-    // final TodoModel updatedModel;
-
-    // final oldModelMap = oldModel!.toMap();
-    // Logger().d('Das oldmodel ist $oldModelMap');
-    // final updatedModelMap = Map.from(oldModelMap);
-    // final updateModelMap = model.toMap();
-    // //! Das Problem liegt bei TodoModel.fromTodoParameters. Dort wird Task mit '' überschrieben, weil es in den TodoParameters
-    // //! null ist. Dadurch wird es in der folgenden for Schleife wird task ebenfalls auf '' gesetzt
-    // for (MapEntry mapentry in updateModelMap.entries) {
-    //   updatedModelMap[mapentry.key] = mapentry.value;
-    // }
-    // updatedModel = TodoModel.fromMap(updatedModelMap);
-    // Logger().d('Das updatemodel ist $updatedModel');
-    // final updatedModel = oldModel!.copyWith();
-    // Logger().d('UpdatedModel in DatabaseHelper is $updatedModel');
-    final update = await db.rawUpdate(
-        'UPDATE $todosTableName SET $todosTableFieldTask = ?, $todosTableFieldRepetitionPeriod = ?, $todosTableFieldImagePath = ? WHERE $todosTableFieldTodoUid = ?',
-        [
-          todoModel.task,
-          RepeatPeriodExtension.getRepeatPeriodIndex(todoModel.repeatPeriod),
-          todoModel.thumbnailImageName,
-          todoModel.uid
-        ]);
-    saveTimestamp();
-    Logger().d('Update in DatabaseHelper is $update');
-    return update;
-  }
-
   static Future<int> updateSpecificTodoNew(
       {required TodoUpdateModel todoUpdateModel}) async {
     Database db = await instance.database;
@@ -325,7 +290,7 @@ class DatabaseHelper {
     }
     if (todoUpdateModel.repeatPeriod != null) {
       fieldsToUpdate.add(todosTableFieldRepetitionPeriod);
-      args.add(todoUpdateModel.repeatPeriod);
+      args.add(todoUpdateModel.repeatPeriod?.serialize());
     }
     if (todoUpdateModel.imagePath != null) {
       fieldsToUpdate.add(todosTableFieldImagePath);
@@ -333,7 +298,7 @@ class DatabaseHelper {
     }
     if (todoUpdateModel.accomplishedAt != null) {
       fieldsToUpdate.add(todosTableFieldaccomplishedAt);
-      args.add(todoUpdateModel.accomplishedAt);
+      args.add(todoUpdateModel.accomplishedAt?.millisecondsSinceEpoch);
     }
     if (todoUpdateModel.downloadUrl != null) {
       fieldsToUpdate.add(todosTableFieldDownloadUrl);
@@ -347,12 +312,22 @@ class DatabaseHelper {
       fieldsToUpdate.add(todosTableFieldAccomplished);
       args.add(todoUpdateModel.accomplished);
     }
+    if (todoUpdateModel.deleteImage) {
+      fieldsToUpdate.add(todosTableFieldImagePath);
+      args.add(null);
+      fieldsToUpdate.add(todosTableFieldDownloadUrl);
+      args.add(null);
+    }
     args.add(todoUpdateModel.uid);
     String fieldsToUpdateString = '';
+    if (fieldsToUpdate.isEmpty) {
+      Logger().d('No fields to update');
+      return 0;
+    }
     if (fieldsToUpdate.length == 1) {
       fieldsToUpdateString = '${fieldsToUpdate.first} = ?';
     } else {
-      fieldsToUpdateString = '${fieldsToUpdate.join(' = ?, ')}';
+      fieldsToUpdateString = '${fieldsToUpdate.join(' = ?, ')} = ?';
     }
     String sqliteUpdateStatement =
         'UPDATE $todosTableName SET $fieldsToUpdateString WHERE $todosTableFieldTodoUid = ?';
@@ -535,7 +510,7 @@ class DatabaseHelper {
   static Future<int> deleteFromsyncPendingPhotos(
       {required String relativePath}) async {
     Database db = await instance.database;
-
+    Logger().d('Deleting $relativePath from syncPendingPhotos');
     return await db.rawDelete(
         'DELETE FROM $syncPendingPhotosName WHERE $syncPendingPhotosFieldRelativePath = ?',
         [relativePath]);

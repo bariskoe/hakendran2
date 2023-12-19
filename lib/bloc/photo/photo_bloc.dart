@@ -40,11 +40,10 @@ class PhotoBloc extends Bloc<PhotoEvent, PhotoState> {
         failureOrsavedToGallery.fold(
           (l) => emit(PhotoStateError(l.toString())),
           (r) {
-            getIt<SelectedTodolistBloc>().add(
-                SelectedTodoListEventUpdateTodoNew(
-                    todoUpdateParameters: TodoUpdateParameters(
-                        uid: event.takeThumbnailPhotoParams.todoId,
-                        thumbnailImageName: r)));
+            getIt<SelectedTodolistBloc>().add(SelectedTodoListEventUpdateTodo(
+                todoUpdateParameters: TodoUpdateParameters(
+                    uid: event.takeThumbnailPhotoParams.todoId,
+                    thumbnailImageName: r)));
             if (_selectedThumbnailPhoto != null) {
               photoUsecases.deletePhotoFromGalleryUsecase(
                   fullPath: _selectedThumbnailPhoto!);
@@ -83,10 +82,12 @@ class PhotoBloc extends Bloc<PhotoEvent, PhotoState> {
             fullPath: _selectedThumbnailPhoto!);
         deleted.fold((l) => null, (r) {
           final photoName = _selectedThumbnailPhoto!.split('/').last;
-          add(PhotoEventAddToSyncPendingPhotos(
+          add(
+            PhotoEventAddToSyncPendingPhotos(
               syncPendingPhotoParams: SyncPendingPhotoParams(
-                  photoName: photoName,
-                  method: SyncPendingPhotoMethod.delete)));
+                  photoName: photoName, method: SyncPendingPhotoMethod.delete),
+            ),
+          );
           _selectedThumbnailPhoto = null;
         });
       }

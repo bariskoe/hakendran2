@@ -32,8 +32,6 @@ abstract class LocalSqliteDataSource {
     required bool accomplished,
   });
 
-  Future<int> updateSpecificTodo({required TodoModel todoModel});
-
   Future<int> updateSpecificTodoNew({required TodoUpdateModel todoUpdateModel});
 
   Future<int> deleteSpecificTodo({required TodoParameters todoParameters});

@@ -1,3 +1,5 @@
+import 'package:logger/logger.dart';
+
 import '../../database/databse_helper.dart';
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/parameters/sync_pending_photo_params.dart';
@@ -84,15 +86,6 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   }
 
   @override
-  Future<int> updateSpecificTodo({
-    required TodoModel todoModel,
-  }) async {
-    return await DatabaseHelper.updateSpecificTodo(
-      todoModel: todoModel,
-    );
-  }
-
-  @override
   Future<int> resetAllTodosOfSpecificList({
     required String uid,
   }) async {
@@ -129,6 +122,8 @@ class LocalSqliteDataSourceImpl implements LocalSqliteDataSource {
   @override
   Future<int> addToSyncPendingPhotos(
       {required SyncPendingPhotoParams syncPendingPhotoParams}) async {
+    Logger()
+        .d('adding to syncpendingphotos ${syncPendingPhotoParams.photoName}');
     final model =
         SyncPendingPhotoModel.fromParams(params: syncPendingPhotoParams);
     return await DatabaseHelper.addToSyncPendingPhotos(model: model);

@@ -66,23 +66,6 @@ class SelectedTodoListRepositoryImpl implements SelectedTodolistRepository {
 
   @override
   Future<Either<Failure, int>> updateSpecificTodo({
-    required UpdateTodoModelParameters updateTodoModelParameters,
-  }) async {
-    try {
-      final updatedTodoModel =
-          TodoModel.fromUpdateTodoModelParameters(u: updateTodoModelParameters);
-
-      int changes = await localSqliteDataSource.updateSpecificTodo(
-        todoModel: updatedTodoModel,
-      );
-      return Right(changes);
-    } catch (e) {
-      return Left(DatabaseFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, int>> updateSpecificTodoNew({
     required TodoUpdateParameters todoUpdateParameters,
   }) async {
     try {

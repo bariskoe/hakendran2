@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/domain/parameters/todo_update_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -56,16 +57,28 @@ Future<void> editTodoDialog(
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {
                 getIt<SelectedTodolistBloc>().add(
-                    SelectedTodolistEventUpdateTodo(
-                        updateTodoModelParameters: UpdateTodoModelParameters
-                                .fromDomain(todoEntity: todoEntity)
-                            .copyWith(
-                                task: textEditingController.text,
-                                repeatPeriod: RepeatPeriodExtension.deserialize(
-                                  value:
-                                      _selectedRepetitionPeriodIndexInEditTodoDialog ??
-                                          0,
-                                ).name)));
+                    // SelectedTodolistEventUpdateTodo(
+                    //     updateTodoModelParameters: UpdateTodoModelParameters
+                    //             .fromDomain(todoEntity: todoEntity)
+                    //         .copyWith(
+                    //             task: textEditingController.text,
+                    //             repeatPeriod: RepeatPeriodExtension.deserialize(
+                    //               value:
+                    //                   _selectedRepetitionPeriodIndexInEditTodoDialog ??
+                    //                       0,
+                    //             ).name))
+                    SelectedTodoListEventUpdateTodo(
+                        todoUpdateParameters: TodoUpdateParameters(
+                  uid: todoEntity.uid,
+                  accomplished: todoEntity.accomplished,
+                  accomplishedAt: todoEntity.accomplishedAt,
+                  parentTodoListId: todoEntity.parentTodoListId,
+                  repeatPeriod: RepeatPeriodExtension.deserialize(
+                      value:
+                          _selectedRepetitionPeriodIndexInEditTodoDialog ?? 0),
+                  task: textEditingController.text,
+                  thumbnailImageName: todoEntity.thumbnailImageName,
+                )));
                 Navigator.of(context).pop();
               }
             },

@@ -22,10 +22,6 @@ abstract class SelectedTodolistRepository {
   });
 
   Future<Either<Failure, int>> updateSpecificTodo({
-    required UpdateTodoModelParameters updateTodoModelParameters,
-  });
-
-  Future<Either<Failure, int>> updateSpecificTodoNew({
     required TodoUpdateParameters todoUpdateParameters,
   });
 

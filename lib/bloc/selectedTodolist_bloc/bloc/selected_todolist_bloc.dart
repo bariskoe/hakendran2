@@ -31,7 +31,6 @@ class SelectedTodolistBloc
     
       });
     */
-    on<SelectedTodolistEvent>((event, emit) async {});
 
     on<SelectedTodolistEventLoadSelectedTodolist>((event, emit) async {
       emit(SelectedTodoListStateLoading());
@@ -99,30 +98,11 @@ class SelectedTodolistBloc
       },
     );
 
-    on<SelectedTodolistEventUpdateTodo>((event, emit) async {
+    on<SelectedTodoListEventUpdateTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
 
-      Either<Failure, int> changes =
-          await selectedTodolistUsecases.updateSpecificTodo(
-              updateTodoModelParameters: event.updateTodoModelParameters);
-      Logger().d('changes sind $changes');
-      changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
-        getIt<SelectedTodolistBloc>().add(
-            SelectedTodoListEventAddTodoUidToSyncPendingTodos(
-                todoParameters:
-                    TodoParameters(uid: event.updateTodoModelParameters.uid)));
-        add(
-          SelectedTodolistEventLoadSelectedTodolist(uid: selectedTodoList!),
-        );
-      });
-    });
-
-    on<SelectedTodoListEventUpdateTodoNew>((event, emit) async {
-      emit(SelectedTodoListStateLoading());
-
-      Either<Failure, int> changes =
-          await selectedTodolistUsecases.updateSpecificTodoNew(
-              todoUpdateParameters: event.todoUpdateParameters);
+      Either<Failure, int> changes = await selectedTodolistUsecases
+          .updateSpecificTodo(todoUpdateParameters: event.todoUpdateParameters);
       Logger().d('changes sind $changes');
       changes.fold((l) => emit(SelectedTodolistStateError()), (r) {
         getIt<SelectedTodolistBloc>().add(

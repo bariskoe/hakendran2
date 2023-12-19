@@ -53,9 +53,9 @@ class SelectedTodolistEventUpdateTodo extends SelectedTodolistEvent {
   List<Object> get props => [updateTodoModelParameters];
 }
 
-class SelectedTodoListEventUpdateTodoNew extends SelectedTodolistEvent {
+class SelectedTodoListEventUpdateTodo extends SelectedTodolistEvent {
   final TodoUpdateParameters todoUpdateParameters;
-  const SelectedTodoListEventUpdateTodoNew({
+  const SelectedTodoListEventUpdateTodo({
     required this.todoUpdateParameters,
   });
 
