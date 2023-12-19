@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/models/downloadable_photos_model.dart';
-import 'package:baristodolistapp/models/firestore_data_info_model.dart';
+import '../../models/downloadable_photos_model.dart';
+import '../../models/firestore_data_info_model.dart';
 
 import '../../models/api_action_model.dart';
 import '../../models/todo_model.dart';

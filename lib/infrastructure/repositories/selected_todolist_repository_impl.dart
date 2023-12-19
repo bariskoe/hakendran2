@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/models/todo_update_model.dart';
+import '../../models/todo_update_model.dart';
 
 import '../../domain/parameters/todo_parameters.dart';
 import '../../domain/parameters/todo_update_parameters.dart';

@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
-import 'package:baristodolistapp/services/firebase_storage_service.dart';
+import '../../domain/parameters/upload_to_firebase_storage_parameters.dart';
+import '../../services/firebase_storage_service.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../domain/failures/failures.dart';

@@ -1,7 +1,7 @@
-import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
-import 'package:baristodolistapp/domain/repositories/data_preparation_repository.dart';
-import 'package:baristodolistapp/models/sync_pending_photo_model.dart';
-import 'package:baristodolistapp/services/path_builder.dart';
+import '../../../domain/parameters/sync_pending_photo_params.dart';
+import '../../../domain/repositories/data_preparation_repository.dart';
+import '../../../models/sync_pending_photo_model.dart';
+import '../../../services/path_builder.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';

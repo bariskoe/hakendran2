@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
-import 'package:baristodolistapp/models/downloadable_photos_model.dart';
+import '../../domain/parameters/sync_pending_photo_params.dart';
+import '../../models/downloadable_photos_model.dart';
 
 import '../../database/databse_helper.dart';
 import '../../models/firestore_data_info_model.dart';

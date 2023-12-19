@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+import '../../domain/parameters/todo_parameters.dart';
 
 import '../../domain/entities/todolist_entity.dart';
 import '../../domain/parameters/sync_pending_photo_params.dart';

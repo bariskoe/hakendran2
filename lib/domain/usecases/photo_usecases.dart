@@ -1,13 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:baristodolistapp/domain/parameters/delete_file_from_firebase_storage_params.dart';
 import 'package:baristodolistapp/domain/parameters/save_photo_to_gallery_params.dart';
 import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
+import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
+import 'package:baristodolistapp/domain/repositories/api_repository.dart';
 import 'package:baristodolistapp/domain/repositories/data_preparation_repository.dart';
 import 'package:baristodolistapp/domain/repositories/photo_repository.dart';
 import 'package:dartz/dartz.dart';
-
-import 'package:baristodolistapp/domain/parameters/upload_to_firebase_storage_parameters.dart';
-import 'package:baristodolistapp/domain/repositories/api_repository.dart';
 
 import '../failures/failures.dart';
 

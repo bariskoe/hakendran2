@@ -1,11 +1,10 @@
-import '../domain/parameters/todo_update_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/selectedTodolist_bloc/bloc/selected_todolist_bloc.dart';
 import '../dependency_injection.dart';
 import '../domain/entities/todo_entity.dart';
-import '../domain/parameters/update_todo_parameters.dart';
+import '../domain/parameters/todo_update_parameters.dart';
 import '../models/todo_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/standart_text_widgets.dart';
