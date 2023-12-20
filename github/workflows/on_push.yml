@@ -1,43 +1,19 @@
-name: Build and Test
-
-on:
-  push:
-    branches:
-      - '*'
-
+name: TEST FLUTTER APP
+on: [push]
+  
+env:
+  FLUTTER_VERSION: "3.16.4"
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1
         with:
-          flutter-version: '2.2.3'
-
-      - name: Install dependencies
+          version: $FLUTTER_VERSION
+      - name: Get Packages
         run: flutter pub get
-
-      - name: Build app
-        run: flutter build apk
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.2.3'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
+      - name: Run Tests
+        run: flutter test --no-pub
