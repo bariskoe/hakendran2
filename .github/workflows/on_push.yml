@@ -1,5 +1,5 @@
 name: TEST FLUTTER APP
-on: [workflow_dispatch,push]
+on: [workflow_dispatch]
   
 env:
   FLUTTER_VERSION: "3.16.4"
