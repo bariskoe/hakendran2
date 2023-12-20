@@ -1,4 +1,4 @@
-# baristodolistapp
+# Hakendran
 
 This is yet another Todo List app which was fully written by me, Baris Kosebas. I have created it because I really want
 to use it in real life and to apply the newest version of the Bloc state management.
