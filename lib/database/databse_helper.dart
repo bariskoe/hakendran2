@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:baristodolistapp/domain/parameters/todo_parameters.dart';
+import '../domain/parameters/todo_parameters.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

@@ -1,14 +1,12 @@
-import '../ui/standard_widgets/standard_ui_widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../models/todolist_model.dart';
-import '../ui/constants/constants.dart';
-
-import '../ui/standard_widgets/standart_text_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/allTodoLists/all_todolists_bloc.dart';
+import '../models/todolist_model.dart';
+import '../ui/constants/constants.dart';
+import '../ui/standard_widgets/standard_ui_widgets.dart';
+import '../ui/standard_widgets/standart_text_widgets.dart';
 
 int _selectedCategoryIndex = 0;
 

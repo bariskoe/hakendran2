@@ -1,5 +1,5 @@
-import 'package:baristodolistapp/domain/parameters/sync_pending_photo_params.dart';
-import 'package:baristodolistapp/models/downloadable_photos_model.dart';
+import '../parameters/sync_pending_photo_params.dart';
+import '../../models/downloadable_photos_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../models/todolist_model.dart';

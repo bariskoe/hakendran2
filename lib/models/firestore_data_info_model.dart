@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:baristodolistapp/strings/string_constants.dart';
+import '../strings/string_constants.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class FirestoreDataInfoModel {

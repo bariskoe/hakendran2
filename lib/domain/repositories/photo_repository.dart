@@ -1,4 +1,4 @@
-import 'package:baristodolistapp/domain/parameters/save_photo_to_gallery_params.dart';
+import '../parameters/save_photo_to_gallery_params.dart';
 import 'package:dartz/dartz.dart';
 
 import '../failures/failures.dart';
