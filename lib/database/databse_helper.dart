@@ -379,7 +379,7 @@ class DatabaseHelper {
       if (model.shouldResetAccomplishmentStatus()) {
         lock.synchronized(() async {
           await setAccomplishmentStatusOfTodo(
-              uid: model.uid!, accomplished: false);
+              uid: model.uid, accomplished: false);
         });
       }
     }

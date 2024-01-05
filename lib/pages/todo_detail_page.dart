@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import '../domain/parameters/todo_update_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,7 +19,7 @@ import '../dialogs/edit_todo_dialog.dart';
 import '../domain/entities/todo_entity.dart';
 import '../domain/parameters/take_thumbnail_photo_params.dart';
 import '../domain/parameters/todo_parameters.dart';
-import '../domain/parameters/update_todo_parameters.dart';
+import '../domain/parameters/todo_update_parameters.dart';
 import '../models/todolist_model.dart';
 import '../ui/constants/constants.dart';
 import '../ui/standard_widgets/error_box_widget.dart';
@@ -185,7 +184,7 @@ class _DetailPageListWidgetState extends State<DetailPageListWidget>
           //Put an invisible Container to the end of the list so that the Floating
           //Action Buttons don't disturb when scrolled down to the end
           if (reversedList.indexOf(todoEntity) == reversedList.length - 1) {
-            return SizedBox(
+            return const SizedBox(
               height: 100,
             );
           } else {
@@ -269,7 +268,7 @@ class ListElement extends StatelessWidget {
                   onTap: () {
                     getIt<SelectedTodolistBloc>().add(
                       SelectedTodolistEventUpdateAccomplishedOfTodo(
-                        uid: todoEntity.uid!,
+                        uid: todoEntity.uid,
                         accomplished: !todoEntity.accomplished,
                       ),
                     );
@@ -331,7 +330,7 @@ class ImageThumbnailWidget extends StatelessWidget {
                                   PhotoEventTakeThumbnailPicture(
                                       takeThumbnailPhotoParams:
                                           TakeThumbnailPhotoParams(
-                                              todoId: todoEntity.uid!)));
+                                              todoId: todoEntity.uid)));
                             },
                             child: const SizedBox(
                                 height: 50, child: Icon(Icons.edit_outlined)),
@@ -342,20 +341,10 @@ class ImageThumbnailWidget extends StatelessWidget {
                                 onTap: () {
                                   Get.back();
                                   getIt<SelectedTodolistBloc>().add(
-                                      // SelectedTodolistEventUpdateTodo(
-                                      //     updateTodoModelParameters:
-                                      //         UpdateTodoModelParameters
-                                      //                 .fromDomain(
-                                      //                     todoEntity:
-                                      //                         todoEntity)
-                                      //             .copyWith(
-                                      //                 deleteImagePath: true))
-
                                       SelectedTodoListEventUpdateTodo(
                                           todoUpdateParameters:
                                               TodoUpdateParameters(
                                     uid: todoEntity.uid,
-                                    //thumbnailImageName: null
                                     deleteImage: true,
                                   )));
 
@@ -373,17 +362,16 @@ class ImageThumbnailWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              onPop: () => print('Popover was popped!'),
+
               direction: PopoverDirection.bottom,
-              // width: 300,
-              // height: 300,
+
               arrowHeight: 15,
               arrowWidth: 30,
             );
           } else {
             getIt<PhotoBloc>().add(PhotoEventTakeThumbnailPicture(
                 takeThumbnailPhotoParams:
-                    TakeThumbnailPhotoParams(todoId: todoEntity.uid!)));
+                    TakeThumbnailPhotoParams(todoId: todoEntity.uid)));
           }
         },
         child: Container(
@@ -396,7 +384,7 @@ class ImageThumbnailWidget extends StatelessWidget {
           width: UiConstantsSize.small,
           child: snapshot.hasData
               ? ClipRRect(
-                  borderRadius: BorderRadius.all(
+                  borderRadius: const BorderRadius.all(
                       Radius.circular(UiConstantsRadius.regular)),
                   clipBehavior: Clip.hardEdge,
                   child: Image.file(

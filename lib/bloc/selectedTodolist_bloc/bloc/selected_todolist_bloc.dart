@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../dependency_injection.dart';
 import '../../../domain/entities/todolist_entity.dart';
@@ -43,14 +42,10 @@ class SelectedTodolistBloc
         );
         Logger().d('selected TodoList: ${r.toString()}');
       });
-      Logger().d('selected list loaded');
     });
 
     on<SelectedTodolistEventAddNewTodo>((event, emit) async {
       emit(SelectedTodoListStateLoading());
-
-      const uuidPackage = Uuid();
-      final uid = uuidPackage.v1();
 
       if (selectedTodoList != null) {
         TodoListDetailPage.justAddedTodo = true;

@@ -298,7 +298,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
             await addTodoToSpecificList(todoModel: todoModel);
 
         if (uploadSuccessful) {
-          await DatabaseHelper.deleteFromsyncPendigTodos(uid: todoModel.uid!);
+          await DatabaseHelper.deleteFromsyncPendigTodos(uid: todoModel.uid);
         }
       } else {
         final deleteSuccessful = await deleteTodoFromSpecificList(map: {
