@@ -18,10 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController =
-      TextEditingController(text: 'bariskoe@gmail.com');
-  TextEditingController passwordController =
-      TextEditingController(text: 'asdfghjkl');
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   bool loginShowing = true;
   var logger = Logger();
@@ -74,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: UiConstantsPadding.large,
                         ),
                         TextField(
+                          obscureText: true,
                           controller: passwordController,
                           decoration: StandardTextfieldDecoration
                               .textFieldInputDecoration(
