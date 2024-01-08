@@ -1,3 +1,4 @@
+import 'package:baristodolistapp/database/databse_helper.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,8 +67,12 @@ class AuthenticationBloc
           if (idToken != null) {
             getIt<SharedPreferences>()
                 .setString(StringConstants.spFirebaseIDTokenKey, idToken);
-            getIt<FolderCreator>();
-            getIt<PathBuilder>();
+
+            /// These Singletons have to be initialized on every log in
+            /// in order to create the respective folder paths with the
+            /// current Firebase id token
+            await getIt<FolderCreator>().initialize();
+            await getIt<PathBuilder>().initialize();
             add(AuthenticationEventIsSignedIn());
           }
         }
@@ -96,6 +101,13 @@ class AuthenticationBloc
       }, (r) async {
         if (r.user != null) {
           Logger().i('Credentials are: ${r.credential}');
+          if (r.user?.uid != null) {
+            final uid = r.user?.uid;
+
+            await getIt<SharedPreferences>()
+                .setString(StringConstants.spFirebaseUserIDKey, uid!);
+          }
+
           final idToken =
               await getIt<FirebaseAuth>().currentUser?.getIdToken(true);
 
@@ -103,6 +115,12 @@ class AuthenticationBloc
             getIt<SharedPreferences>()
                 .setString(StringConstants.spFirebaseIDTokenKey, idToken);
             getIt<AuthenticationBloc>().add(AuthenticationEventIsSignedIn());
+
+            /// These Singletons have to be initialized on every registration
+            /// in order to create the respective folder paths with the
+            /// current Firebase id token
+            await getIt<FolderCreator>().initialize();
+            await getIt<PathBuilder>().initialize();
           }
         }
       });
@@ -111,6 +129,10 @@ class AuthenticationBloc
     on<AuthenticationEventSignOut>((event, emit) async {
       Logger().d('Signing out in AuthenticationBloc');
       await authenticationRepository.signOutFromFirebase();
+      DatabaseHelper.onLogout();
+      await getIt<SharedPreferences>()
+          .remove(StringConstants.spFirebaseUserIDKey);
+      await getIt<SharedPreferences>().remove(StringConstants.spDBTimestamp);
       emit(AuthenticationStateLoggedOut());
     });
   }

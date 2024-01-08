@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:baristodolistapp/services/path_builder.dart';
+
 import '../domain/parameters/todo_parameters.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
@@ -22,6 +24,13 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   static Database? _database;
+
+  /// Set [_database] to null when logging out in order to trigger a new
+  /// Database initialization with a new path with the new user id
+  static onLogout() {
+    _database = null;
+  }
+
   Future<Database> get database async => _database ??= await _initDatabase();
 
   ///Fields of the TodoListsTable ----------------------------------------------
@@ -132,7 +141,10 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'tododatabase.db');
+    final userId = getIt<SharedPreferences>()
+        .getString(StringConstants.spFirebaseUserIDKey);
+
+    String path = join(documentsDirectory.path, userId, 'tododatabase.db');
     return await openDatabase(
       path,
       version: 1,

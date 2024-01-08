@@ -194,7 +194,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
         return false;
       }
     } catch (e) {
-      Logger().i("Error in creatTodoList: $e");
+      Logger().e("Error in creatTodoList: $e");
       return false;
     }
   }
@@ -384,6 +384,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
             pathToFile: model.fullPath,
             imageName: model.imageName,
           ));
+
           Logger().d('downloadUrl ist $downloadUrl');
           final deletedrow = await localSqliteDataSource
               .deleteFromsyncPendingPhotos(imageName: model.imageName);

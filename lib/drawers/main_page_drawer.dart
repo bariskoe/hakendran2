@@ -40,7 +40,7 @@ class MainPageDrawer extends Drawer {
                         .add(AuthenticationEventSignOut());
 
                     getIt<SharedPreferences>()
-                        .setString(StringConstants.spFirebaseIDTokenKey, '');
+                        .remove(StringConstants.spFirebaseIDTokenKey);
                     Get.offUntil(
                       MaterialPageRoute(
                           builder: (context) => const InitialRoutingPage()),
