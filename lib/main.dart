@@ -46,11 +46,7 @@ class BarisToDoListApp extends StatelessWidget {
         transitionDuration: const Duration(milliseconds: 500),
         debugShowCheckedModeBanner: false,
         theme: Themes.darkGreenTheme(),
-        darkTheme: ThemeData(
-          colorSchemeSeed: Themes.darkGreenThemeSeed,
-          brightness: Brightness.dark,
-          useMaterial3: true,
-        ),
+        // darkTheme: Themes.darkGreenThemeDark(),
         home: const LifeCycleManager(child: InitialRoutingPage()),
         localizationsDelegates: const [
           AppLocalizations.delegate,
