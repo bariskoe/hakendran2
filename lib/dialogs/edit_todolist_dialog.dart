@@ -25,8 +25,8 @@ Future<void> editListDialog(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(
-            AppLocalizations.of(context)?.editTodoListDialogTitle ?? 'null'),
+        title:
+            Text(AppLocalizations.of(context)?.editTodoListDialogTitle ?? ''),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -36,7 +36,7 @@ Future<void> editListDialog(
                   context: context,
                   labelText: AppLocalizations.of(context)
                           ?.editTodoListDialogTextfieldLabel ??
-                      'null'),
+                      ''),
             ),
             const SizedBox(
               height: UiConstantsPadding.xxlarge,
@@ -55,9 +55,9 @@ Future<void> editListDialog(
         actions: <Widget>[
           TextButton(
               onPressed: () => Get.back(),
-              child: Text(AppLocalizations.of(context)?.cancel ?? 'null')),
+              child: Text(AppLocalizations.of(context)?.cancel ?? '')),
           TextButton(
-            child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
+            child: Text(AppLocalizations.of(context)?.ok ?? ''),
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {

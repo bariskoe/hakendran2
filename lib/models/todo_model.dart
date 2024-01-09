@@ -258,13 +258,13 @@ extension RepeatPeriodExtension on RepeatPeriod {
   String getName(BuildContext context) {
     switch (this) {
       case RepeatPeriod.none:
-        return AppLocalizations.of(context)?.repetitionPeriodNone ?? 'null';
+        return AppLocalizations.of(context)?.repetitionPeriodNone ?? '';
       case RepeatPeriod.daily:
-        return AppLocalizations.of(context)?.repetitionPeriodDaily ?? 'null';
+        return AppLocalizations.of(context)?.repetitionPeriodDaily ?? '';
       case RepeatPeriod.weekly:
-        return AppLocalizations.of(context)?.repetitionPeriodWeekly ?? 'null';
+        return AppLocalizations.of(context)?.repetitionPeriodWeekly ?? '';
       case RepeatPeriod.monthly:
-        return AppLocalizations.of(context)?.repetitionPeriodMonthly ?? 'null';
+        return AppLocalizations.of(context)?.repetitionPeriodMonthly ?? '';
     }
   }
 }

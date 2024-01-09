@@ -25,8 +25,7 @@ Future<void> editTodoDialog(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(
-            AppLocalizations.of(context)?.editTodoListDialogTitle ?? 'null'),
+        title: Text(AppLocalizations.of(context)?.editTodoDialogTitle ?? ''),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -49,9 +48,9 @@ Future<void> editTodoDialog(
         actions: <Widget>[
           TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)?.cancel ?? 'null')),
+              child: Text(AppLocalizations.of(context)?.cancel ?? '')),
           TextButton(
-            child: Text(AppLocalizations.of(context)?.ok ?? 'null'),
+            child: Text(AppLocalizations.of(context)?.ok ?? ''),
             onPressed: () {
               bool canPress = textEditingController.text.isNotEmpty;
               if (canPress) {

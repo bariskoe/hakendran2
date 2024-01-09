@@ -452,7 +452,7 @@ class SwipeToDeleteBackgroundWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: WarningTextWidget(
-      text: AppLocalizations.of(context)?.swipeToDelete ?? 'null',
+      text: AppLocalizations.of(context)?.swipeToDelete ?? '',
     ));
   }
 }

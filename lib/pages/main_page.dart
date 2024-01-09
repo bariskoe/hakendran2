@@ -170,7 +170,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   Text(
                     AppLocalizations.of(context)
                             ?.mainPageBuildListEmptyLazinessIsOver ??
-                        'null',
+                        '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 17,
@@ -182,7 +182,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   Text(
                     AppLocalizations.of(context)
                             ?.mainPageBuildListEmptyPressToAddTodoList ??
-                        'null',
+                        '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w700),

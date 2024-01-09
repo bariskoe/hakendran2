@@ -14,6 +14,8 @@
   "addTodoDialogTextfieldLabel":"Name",
   "editTodoListDialogTitle":"Edit Todo List",
   "editTodoListDialogTextfieldLabel":"Edit Name",
+  "editTodoDialogTitle":"Edit Todo",
+  "editTodoDialogTextfieldLabel":"Edit Name",
   "addItemTextFieldWidgetErrorMessage":"A name is neccessary",
 
   "categoryNameNone":"none",

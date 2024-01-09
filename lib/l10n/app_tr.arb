@@ -11,6 +11,8 @@
     "addTodoDialogTextfieldLabel":"Yapilacağı ismi",
     "editTodoListDialogTitle":"Bu Listeyi düzelt",
     "editTodoListDialogTextfieldLabel":"İsim",
+    "editTodoDialogTitle":"Yapilacağı düzelt",
+    "editTodoDialogTextfieldLabel":"İsim",
     "addItemTextFieldWidgetErrorMessage":"İsim şart",
 
     "categoryNameNone":"diğer",

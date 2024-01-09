@@ -41,8 +41,7 @@ class _ErrorBoxWidgetState extends State<ErrorBoxWidget> {
           children: [
             Center(
               child: BigHeaderTextWidget(
-                text:
-                    AppLocalizations.of(context)?.somethingWentWrong ?? 'null',
+                text: AppLocalizations.of(context)?.somethingWentWrong ?? '',
               ),
             ),
             AnimatedAlign(
