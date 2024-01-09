@@ -16,13 +16,13 @@ class StringService {
   }
 
   initialize() async {
-    // final applicationDocumentsDirectory =
-    //     await getApplicationDocumentsDirectory();
-    // final applicationDocumentsDirectorypath =
-    //     applicationDocumentsDirectory.path;
-    // Logger().d('Setting path: $applicationDocumentsDirectorypath');
-    // sharedPreferences.setString(
-    //     StringConstants.spApplicationDocumentsDirectoryPath,
-    //     applicationDocumentsDirectorypath);
+    final applicationDocumentsDirectory =
+        await getApplicationDocumentsDirectory();
+    final applicationDocumentsDirectorypath =
+        applicationDocumentsDirectory.path;
+    Logger().d('Setting path: $applicationDocumentsDirectorypath');
+    sharedPreferences.setString(
+        StringConstants.spApplicationDocumentsDirectoryPath,
+        applicationDocumentsDirectorypath);
   }
 }

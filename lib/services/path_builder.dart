@@ -24,7 +24,7 @@ class PathBuilder {
     appDocDir = sharedPreferences
         .getString(StringConstants.spApplicationDocumentsDirectoryPath);
     if (appDocDir == null) {
-      final docDir = await getApplicationCacheDirectory();
+      final docDir = await getApplicationDocumentsDirectory();
       appDocDir = docDir.path;
     }
     photoFolderName = StringConstants.photoFolderName;
