@@ -50,8 +50,9 @@ app.*.map.json
 
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+*google-services.json
 firebase_app_id_file.json
-
+android/app/google-services.json
+ios/firebase_app_id_file.json
 # Environment variables, secrets
 *.env
