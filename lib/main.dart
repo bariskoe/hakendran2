@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -20,15 +21,16 @@ import 'ui/themes/themes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await setupDependencyInjectionWithGetIt();
 
-  runApp(const BarisToDoListApp());
+  runApp(const Hakendran());
 }
 
-class BarisToDoListApp extends StatelessWidget {
-  const BarisToDoListApp({Key? key}) : super(key: key);
+class Hakendran extends StatelessWidget {
+  const Hakendran({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
