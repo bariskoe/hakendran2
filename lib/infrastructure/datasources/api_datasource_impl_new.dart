@@ -20,6 +20,7 @@ import '../../models/todolist_model.dart';
 import '../../services/connectivity_service.dart';
 import '../../strings/string_constants.dart';
 import 'api_datasource.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiDataSourceImplNew implements ApiDatasource {
   final FirebaseStorageService firebaseStorageService;
@@ -29,8 +30,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
     required this.localSqliteDataSource,
   });
 
-  final baseUrl =
-      'https://europe-north1-geometric-timer-396214.cloudfunctions.net/hakendranBackendDebugFunction';
+  final baseUrl = dotenv.env['BACKENDBASEURL'];
 
   final dataInfoEndpoint = 'getdatainfo';
 
@@ -39,7 +39,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
   final downloadablePhotos = 'downloadablePhotos';
 
   String buildUrlString(List<String> paths) {
-    String url = baseUrl;
+    String url = baseUrl!;
     for (String path in paths) {
       url = url + '/$path';
     }
@@ -125,7 +125,6 @@ class ApiDataSourceImplNew implements ApiDatasource {
       throw NotConnectedToTheInternetError();
     }
 
-//! Den Token zu bekommen dauert ewig. Liegt es an dieser methode oder daran, dass ich vorher den token von den sharedpreferences genommen hab?
     final String? token = await getIt<FirebaseAuth>()
         .currentUser
         ?.getIdTokenResult(true)
@@ -173,7 +172,7 @@ class ApiDataSourceImplNew implements ApiDatasource {
         return false;
       }
     } catch (e) {
-      Logger().i("Error in addTodoToSpecificList: $e");
+      Logger().e("Caught Error in addTodoToSpecificList: $e");
       return false;
     }
   }
@@ -299,6 +298,8 @@ class ApiDataSourceImplNew implements ApiDatasource {
 
         if (uploadSuccessful) {
           await DatabaseHelper.deleteFromsyncPendigTodos(uid: todoModel.uid);
+        } else {
+          return true;
         }
       } else {
         final deleteSuccessful = await deleteTodoFromSpecificList(map: {
